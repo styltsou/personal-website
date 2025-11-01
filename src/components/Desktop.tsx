@@ -4,7 +4,7 @@
  * Handles window management, URL synchronization, and sessionStorage persistence
  */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Window from './Window';
 import MenuBar from './MenuBar';
 import { useWindowStore } from '../stores/windowStore';
@@ -19,20 +19,38 @@ export default function Desktop() {
   const windowStates = useWindowStore((state) => state.windowStates);
   const activeWindowId = useWindowStore((state) => state.activeWindowId);
 
-  // Select actions with a proper selector to ensure they're stable references
+  // Select individual actions from store (functions are stable)
   const openWindow = useWindowStore((state) => state.openWindow);
   const closeWindow = useWindowStore((state) => state.closeWindow);
   const minimizeWindow = useWindowStore((state) => state.minimizeWindow);
   const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
   const focusWindow = useWindowStore((state) => state.focusWindow);
-  const updateWindowContent = useWindowStore(
-    (state) => state.updateWindowContent
-  );
-  const updateWindowPosition = useWindowStore(
-    (state) => state.updateWindowPosition
-  );
-  const updateWindowSize = useWindowStore(
-    (state) => state.updateWindowSize
+  const updateWindowPosition = useWindowStore((state) => state.updateWindowPosition);
+  const updateWindowSize = useWindowStore((state) => state.updateWindowSize);
+  const updateWindowContent = useWindowStore((state) => state.updateWindowContent);
+
+  // Memoize window actions object to prevent unnecessary re-renders
+  const windowActions = useMemo(
+    () => ({
+      openWindow,
+      closeWindow,
+      minimizeWindow,
+      maximizeWindow,
+      focusWindow,
+      updateWindowPosition,
+      updateWindowSize,
+      updateWindowContent,
+    }),
+    [
+      openWindow,
+      closeWindow,
+      minimizeWindow,
+      maximizeWindow,
+      focusWindow,
+      updateWindowPosition,
+      updateWindowSize,
+      updateWindowContent,
+    ]
   );
 
   // Handle URL synchronization
@@ -47,12 +65,13 @@ export default function Desktop() {
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
           if (content) {
-            updateWindowContent(ws.id, content);
+            windowActions.updateWindowContent(ws.id, content);
           }
         });
       }
     });
-  }, [windowStates, loadWindowContent, updateWindowContent, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowStates, loadWindowContent, isLoading]);
 
   // Update URL when active window changes
   useEffect(() => {
@@ -63,8 +82,8 @@ export default function Desktop() {
     <div className="retro-desktop relative h-screen w-full overflow-hidden">
       {/* Top Menu Bar */}
       <MenuBar
-        onOpenWindow={openWindow}
-        onCloseWindow={closeWindow}
+        onOpenWindow={windowActions.openWindow}
+        onCloseWindow={windowActions.closeWindow}
         windowStates={windowStates}
         activeWindowId={activeWindowId}
       />
@@ -85,15 +104,15 @@ export default function Desktop() {
             isMinimized={windowState.isMinimized}
             isMaximized={windowState.isMaximized}
             isActive={activeWindowId === windowState.id}
-            onClose={() => closeWindow(windowState.id)}
-            onMinimize={() => minimizeWindow(windowState.id)}
-            onMaximize={() => maximizeWindow(windowState.id)}
-            onFocus={() => focusWindow(windowState.id)}
+            onClose={() => windowActions.closeWindow(windowState.id)}
+            onMinimize={() => windowActions.minimizeWindow(windowState.id)}
+            onMaximize={() => windowActions.maximizeWindow(windowState.id)}
+            onFocus={() => windowActions.focusWindow(windowState.id)}
             onPositionChange={(position) =>
-              updateWindowPosition(windowState.id, position)
+              windowActions.updateWindowPosition(windowState.id, position)
             }
             onSizeChange={(size) =>
-              updateWindowSize(windowState.id, size)
+              windowActions.updateWindowSize(windowState.id, size)
             }
           >
             {isLoading(windowState.id) ? (
