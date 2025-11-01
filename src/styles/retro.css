@@ -38,6 +38,8 @@
   --retro-titlebar-default: #7da3d1; /* Default to blue */
   --retro-titlebar-text: #ffffff;
   --retro-titlebar-shadow: rgba(0, 0, 0, 0.1);
+  /* Subtle accent colors for focused states */
+  --retro-focus-blue: #b5cfe8; /* Lighter, more subtle blue */
 
   /* Shadows - Softer */
   --retro-shadow: rgba(0, 0, 0, 0.2);
@@ -78,6 +80,8 @@
   --retro-titlebar-default: #2a2a3a;
   --retro-titlebar-text: #d0d0d0;
   --retro-titlebar-shadow: rgba(0, 0, 0, 0.5);
+  /* Subtle accent colors for focused states */
+  --retro-focus-blue: #2a3540; /* Subtle blue tint for dark theme */
 
   /* Shadows - Darker */
   --retro-shadow: rgba(0, 0, 0, 0.7);
@@ -94,7 +98,6 @@
   border-bottom: 2px solid var(--retro-window-border-dark);
   border-radius: 4px;
   box-shadow: 1px 1px 2px var(--retro-shadow-soft);
-  transition: box-shadow 0.2s ease;
 }
 
 /* Active/Focused Window - More Prominent Shadow */
@@ -268,6 +271,15 @@
   gap: 6px;
 }
 
+.retro-menu-bar-logo {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--retro-text);
+  margin-right: 8px;
+  user-select: none;
+  letter-spacing: 0.5px;
+}
+
 .retro-menu-bar-button {
   background-color: var(--retro-button-bg);
   border-top: 1px solid var(--retro-button-border-light);
@@ -275,7 +287,7 @@
   border-right: 1px solid var(--retro-button-border-dark);
   border-bottom: 1px solid var(--retro-button-border-dark);
   border-radius: 2px;
-  padding: 0 12px;
+  padding: 0 8px;
   font-size: 13px;
   font-weight: 500;
   color: var(--retro-text);
@@ -300,6 +312,59 @@
   border-right: 1px solid var(--retro-button-border-light);
   border-bottom: 1px solid var(--retro-button-border-light);
   box-shadow: inset 1px 1px 1px var(--retro-shadow-soft);
+}
+
+/* Open window button - pressed/inverted style */
+/* Background and shadow now animated via motion */
+.retro-menu-bar-button-open {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+}
+
+/* Minimized window button - pressed style but slightly dimmed */
+/* Background and shadow now animated via motion */
+.retro-menu-bar-button-minimized {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  opacity: 0.85;
+}
+
+/* Focused/Active window button - blue color like titlebar */
+/* Color now animated via motion */
+.retro-menu-bar-button-focused {
+  /* Color animation handled by motion */
+}
+
+/* Combine minimized + focused states */
+.retro-menu-bar-button-minimized.retro-menu-bar-button-focused {
+  opacity: 1;
+}
+
+/* Window close icon on the left - shows when window is open/minimized */
+.retro-menu-bar-button-close-icon {
+  margin-right: 4px;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 400;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.08s ease;
+}
+
+.retro-menu-bar-button-close-icon:hover {
+  opacity: 1 !important;
+}
+
+.retro-menu-bar-button-close-icon:focus {
+  outline: 2px solid var(--retro-titlebar-blue);
+  outline-offset: 2px;
 }
 
 .retro-menu-bar-right {
@@ -473,4 +538,78 @@
 
 .retro-titlebar[data-color='blue'] {
   background-color: var(--retro-titlebar-blue);
+}
+
+/* Resize Handles */
+.retro-resize-handle {
+  position: absolute;
+  z-index: 10;
+  background: transparent;
+  user-select: none;
+}
+
+/* Corner handles - 8px × 8px */
+.retro-resize-handle-nw {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+.retro-resize-handle-ne {
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+.retro-resize-handle-sw {
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+.retro-resize-handle-se {
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+/* Edge handles */
+.retro-resize-handle-n {
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.retro-resize-handle-s {
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.retro-resize-handle-w {
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+.retro-resize-handle-e {
+  right: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  cursor: ew-resize;
 }

@@ -7,11 +7,13 @@ import { create } from 'zustand';
 import { windows, type WindowConfig } from '../data/windows';
 import {
   calculateCenteredPosition,
+  calculateCascadedPosition,
   getMaxZIndex,
   calculateNextZIndex,
   getDefaultWindowSize,
   getMaximizedWindowSize,
   getMaximizedWindowPosition,
+  constrainWindowSize,
   BASE_Z_INDEX,
   type WindowPosition,
   type WindowSize,
@@ -30,9 +32,19 @@ export interface WindowState {
   content?: string;
 }
 
+// Store closed window state (without content and transient state)
+export interface ClosedWindowState {
+  id: string;
+  position: WindowPosition;
+  size: WindowSize;
+  originalSize?: WindowSize;
+  originalPosition?: WindowPosition;
+}
+
 interface WindowStore {
   // State
   windowStates: WindowState[];
+  closedWindows: Record<string, ClosedWindowState>; // Map of windowId -> closed window state
   activeWindowId: string | null;
   nextZIndex: number;
   hasLoadedFromPersistence: boolean;
@@ -44,6 +56,7 @@ interface WindowStore {
   maximizeWindow: (windowId: string) => void;
   focusWindow: (windowId: string) => void;
   updateWindowPosition: (windowId: string, position: WindowPosition) => void;
+  updateWindowSize: (windowId: string, size: WindowSize) => void;
   updateWindowContent: (windowId: string, content: string) => void;
   closeAllWindows: () => void;
   initializeFromPersistence: (
@@ -56,6 +69,7 @@ interface WindowStore {
 export const useWindowStore = create<WindowStore>((set, get) => ({
   // Initial state
   windowStates: [],
+  closedWindows: {},
   activeWindowId: null,
   nextZIndex: BASE_Z_INDEX,
   hasLoadedFromPersistence: false,
@@ -85,12 +99,41 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       return;
     }
 
-    // Calculate position and size for new window
-    const defaultSize = getDefaultWindowSize();
-    const centeredPosition = calculateCenteredPosition(
-      defaultSize.width,
-      defaultSize.height
-    );
+    // Check if this window was previously closed and restore its state
+    const closedState = state.closedWindows[windowId];
+    let newWindowSize: WindowSize;
+    let newWindowPosition: WindowPosition;
+    let originalSize: WindowSize | undefined;
+    let originalPosition: WindowPosition | undefined;
+
+    if (closedState) {
+      // Restore from closed window state
+      newWindowSize = closedState.size;
+      newWindowPosition = closedState.position;
+      originalSize = closedState.originalSize;
+      originalPosition = closedState.originalPosition;
+    } else {
+      // First time opening - use default size/position
+      const defaultSize = getDefaultWindowSize();
+      const centeredPosition = calculateCenteredPosition(
+        defaultSize.width,
+        defaultSize.height
+      );
+
+      // Get visible windows (non-minimized) to check for cascading
+      const visibleWindows = state.windowStates.filter((ws) => !ws.isMinimized);
+
+      // Calculate cascaded position if needed
+      newWindowPosition = calculateCascadedPosition(
+        centeredPosition,
+        visibleWindows,
+        defaultSize.width,
+        defaultSize.height
+      );
+      newWindowSize = defaultSize;
+      originalSize = defaultSize;
+      originalPosition = newWindowPosition;
+    }
 
     // Calculate z-index for new window
     const maxZIndex = getMaxZIndex(state.windowStates);
@@ -100,13 +143,13 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     const newWindow: WindowState = {
       id: windowId,
       config,
-      position: centeredPosition,
-      size: defaultSize,
+      position: newWindowPosition,
+      size: newWindowSize,
       zIndex: newWindowZIndex,
       isMinimized: false,
       isMaximized: false,
-      originalSize: defaultSize,
-      originalPosition: centeredPosition,
+      originalSize: originalSize || newWindowSize,
+      originalPosition: originalPosition || newWindowPosition,
     };
 
     set({
@@ -116,13 +159,35 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     });
   },
 
-  // Close a window
+  // Close a window - save its state before closing
   closeWindow: (windowId: string) => {
-    set((state) => ({
-      windowStates: state.windowStates.filter((ws) => ws.id !== windowId),
-      activeWindowId:
-        state.activeWindowId === windowId ? null : state.activeWindowId,
-    }));
+    set((state) => {
+      const windowToClose = state.windowStates.find((ws) => ws.id === windowId);
+      if (!windowToClose) return state;
+
+      // Save window state (size, position, originalSize, originalPosition) before closing
+      const closedState: ClosedWindowState = {
+        id: windowId,
+        position: windowToClose.isMaximized
+          ? windowToClose.originalPosition || windowToClose.position
+          : windowToClose.position,
+        size: windowToClose.isMaximized
+          ? windowToClose.originalSize || windowToClose.size
+          : windowToClose.size,
+        originalSize: windowToClose.originalSize,
+        originalPosition: windowToClose.originalPosition,
+      };
+
+      return {
+        windowStates: state.windowStates.filter((ws) => ws.id !== windowId),
+        closedWindows: {
+          ...state.closedWindows,
+          [windowId]: closedState,
+        },
+        activeWindowId:
+          state.activeWindowId === windowId ? null : state.activeWindowId,
+      };
+    });
   },
 
   // Minimize a window
@@ -145,23 +210,26 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
           if (ws.id !== windowId) return ws;
 
           if (ws.isMaximized) {
-            // Restore
+            // Restore - use originalSize/originalPosition if available, otherwise current values
+            const restoreSize = ws.originalSize || ws.size;
+            const restorePosition = ws.originalPosition || ws.position;
             return {
               ...ws,
               isMaximized: false,
-              size: ws.originalSize || ws.size,
-              position: ws.originalPosition || ws.position,
+              size: restoreSize,
+              position: restorePosition,
+              // Keep originalSize/originalPosition for next maximize
               zIndex: newZIndex, // Bring to front when restoring
             };
           } else {
-            // Maximize - save current state
+            // Maximize - save current state to originalSize/originalPosition
             const maximizedSize = getMaximizedWindowSize();
             const maximizedPosition = getMaximizedWindowPosition();
             return {
               ...ws,
               isMaximized: true,
-              originalSize: ws.size,
-              originalPosition: ws.position,
+              originalSize: ws.size, // Save current size before maximizing
+              originalPosition: ws.position, // Save current position before maximizing
               position: maximizedPosition,
               size: maximizedSize,
               zIndex: newZIndex, // Bring to front when maximizing
@@ -196,15 +264,30 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   // Update window position
   updateWindowPosition: (windowId: string, position: WindowPosition) => {
     set((state) => ({
-      windowStates: state.windowStates.map((ws) =>
-        ws.id === windowId && !ws.isMaximized
-          ? {
-              ...ws,
-              position,
-              originalPosition: ws.originalPosition || position,
-            }
-          : ws
-      ),
+      windowStates: state.windowStates.map((ws) => {
+        if (ws.id !== windowId || ws.isMaximized) return ws;
+        // When not maximized, update position but preserve originalSize/originalPosition
+        // as they represent the restore state (before maximizing)
+        return {
+          ...ws,
+          position,
+        };
+      }),
+    }));
+  },
+
+  // Update window size
+  updateWindowSize: (windowId: string, size: WindowSize) => {
+    set((state) => ({
+      windowStates: state.windowStates.map((ws) => {
+        if (ws.id !== windowId || ws.isMaximized) return ws;
+        // When not maximized, update size but preserve originalSize/originalPosition
+        // as they represent the restore state (before maximizing)
+        return {
+          ...ws,
+          size: constrainWindowSize(size),
+        };
+      }),
     }));
   },
 
@@ -228,12 +311,14 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   // Initialize from persisted state
   initializeFromPersistence: (
     persistedStates: WindowState[],
-    persistedNextZIndex: number
+    persistedNextZIndex: number,
+    persistedClosedWindows?: Record<string, ClosedWindowState>
   ) => {
     const { hasLoadedFromPersistence } = get();
     if (!hasLoadedFromPersistence) {
       set({
         windowStates: persistedStates,
+        closedWindows: persistedClosedWindows || {},
         nextZIndex: persistedNextZIndex,
         hasLoadedFromPersistence: true,
       });
@@ -258,6 +343,7 @@ export const useWindowActions = () =>
     maximizeWindow: state.maximizeWindow,
     focusWindow: state.focusWindow,
     updateWindowPosition: state.updateWindowPosition,
+    updateWindowSize: state.updateWindowSize,
     updateWindowContent: state.updateWindowContent,
     closeAllWindows: state.closeAllWindows,
   }));

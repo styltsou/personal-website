@@ -31,6 +31,9 @@ export default function Desktop() {
   const updateWindowPosition = useWindowStore(
     (state) => state.updateWindowPosition
   );
+  const updateWindowSize = useWindowStore(
+    (state) => state.updateWindowSize
+  );
 
   // Handle URL synchronization
   const { updateURL } = useURLSync();
@@ -59,7 +62,12 @@ export default function Desktop() {
   return (
     <div className="retro-desktop relative h-screen w-full overflow-hidden">
       {/* Top Menu Bar */}
-      <MenuBar onOpenWindow={openWindow} />
+      <MenuBar
+        onOpenWindow={openWindow}
+        onCloseWindow={closeWindow}
+        windowStates={windowStates}
+        activeWindowId={activeWindowId}
+      />
 
       {/* Desktop Icons - Hidden for cleaner look */}
 
@@ -83,6 +91,9 @@ export default function Desktop() {
             onFocus={() => focusWindow(windowState.id)}
             onPositionChange={(position) =>
               updateWindowPosition(windowState.id, position)
+            }
+            onSizeChange={(size) =>
+              updateWindowSize(windowState.id, size)
             }
           >
             {isLoading(windowState.id) ? (

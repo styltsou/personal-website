@@ -4,10 +4,15 @@
  */
 
 import { useEffect } from 'react';
-import { useWindowStore, type WindowState } from '../stores/windowStore';
+import {
+  useWindowStore,
+  type WindowState,
+  type ClosedWindowState,
+} from '../stores/windowStore';
 
 interface PersistedState {
   windowStates: WindowState[];
+  closedWindows: Record<string, ClosedWindowState>;
   nextZIndex: number;
 }
 
@@ -16,6 +21,7 @@ const STORAGE_KEY = 'desktop-windows';
 export function useWindowPersistence() {
   // Properly select from store with individual selectors
   const windowStates = useWindowStore((state) => state.windowStates);
+  const closedWindows = useWindowStore((state) => state.closedWindows);
   const nextZIndex = useWindowStore((state) => state.nextZIndex);
   const initializeFromPersistence = useWindowStore(
     (state) => state.initializeFromPersistence
@@ -29,7 +35,8 @@ export function useWindowPersistence() {
         const parsed: PersistedState = JSON.parse(saved);
         initializeFromPersistence(
           parsed.windowStates || [],
-          parsed.nextZIndex || 1000
+          parsed.nextZIndex || 1000,
+          parsed.closedWindows || {}
         );
       }
     } catch (error) {
@@ -43,11 +50,12 @@ export function useWindowPersistence() {
     try {
       const stateToSave: PersistedState = {
         windowStates,
+        closedWindows,
         nextZIndex,
       };
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (error) {
       console.warn('Failed to save window states to sessionStorage:', error);
     }
-  }, [windowStates, nextZIndex]);
+  }, [windowStates, closedWindows, nextZIndex]);
 }
