@@ -18,6 +18,8 @@ export interface UseWindowResizeOptions {
   isMaximized: boolean;
   onFocus?: () => void;
   onSizeChange?: (size: Size) => void;
+  onPositionChange?: (position: Position) => void;
+  getCurrentPosition?: () => Position;
 }
 
 export function useWindowResize({
@@ -26,6 +28,8 @@ export function useWindowResize({
   isMaximized,
   onFocus,
   onSizeChange,
+  onPositionChange,
+  getCurrentPosition,
 }: UseWindowResizeOptions) {
   const [size, setSize] = useState(initialSize);
   const [position, setPosition] = useState(initialPosition);
@@ -74,16 +78,22 @@ export function useWindowResize({
         onFocus();
       }
 
+      // Get the current actual window position (from drag hook) if available
+      const currentPos = getCurrentPosition ? getCurrentPosition() : position;
+      
+      // Sync the position state with the actual current position to prevent abrupt jumps
+      setPosition(currentPos);
+
       // Store the current size, position, and mouse position when resize starts
       resizeStartSizeRef.current = { ...size };
-      resizeStartPosRef.current = { ...position };
+      resizeStartPosRef.current = { ...currentPos };
       resizeMouseStartRef.current = { x: e.clientX, y: e.clientY };
       currentSizeRef.current = { ...size };
-      currentPositionRef.current = { ...position };
+      currentPositionRef.current = { ...currentPos };
       setResizeHandle(handle);
       setIsResizing(true);
     },
-    [isMaximized, onFocus, size, position]
+    [isMaximized, onFocus, size, position, getCurrentPosition]
   );
 
   // Handle resize movement and end
@@ -152,21 +162,29 @@ export function useWindowResize({
     };
 
     const handleMouseUp = () => {
+      // For left/top edge resizes, position changes must be persisted to drag hook
+      // Check if resize handle involves left or top edges (which change position)
+      const positionChanged = 
+        resizeHandle?.includes('w') || resizeHandle?.includes('n');
+      
+      // Save position change BEFORE ending resize state to ensure drag hook updates first
+      // This prevents the window from jumping back when resize ends
+      if (positionChanged && onPositionChange) {
+        onPositionChange(currentPositionRef.current);
+      }
+
+      // Save size when resizing ends using refs to get current values
+      if (onSizeChange) {
+        onSizeChange(currentSizeRef.current);
+      }
+
+      // End resize state after position/size updates have been queued
       setIsResizing(false);
       setResizeHandle(null);
 
       // Restore cursor and user select
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-
-      // Save size when resizing ends using refs to get current values
-      // Position is managed by drag hook, so we don't call onPositionChange here
-      // During resize from left/top edges, position is updated internally only
-      if (onSizeChange) {
-        onSizeChange(currentSizeRef.current);
-      }
-      // Note: We don't call onPositionChange here because position is managed by drag hook
-      // Position changes during resize (left/top edges) are temporary and shouldn't persist
     };
 
     document.addEventListener('mousemove', handleMouseMove, { passive: false });
@@ -184,6 +202,7 @@ export function useWindowResize({
     isMaximized,
     resizeHandle,
     onSizeChange,
+    onPositionChange,
     getCursor,
   ]);
 

@@ -74,7 +74,10 @@ export default function Window({
     isMaximized,
     onFocus,
     onSizeChange,
-    // Don't pass onPositionChange - position is managed by drag hook
+    // Pass function to get current drag position so resize can sync with it
+    getCurrentPosition: () => dragPosition,
+    // Pass onPositionChange so resize can update drag position when left/top edges are used
+    onPositionChange,
   });
 
   // Use resize position when resizing (it may update position for left/top edges)
