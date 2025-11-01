@@ -1,0 +1,9 @@
+# Additional Recommendations
+
+- Use TypeScript everywhere.
+- Enable Astro integrations:
+  - `@astrojs/tailwind`
+  - `@astrojs/react`
+  - `@astrojs/image`
+- Consider `astro-compress` for build optimization.
+- Use `astro-icon` for consistent icon handling if needed.

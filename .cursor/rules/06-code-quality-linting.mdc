@@ -1,0 +1,7 @@
+# Code Quality & Linting
+
+- Use ESLint + Prettier configured for Astro, React, and Tailwind.
+- After every major implementation, run lint and fix all issues automatically.
+- Maintain strict TypeScript configuration (`"strict": true`).
+- No `any` types unless explicitly justified with a comment.
+- Use descriptive variable and component names.

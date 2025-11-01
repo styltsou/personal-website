@@ -1,0 +1,14 @@
+# Documentation
+
+For every new feature or system:
+
+- Create a `docs/` entry explaining purpose, usage, and internal API.
+- Include code comments for non-trivial logic.
+- Maintain a progress tracker:
+  - File: `PROJECT_PROGRESS.md`
+  - Sections:
+    - ✅ Completed Tasks
+    - 🚧 In Progress
+    - 🧭 Next Steps
+    - 🐞 Issues / TODOs
+- Update this file after each session or milestone.

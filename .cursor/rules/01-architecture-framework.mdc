@@ -1,0 +1,8 @@
+# Architecture & Framework Rules
+
+- Use Astro (latest version) with its content collections, View Transitions API, and hybrid rendering capabilities.
+- Favor static generation (SSG) for all pages whenever possible.
+- Only hydrate React islands when absolutely necessary (e.g., for the window manager or other interactive UI).
+- Prefer Astro components for static content and layout.
+- Implement progressive enhancement — everything should work without JavaScript enabled (except movable windows).
+- Maintain zero or minimal client-side JS footprint unless interactivity is required.

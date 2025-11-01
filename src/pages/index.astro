@@ -1,11 +1,32 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Desktop from '../components/Desktop.tsx';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Static content is available for SEO even before JS loads
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title="Portfolio Website"
+  description="A retro 90s-themed portfolio website with desktop window manager"
+>
+  <!-- Desktop component as React island - loads on client -->
+  <Desktop client:load />
+
+  <!-- Fallback static content for progressive enhancement -->
+  <noscript>
+    <div class="mx-auto max-w-4xl p-6">
+      <h1 class="mb-4 text-3xl font-bold">Portfolio Website</h1>
+      <p class="mb-4">
+        Welcome to my portfolio! JavaScript is required for the interactive
+        window manager.
+      </p>
+      <nav class="space-y-2">
+        <a href="/about" class="text-blue-600 hover:underline">About Me</a>
+        <br />
+        <a href="/projects" class="text-blue-600 hover:underline">Projects</a>
+        <br />
+        <a href="/contact" class="text-blue-600 hover:underline">Contact</a>
+      </nav>
+    </div>
+  </noscript>
+</BaseLayout>

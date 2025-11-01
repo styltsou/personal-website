@@ -1,0 +1,6 @@
+# Styling Rules
+
+- Use Tailwind CSS for all layout, spacing, and color styling.
+- Create a single global stylesheet `retro.css` for the 90s OS aesthetic (window borders, button styles, etc.).
+- Use CSS variables and `@layer` with Tailwind for theme consistency.
+- Prefer class utilities to inline styles.

@@ -1,0 +1,7 @@
+# Performance Rules
+
+- Never import unnecessary JS or large libraries.
+- Split code into small, lazy-loaded React islands when possible.
+- Optimize assets: use Astro's built-in `<Image />` component for responsive images.
+- Run `astro check` and `astro build --verbose` before finalizing features.
+- Target Core Web Vitals compliance (LCP < 2.5s, CLS < 0.1, TBT < 300ms).

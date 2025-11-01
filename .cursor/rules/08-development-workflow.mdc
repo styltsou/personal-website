@@ -1,0 +1,10 @@
+# Development Workflow
+
+- Break large features into clear subtasks with acceptance criteria.
+- Implement one subtask at a time.
+- After completion:
+  - Lint and fix issues.
+  - Document the feature.
+  - Update `PROJECT_PROGRESS.md`.
+- Push changes with concise, conventional commit messages (e.g. `feat: add draggable window manager`).
+- Use semantic PR titles and brief descriptions.

@@ -1,0 +1,10 @@
+# React Island & Window Manager
+
+The Desktop and WindowManager React components should:
+
+- Manage window stacking, dragging, and state.
+- Use Framer Motion for animations.
+- Store positions and open states in sessionStorage.
+- Use the Astro View Transitions API for smooth route updates.
+- Avoid full client-side routing — use `history.pushState()` and listen for `popstate` for URL changes.
+- Each Astro page's static content should be accessible as standalone HTML for SEO.

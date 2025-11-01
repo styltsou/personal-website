@@ -1,0 +1,6 @@
+# Accessibility & UI Components
+
+- Use Radix UI Primitives for any interactive or headless components (menus, dialogs, popovers, etc.).
+- Follow WAI-ARIA and WCAG guidelines.
+- Ensure keyboard navigation works across the app (tab order, focus rings, etc.).
+- Always document accessibility considerations in code comments.

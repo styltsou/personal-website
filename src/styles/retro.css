@@ -1,0 +1,476 @@
+/**
+ * Nostalgic 80s Aesthetic Stylesheet
+ * Provides window borders, button styles, and theme variables for the desktop UI
+ * Inspired by warm, muted pastel colors and soft rounded edges
+ */
+
+/* CSS Variables for 80s Nostalgic Theme - Light Theme */
+:root {
+  /* Background Colors - Warm Beige/Tan */
+  --retro-bg: #eaddcf;
+  --retro-window-bg: #f8f5ed;
+  --retro-desktop-pattern: rgba(0, 0, 0, 0.02);
+
+  /* Border Colors - Softer, Warmer */
+  --retro-window-border-light: #ffffff;
+  --retro-window-border-dark: #d4c4b0;
+  --retro-window-border-shadow: rgba(0, 0, 0, 0.15);
+
+  /* Button Colors */
+  --retro-button-bg: #f0e6d8;
+  --retro-button-border-light: #ffffff;
+  --retro-button-border-dark: #d4c4b0;
+  --retro-button-active-bg: #e8ddd0;
+  --retro-button-active-border-light: #d4c4b0;
+  --retro-button-active-border-dark: #ffffff;
+
+  /* Text Colors */
+  --retro-text: #2a2a2a;
+  --retro-text-light: #5a5a5a;
+  --retro-text-inverse: #ffffff;
+
+  /* Title Bar Colors - Pastel Palette */
+  --retro-titlebar-yellow: #f9d78c;
+  --retro-titlebar-orange: #f09c7c;
+  --retro-titlebar-teal: #8cd7d7;
+  --retro-titlebar-pink: #f0b0b0;
+  --retro-titlebar-blue: #7da3d1;
+  --retro-titlebar-default: #7da3d1; /* Default to blue */
+  --retro-titlebar-text: #ffffff;
+  --retro-titlebar-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Shadows - Softer */
+  --retro-shadow: rgba(0, 0, 0, 0.2);
+  --retro-shadow-soft: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+:root.dark-theme {
+  /* Background Colors - Very Dark Gray */
+  --retro-bg: #0f0f0f;
+  --retro-window-bg: #1a1a1a;
+  --retro-desktop-pattern: rgba(255, 255, 255, 0.02);
+
+  /* Border Colors - Darker Gray */
+  --retro-window-border-light: #2a2a2a;
+  --retro-window-border-dark: #050505;
+  --retro-window-border-shadow: rgba(0, 0, 0, 0.7);
+
+  /* Button Colors */
+  --retro-button-bg: #1f1f1f;
+  --retro-button-border-light: #2a2a2a;
+  --retro-button-border-dark: #050505;
+  --retro-button-active-bg: #2a2a2a;
+  --retro-button-active-border-light: #050505;
+  --retro-button-active-border-dark: #2a2a2a;
+
+  /* Text Colors */
+  --retro-text: #d0d0d0;
+  --retro-text-light: #8a8a8a;
+  --retro-text-inverse: #000000;
+
+  /* Title Bar Colors - Dark Gray Shades */
+  --retro-titlebar-yellow: #3a3a2a;
+  --retro-titlebar-orange: #3a2a2a;
+  --retro-titlebar-teal: #2a3a3a;
+  --retro-titlebar-pink: #3a2a2a;
+  --retro-titlebar-blue: #2a2a3a;
+  --retro-titlebar-default: #2a2a3a;
+  --retro-titlebar-text: #d0d0d0;
+  --retro-titlebar-shadow: rgba(0, 0, 0, 0.5);
+
+  /* Shadows - Darker */
+  --retro-shadow: rgba(0, 0, 0, 0.7);
+  --retro-shadow-soft: rgba(0, 0, 0, 0.5);
+}
+
+/* Nostalgic Window Style - Softer 3D Effect with Rounded Corners */
+.retro-window {
+  position: fixed;
+  background-color: var(--retro-window-bg);
+  border-top: 2px solid var(--retro-window-border-light);
+  border-left: 2px solid var(--retro-window-border-light);
+  border-right: 2px solid var(--retro-window-border-dark);
+  border-bottom: 2px solid var(--retro-window-border-dark);
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px var(--retro-shadow-soft);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Active/Focused Window - More Prominent Shadow */
+.retro-window.active {
+  box-shadow:
+    4px 4px 12px var(--retro-shadow),
+    0 0 0 1px var(--retro-shadow-soft);
+}
+
+/* Nostalgic Title Bar */
+.retro-titlebar {
+  background-color: var(--retro-titlebar-default);
+  color: var(--retro-titlebar-text);
+  border-bottom: 1px solid var(--retro-window-border-dark);
+  border-radius: 4px 4px 0 0;
+  padding: 6px 8px;
+  font-weight: 600;
+  font-size: 13px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+  box-shadow: 0 1px 2px var(--retro-titlebar-shadow);
+  position: relative;
+}
+
+.retro-titlebar-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.retro-titlebar-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+/* Nostalgic Button Style - Softer 3D */
+.retro-button {
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-light);
+  border-left: 1px solid var(--retro-button-border-light);
+  border-right: 1px solid var(--retro-button-border-dark);
+  border-bottom: 1px solid var(--retro-button-border-dark);
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  min-width: 60px;
+  text-align: center;
+  transition: all 0.1s ease;
+}
+
+.retro-button:hover {
+  background-color: var(--retro-button-active-bg);
+}
+
+.retro-button:active,
+.retro-button.active {
+  background-color: var(--retro-button-active-bg);
+  border-top: 1px solid var(--retro-button-active-border-light);
+  border-left: 1px solid var(--retro-button-active-border-light);
+  border-right: 1px solid var(--retro-button-active-border-dark);
+  border-bottom: 1px solid var(--retro-button-active-border-dark);
+  box-shadow: inset 1px 1px 2px var(--retro-shadow-soft);
+}
+
+/* Nostalgic Button - Inset/Pressed Style */
+.retro-button-inset {
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 2px var(--retro-shadow-soft);
+}
+
+/* Nostalgic Window Controls - Properly Aligned */
+.retro-window-control {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-light);
+  border-left: 1px solid var(--retro-button-border-light);
+  border-right: 1px solid var(--retro-button-border-dark);
+  border-bottom: 1px solid var(--retro-button-border-dark);
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--retro-text);
+  flex-shrink: 0;
+  line-height: 1;
+  transition: all 0.1s ease;
+}
+
+.retro-window-control:hover {
+  background-color: var(--retro-button-active-bg);
+}
+
+.retro-window-control:active {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  box-shadow: inset 1px 1px 1px var(--retro-shadow-soft);
+}
+
+/* Nostalgic Desktop Background - Warm Beige */
+.retro-desktop {
+  background-color: var(--retro-bg);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--retro-desktop-pattern) 2px,
+      var(--retro-desktop-pattern) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      var(--retro-desktop-pattern) 2px,
+      var(--retro-desktop-pattern) 4px
+    );
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 32px; /* Space for menu bar */
+}
+
+/* Menu Bar - Full Width Top Bar */
+.retro-menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 32px;
+  background-color: var(--retro-button-bg);
+  border-bottom: 1px solid var(--retro-window-border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  z-index: 10000;
+  box-shadow: 0 1px 3px var(--retro-shadow-soft);
+}
+
+.retro-menu-bar-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.retro-menu-bar-button {
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-light);
+  border-left: 1px solid var(--retro-button-border-light);
+  border-right: 1px solid var(--retro-button-border-dark);
+  border-bottom: 1px solid var(--retro-button-border-dark);
+  border-radius: 2px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--retro-text);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s ease;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.retro-menu-bar-button:hover {
+  background-color: var(--retro-button-active-bg);
+}
+
+.retro-menu-bar-button:active {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  box-shadow: inset 1px 1px 1px var(--retro-shadow-soft);
+}
+
+.retro-menu-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.retro-menu-bar-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--retro-text);
+}
+
+.retro-menu-bar-date {
+  color: var(--retro-text-light);
+  margin-right: 4px;
+}
+
+.retro-menu-bar-clock {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.retro-menu-bar-theme-toggle {
+  width: 22px;
+  height: 22px;
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-light);
+  border-left: 1px solid var(--retro-button-border-light);
+  border-right: 1px solid var(--retro-button-border-dark);
+  border-bottom: 1px solid var(--retro-button-border-dark);
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--retro-text);
+  transition: all 0.1s ease;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.retro-menu-bar-theme-toggle:hover {
+  background-color: var(--retro-button-active-bg);
+}
+
+.retro-menu-bar-theme-toggle:active {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  box-shadow: inset 1px 1px 1px var(--retro-shadow-soft);
+}
+
+/* Desktop Icons */
+.retro-desktop-icon {
+  background-color: var(--retro-button-bg);
+  border-top: 1px solid var(--retro-button-border-light);
+  border-left: 1px solid var(--retro-button-border-light);
+  border-right: 1px solid var(--retro-button-border-dark);
+  border-bottom: 1px solid var(--retro-button-border-dark);
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s ease;
+  box-shadow: 2px 2px 4px var(--retro-shadow-soft);
+}
+
+.retro-desktop-icon:hover {
+  background-color: var(--retro-button-active-bg);
+  box-shadow: 3px 3px 6px var(--retro-shadow);
+}
+
+.retro-desktop-icon:active {
+  border-top: 1px solid var(--retro-button-border-dark);
+  border-left: 1px solid var(--retro-button-border-dark);
+  border-right: 1px solid var(--retro-button-border-light);
+  border-bottom: 1px solid var(--retro-button-border-light);
+  box-shadow: inset 1px 1px 2px var(--retro-shadow-soft);
+}
+
+/* Nostalgic Input Fields */
+.retro-input {
+  background-color: #ffffff;
+  border-top: 1px solid var(--retro-window-border-dark);
+  border-left: 1px solid var(--retro-window-border-dark);
+  border-right: 1px solid var(--retro-window-border-light);
+  border-bottom: 1px solid var(--retro-window-border-light);
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-size: 11px;
+}
+
+.retro-input:focus {
+  outline: 2px solid var(--retro-titlebar-default);
+  outline-offset: -1px;
+}
+
+/* Window Content Area */
+.retro-window-content {
+  background-color: var(--retro-window-bg);
+  color: var(--retro-text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.retro-window-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.retro-window-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.retro-window-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.retro-window-content p {
+  margin-bottom: 1rem;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.retro-window-content ul,
+.retro-window-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.retro-window-content li {
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+}
+
+/* Focus Ring for Accessibility */
+.retro-focus-ring:focus-visible {
+  outline: 2px solid var(--retro-titlebar-default);
+  outline-offset: 2px;
+}
+
+/* Title Bar Color Variants */
+.retro-titlebar[data-color='yellow'] {
+  background-color: var(--retro-titlebar-yellow);
+}
+
+.retro-titlebar[data-color='orange'] {
+  background-color: var(--retro-titlebar-orange);
+}
+
+.retro-titlebar[data-color='teal'] {
+  background-color: var(--retro-titlebar-teal);
+}
+
+.retro-titlebar[data-color='pink'] {
+  background-color: var(--retro-titlebar-pink);
+}
+
+.retro-titlebar[data-color='blue'] {
+  background-color: var(--retro-titlebar-blue);
+}

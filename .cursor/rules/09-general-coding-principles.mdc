@@ -1,0 +1,7 @@
+# General Coding Principles
+
+- Follow Astro's official conventions for file structure (`/src/pages`, `/src/components`, `/src/layouts`, `/src/content`).
+- Keep components small, pure, and composable.
+- Always think about progressive degradation (site should load content even if JS fails).
+- Avoid inline scripts; use `<script is:inline>` only for small hydration helpers.
+- Ensure SEO best practices (meta tags, open graph, structured data).
