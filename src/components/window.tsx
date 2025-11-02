@@ -5,12 +5,12 @@
  */
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { MENU_BAR_HEIGHT, getSnappedPreview } from '../utils/windowUtils';
-import { useWindowDrag } from '../hooks/useWindowDrag';
-import { useWindowResize } from '../hooks/useWindowResize';
-import type { SnapSide } from '../stores/windowStore';
-import TitleBar from './TitleBar';
-import ResizeHandles from './ResizeHandles';
+import { MENU_BAR_HEIGHT, getSnappedPreview } from '../utils/window-utils';
+import { useWindowDrag } from '../hooks/use-window-drag';
+import { useWindowResize } from '../hooks/use-window-resize';
+import type { SnapSide } from '../stores/window-store';
+import TitleBar from './title-bar';
+import ResizeHandles from './resize-handles';
 
 export interface WindowProps {
   id: string;

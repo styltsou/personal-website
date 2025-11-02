@@ -3,7 +3,7 @@
  * Helper functions for constraining window positions and sizes to viewport
  */
 
-import { MENU_BAR_HEIGHT } from './windowUtils';
+import { MENU_BAR_HEIGHT } from './window-utils';
 
 export interface Position {
   x: number;
@@ -55,4 +55,3 @@ export function constrainSizeToViewport(
 
   return { width, height };
 }
-

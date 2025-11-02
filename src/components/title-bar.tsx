@@ -3,7 +3,7 @@
  * Window title bar with drag functionality and controls
  */
 
-import WindowControls from './WindowControls';
+import WindowControls from './window-controls';
 
 export interface TitleBarProps {
   id: string;

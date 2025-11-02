@@ -5,12 +5,12 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import Window from './Window';
-import MenuBar from './MenuBar';
-import { useWindowStore } from '../stores/windowStore';
-import { useWindowContent } from '../hooks/useWindowContent';
-import { useWindowPersistence } from '../hooks/useWindowPersistence';
-import { useURLSync } from '../hooks/useURLSync';
+import Window from './window';
+import MenuBar from './menu-bar';
+import { useWindowStore } from '../stores/window-store';
+import { useWindowContent } from '../hooks/use-window-content';
+import { useWindowPersistence } from '../hooks/use-window-persistence';
+import { useURLSync } from '../hooks/use-url-sync';
 
 export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
@@ -80,7 +80,6 @@ export default function Desktop() {
         });
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowStates, loadWindowContent, isLoading]);
 
   // Update URL when active window changes
@@ -91,12 +90,7 @@ export default function Desktop() {
   return (
     <div className="retro-desktop relative h-screen w-full overflow-hidden">
       {/* Top Menu Bar */}
-      <MenuBar
-        onOpenWindow={windowActions.openWindow}
-        onCloseWindow={windowActions.closeWindow}
-        windowStates={windowStates}
-        activeWindowId={activeWindowId}
-      />
+      <MenuBar />
 
       {/* Desktop Icons - Hidden for cleaner look */}
 
