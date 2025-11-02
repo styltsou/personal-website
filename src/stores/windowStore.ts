@@ -15,9 +15,12 @@ import {
   getMaximizedWindowPosition,
   constrainWindowSize,
   BASE_Z_INDEX,
+  MENU_BAR_HEIGHT,
   type WindowPosition,
   type WindowSize,
 } from '../utils/windowUtils';
+
+export type SnapSide = 'left' | 'right' | null;
 
 export interface WindowState {
   id: string;
@@ -27,6 +30,7 @@ export interface WindowState {
   zIndex: number;
   isMinimized: boolean;
   isMaximized: boolean;
+  snapSide: SnapSide;
   originalSize?: WindowSize;
   originalPosition?: WindowPosition;
   content?: string;
@@ -37,6 +41,7 @@ export interface ClosedWindowState {
   id: string;
   position: WindowPosition;
   size: WindowSize;
+  snapSide?: SnapSide;
   originalSize?: WindowSize;
   originalPosition?: WindowPosition;
 }
@@ -58,6 +63,8 @@ interface WindowStore {
   updateWindowPosition: (windowId: string, position: WindowPosition) => void;
   updateWindowSize: (windowId: string, size: WindowSize) => void;
   updateWindowContent: (windowId: string, content: string) => void;
+  snapWindow: (windowId: string, snapSide: SnapSide) => void;
+  unsnapWindow: (windowId: string) => void;
   closeAllWindows: () => void;
   initializeFromPersistence: (
     persistedStates: WindowState[],
@@ -112,6 +119,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       newWindowPosition = closedState.position;
       originalSize = closedState.originalSize;
       originalPosition = closedState.originalPosition;
+      // Note: We don't restore snapSide here - windows open unsnapped
     } else {
       // First time opening - use default size/position
       const defaultSize = getDefaultWindowSize();
@@ -148,6 +156,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       zIndex: newWindowZIndex,
       isMinimized: false,
       isMaximized: false,
+      snapSide: null,
       originalSize: originalSize || newWindowSize,
       originalPosition: originalPosition || newWindowPosition,
     };
@@ -174,6 +183,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
         size: windowToClose.isMaximized
           ? windowToClose.originalSize || windowToClose.size
           : windowToClose.size,
+        snapSide: windowToClose.snapSide,
         originalSize: windowToClose.originalSize,
         originalPosition: windowToClose.originalPosition,
       };
@@ -204,7 +214,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     set((state) => {
       const maxZIndex = getMaxZIndex(state.windowStates);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
-      
+
       return {
         windowStates: state.windowStates.map((ws) => {
           if (ws.id !== windowId) return ws;
@@ -219,6 +229,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
               size: restoreSize,
               position: restorePosition,
               // Keep originalSize/originalPosition for next maximize
+              snapSide: null, // Unsnap when restoring from maximized
               zIndex: newZIndex, // Bring to front when restoring
             };
           } else {
@@ -228,6 +239,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
             return {
               ...ws,
               isMaximized: true,
+              snapSide: null, // Unsnap when maximizing
               originalSize: ws.size, // Save current size before maximizing
               originalPosition: ws.position, // Save current position before maximizing
               position: maximizedPosition,
@@ -300,6 +312,64 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     }));
   },
 
+  // Snap a window to a side
+  snapWindow: (windowId: string, snapSide: SnapSide) => {
+    set((state) => {
+      const window = state.windowStates.find((ws) => ws.id === windowId);
+      if (!window || window.isMaximized || !snapSide) return state;
+
+      // Don't store snapped size/position - derive it during rendering
+      // Save current size/position as original if not already saved
+      // This preserves the unsnapped state while allowing visual snapping
+      const maxZIndex = getMaxZIndex(state.windowStates);
+      const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
+
+      return {
+        windowStates: state.windowStates.map((ws) => {
+          if (ws.id !== windowId) return ws;
+            return {
+              ...ws,
+              snapSide,
+              // Always save current size/position as original when snapping
+              // This ensures originalSize reflects the actual size before snapping
+              originalSize: ws.size,
+              originalPosition: ws.position,
+              // Keep the actual size/position unchanged - snapping is visual only
+              zIndex: newZIndex,
+            };
+        }),
+        activeWindowId: windowId,
+        nextZIndex: state.nextZIndex + 1,
+      };
+    });
+  },
+
+  // Unsnap a window
+  unsnapWindow: (windowId: string) => {
+    set((state) => {
+      const window = state.windowStates.find((ws) => ws.id === windowId);
+      if (!window || !window.snapSide) return state;
+
+      // Since we don't store snapped size/position, just clear snapSide
+      // The window's actual size/position never changed, so no restoration needed
+      const maxZIndex = getMaxZIndex(state.windowStates);
+      const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
+
+      return {
+        windowStates: state.windowStates.map((ws) => {
+          if (ws.id !== windowId) return ws;
+          return {
+            ...ws,
+            snapSide: null,
+            zIndex: newZIndex,
+          };
+        }),
+        activeWindowId: windowId,
+        nextZIndex: state.nextZIndex + 1,
+      };
+    });
+  },
+
   // Close all windows
   closeAllWindows: () => {
     set({
@@ -332,7 +402,8 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
 }));
 
 // Selectors for better performance and cleaner usage
-export const useWindowStates = () => useWindowStore((state) => state.windowStates);
+export const useWindowStates = () =>
+  useWindowStore((state) => state.windowStates);
 export const useActiveWindowId = () =>
   useWindowStore((state) => state.activeWindowId);
 export const useWindowActions = () =>
@@ -345,6 +416,7 @@ export const useWindowActions = () =>
     updateWindowPosition: state.updateWindowPosition,
     updateWindowSize: state.updateWindowSize,
     updateWindowContent: state.updateWindowContent,
+    snapWindow: state.snapWindow,
+    unsnapWindow: state.unsnapWindow,
     closeAllWindows: state.closeAllWindows,
   }));
-

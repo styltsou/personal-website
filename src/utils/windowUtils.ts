@@ -37,7 +37,7 @@ export function calculateCenteredPosition(
 
   const centeredX = Math.max(0, (viewportWidth - width) / 2);
   const verticalOffset = viewportHeight * VERTICAL_OFFSET_RATIO;
-  const centeredY = Math.max(0, (viewportHeight - height) / 2 - verticalOffset);
+  const centeredY = Math.max(MENU_BAR_HEIGHT, (viewportHeight - height) / 2 - verticalOffset);
 
   return { x: centeredX, y: centeredY };
 }
@@ -125,6 +125,77 @@ function positionsEqual(
     Math.abs(pos1.x - pos2.x) <= tolerance &&
     Math.abs(pos1.y - pos2.y) <= tolerance
   );
+}
+
+// Snap detection constants
+const SNAP_THRESHOLD = 16; // Distance in pixels from edge to trigger snap
+
+/**
+ * Detect which side a window should snap to based on its position
+ * Only detects left and right snapping
+ * Returns null if no snap should occur
+ */
+export function detectSnapSide(
+  position: WindowPosition,
+  size: WindowSize
+): 'left' | 'right' | null {
+  const viewportWidth = window.innerWidth;
+
+  // Check left edge
+  const nearLeft = position.x <= SNAP_THRESHOLD && position.x >= -SNAP_THRESHOLD;
+  // Check right edge
+  const nearRight = position.x + size.width >= viewportWidth - SNAP_THRESHOLD && position.x + size.width <= viewportWidth + SNAP_THRESHOLD;
+
+  // Detect edge snaps
+  if (nearLeft) return 'left';
+  if (nearRight) return 'right';
+
+  return null;
+}
+
+/**
+ * Detect which side a window should snap to based on mouse cursor position
+ * Returns null if no snap should occur
+ */
+export function detectSnapSideFromMouse(
+  mouseX: number
+): 'left' | 'right' | null {
+  const viewportWidth = window.innerWidth;
+
+  // Check if mouse is near left edge
+  const nearLeft = mouseX <= SNAP_THRESHOLD && mouseX >= 0;
+  // Check if mouse is near right edge
+  const nearRight = mouseX >= viewportWidth - SNAP_THRESHOLD && mouseX <= viewportWidth;
+
+  // Detect edge snaps
+  if (nearLeft) return 'left';
+  if (nearRight) return 'right';
+
+  return null;
+}
+
+/**
+ * Calculate the snapped position and size for a preview
+ */
+export function getSnappedPreview(
+  snapSide: 'left' | 'right'
+): { position: WindowPosition; size: WindowSize } {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const halfWidth = viewportWidth / 2;
+
+  let snappedPosition: WindowPosition;
+  let snappedSize: WindowSize;
+
+  if (snapSide === 'left') {
+    snappedPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    snappedSize = { width: halfWidth, height: viewportHeight - MENU_BAR_HEIGHT };
+  } else {
+    snappedPosition = { x: halfWidth, y: MENU_BAR_HEIGHT };
+    snappedSize = { width: halfWidth, height: viewportHeight - MENU_BAR_HEIGHT };
+  }
+
+  return { position: snappedPosition, size: snappedSize };
 }
 
 /**

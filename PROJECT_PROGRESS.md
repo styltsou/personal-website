@@ -31,10 +31,29 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Smooth dragging with position constraints to keep windows within viewport
   - Drag prevention when clicking on window control buttons
   - Automatic window focus on drag start
+  - Windows constrained to never go above menu bar (32px minimum Y position)
 - ✅ **Window Controls**: 
   - Minimize button (hides window)
   - Maximize/Restore button (fullscreen with menu bar consideration)
   - Close button
+- ✅ **Window Resizing**: 
+  - Eight-directional resize handles (corners and edges)
+  - Minimum window size enforcement
+  - Position updates when resizing from left/top edges
+  - Smooth resize interaction with proper cursor feedback
+- ✅ **Window Snapping**: 
+  - Snap to left/right edges by dragging window near viewport edges (16px threshold)
+  - Snap preview overlay during dragging
+  - Windows snap to half viewport width when dragged to edges
+  - Smooth visual transition during snap/unsnap
+  - Original size and position preserved when snapping
+  - Visual snapped state while maintaining actual size/position in store
+- ✅ **Unsnap Behavior**: 
+  - Automatic unsnap when dragging away from snap side
+  - Original size restored immediately upon unsnap
+  - Cursor position preserved in title bar during unsnap (ratio-based positioning)
+  - Works seamlessly during drag (mouse move) and on mouse up
+  - Smart position calculation to keep cursor within title bar bounds
 - ✅ **Maximized Window Handling**: 
   - Windows maximize below menu bar (32px offset)
   - Position and size preserved when restoring from maximized state
@@ -92,6 +111,8 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Window states array with position, size, z-index, and flags
   - Active window ID tracking
   - Z-index counter management
+  - Snap side tracking (`snapSide`: 'left' | 'right' | null)
+  - Original size/position preservation for snapped windows
 - ✅ **Window Operations**: 
   - `openWindow()`: Opens or focuses existing windows with cascading positioning
   - `closeWindow()`: Removes window from stack
@@ -99,8 +120,15 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - `maximizeWindow()`: Fullscreen with position/size preservation
   - `focusWindow()`: Brings window to front with z-index update
   - `updateWindowPosition()`: Updates window position on drag
+  - `updateWindowSize()`: Updates window size on resize
   - `updateWindowContent()`: Sets window content after loading
+  - `snapWindow()`: Snaps window to left or right edge
+  - `unsnapWindow()`: Restores window from snapped state
   - `closeAllWindows()`: Clears all windows
+- ✅ **Window Snapping State Management**: 
+  - Snapping preserves original size/position in store
+  - Visual snapping (derived during rendering) without modifying actual position/size
+  - Original size/position always saved when snapping (ensures reliable restore)
 - ✅ **Smart Window Opening**: 
   - Existing window detection (brings to front instead of duplicating)
   - Cascading position calculation
@@ -112,14 +140,24 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **Centered Positioning**: 
   - Calculates centered position accounting for viewport size
   - 15% vertical offset for better visual balance
+  - Respects menu bar height (32px minimum Y position)
 - ✅ **Cascading Windows**: 
   - **Feature**: When opening a new window, if another window is at the default centered position, the new window opens offset by 40px right and 40px down
   - Creates classic window stacking effect
   - Prevents windows from completely covering each other
   - Only cascades when default position is occupied
+- ✅ **Window Snapping Detection**: 
+  - `detectSnapSide()`: Detects snap based on window position (16px threshold from edges)
+  - `detectSnapSideFromMouse()`: Detects snap based on mouse cursor position
+  - `getSnappedPreview()`: Calculates snapped window position and size (half viewport width)
+  - Snap preview for visual feedback during dragging
 - ✅ **Maximized Window Calculations**: 
   - Accounts for menu bar height (32px)
   - Calculates proper maximized size and position
+- ✅ **Viewport Constraints**: 
+  - `constrainPositionToViewport()`: Keeps windows within viewport bounds
+  - `constrainWindowSize()`: Enforces minimum and maximum window sizes
+  - Menu bar height consideration (prevents windows above menu bar)
 - ✅ **Z-index Management**: 
   - Automatic z-index calculation
   - Base z-index of 1000 with 1000 increments
@@ -127,10 +165,36 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Custom Hooks
 
+#### `useWindowDrag`
+- ✅ **Window Dragging**: 
+  - Smooth drag implementation with mouse event handling
+  - Position constraints to keep windows within viewport
+  - Automatic focus on drag start
+  - Window snapping detection during dragging
+  - Snap preview display
+- ✅ **Snap Detection & Triggering**: 
+  - Detects snap zones (16px from viewport edges)
+  - Triggers snap when dragging window to edges
+  - Visual preview overlay during drag
+- ✅ **Unsnap Logic**: 
+  - Automatic unsnap when dragging away from snap side
+  - Immediate original size restoration on unsnap
+  - Ratio-based cursor position preservation in title bar
+  - Handles unsnap during mouse move and mouse up events
+  - Validates original size before restoring
+
+#### `useWindowResize`
+- ✅ **Window Resizing**: 
+  - Eight-directional resize handles support
+  - Minimum size enforcement
+  - Position updates for left/top edge resizing
+  - Smooth resize with cursor feedback
+  - Position synchronization with drag hook
+
 #### `useWindowPersistence`
 - ✅ **Session Persistence**: 
   - Loads window states from sessionStorage on mount
-  - Saves window states on every change
+  - Saves window states on every change (including snap states)
   - Handles JSON serialization/deserialization
 - ✅ **Initialization Control**: 
   - Prevents multiple initialization from persistence
@@ -206,6 +270,24 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Added menu bar height consideration
   - Maximized windows positioned below menu bar
   - Window height adjusted for maximized state
+- ✅ **Windows Going Above Menu Bar**: 
+  - Viewport constraints updated to prevent windows from going above menu bar
+  - Minimum Y position set to menu bar height (32px)
+  - Centered positioning respects menu bar
+- ✅ **Window Snapping Implementation**: 
+  - Snap detection based on window position and mouse cursor
+  - Visual snap preview during dragging
+  - Original size/position preservation
+  - Smooth snap/unsnap transitions
+- ✅ **Unsnap Cursor Position Issue**: 
+  - Fixed cursor ending up outside title bar when unsnapping
+  - Implemented ratio-based positioning to preserve cursor relative position
+  - Works correctly when unsnapping from opposite side of snap direction
+- ✅ **Original Size Loss**: 
+  - Fixed issue where original size was lost during unsnap
+  - Store now always saves current size when snapping (not conditional)
+  - Added validation and fallbacks for missing original size
+  - Original size properly maintained across snap/unsnap cycles
 
 ---
 
@@ -247,7 +329,10 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - **Menu Bar Height**: 32px
 - **Cascade Offset**: 40px (horizontal and vertical)
 - **Default Window Size**: 900x700px
+- **Minimum Window Size**: 400x300px
 - **Position Tolerance**: 5px (for position comparison)
+- **Snap Threshold**: 16px (distance from edge to trigger snap)
+- **Snapped Window Width**: 50% of viewport (half-screen layout)
 
 ### Performance Considerations
 - SessionStorage for persistence (faster than localStorage)
@@ -261,12 +346,12 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 ## 🧭 Future Enhancements
 
 ### Potential Features
-- [ ] Window resizing functionality
 - [ ] Window content caching improvements
 - [ ] Better error states for failed content loads
 - [ ] Window animations for minimize/restore
 - [ ] Desktop icon customization
-- [ ] Window snapping to edges
+- [ ] Top/bottom edge snapping (in addition to left/right)
+- [ ] Corner snapping (quarter-screen layouts)
 - [ ] Multiple desktop spaces/workspaces
 - [ ] Window history/undo functionality
 - [ ] Custom window themes
@@ -359,6 +444,45 @@ src/
 ### Inspiration
 - Classic 90s operating systems (Windows 95, Mac OS System 7)
 - Modern window managers (e.g., tiling window managers)
+
+---
+
+---
+
+## 🎯 Recent Updates (2024)
+
+### Window Snapping & Resizing Features
+
+#### Window Snapping
+- ✅ Implemented left/right edge snapping with 16px threshold
+- ✅ Visual snap preview overlay during dragging
+- ✅ Half-viewport width snapped layout
+- ✅ Original size/position preservation during snap state
+- ✅ Smooth snap/unsnap transitions
+
+#### Unsnap Behavior
+- ✅ Automatic unsnap when dragging away from snap side
+- ✅ Immediate original size restoration on unsnap
+- ✅ Ratio-based cursor position preservation (cursor stays in title bar)
+- ✅ Works correctly when unsnapping from opposite side of snap direction
+- ✅ Handles unsnap both during mouse move and mouse up events
+
+#### Window Resizing
+- ✅ Eight-directional resize handles (corners and edges)
+- ✅ Minimum window size enforcement (400x300px)
+- ✅ Position updates when resizing from left/top edges
+- ✅ Smooth resize interaction with proper cursor feedback
+
+#### Viewport Constraints
+- ✅ Windows prevented from going above menu bar (32px minimum Y)
+- ✅ Viewport constraints updated to respect menu bar height
+- ✅ Centered positioning respects menu bar
+
+#### Bug Fixes
+- ✅ Fixed cursor position issue during unsnap (ratio-based positioning)
+- ✅ Fixed original size loss during snap/unsnap cycles
+- ✅ Store now always saves current size when snapping
+- ✅ Added validation and fallbacks for missing original size
 
 ---
 

@@ -25,9 +25,15 @@ export default function Desktop() {
   const minimizeWindow = useWindowStore((state) => state.minimizeWindow);
   const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
   const focusWindow = useWindowStore((state) => state.focusWindow);
-  const updateWindowPosition = useWindowStore((state) => state.updateWindowPosition);
+  const updateWindowPosition = useWindowStore(
+    (state) => state.updateWindowPosition
+  );
   const updateWindowSize = useWindowStore((state) => state.updateWindowSize);
-  const updateWindowContent = useWindowStore((state) => state.updateWindowContent);
+  const updateWindowContent = useWindowStore(
+    (state) => state.updateWindowContent
+  );
+  const snapWindow = useWindowStore((state) => state.snapWindow);
+  const unsnapWindow = useWindowStore((state) => state.unsnapWindow);
 
   // Memoize window actions object to prevent unnecessary re-renders
   const windowActions = useMemo(
@@ -40,6 +46,8 @@ export default function Desktop() {
       updateWindowPosition,
       updateWindowSize,
       updateWindowContent,
+      snapWindow,
+      unsnapWindow,
     }),
     [
       openWindow,
@@ -50,6 +58,8 @@ export default function Desktop() {
       updateWindowPosition,
       updateWindowSize,
       updateWindowContent,
+      snapWindow,
+      unsnapWindow,
     ]
   );
 
@@ -100,6 +110,9 @@ export default function Desktop() {
             title={windowState.config.title}
             initialPosition={windowState.position}
             initialSize={windowState.size}
+            originalPosition={windowState.originalPosition}
+            originalSize={windowState.originalSize}
+            snapSide={windowState.snapSide}
             zIndex={windowState.zIndex}
             isMinimized={windowState.isMinimized}
             isMaximized={windowState.isMaximized}
@@ -114,6 +127,10 @@ export default function Desktop() {
             onSizeChange={(size) =>
               windowActions.updateWindowSize(windowState.id, size)
             }
+            onSnap={(snapSide) =>
+              windowActions.snapWindow(windowState.id, snapSide)
+            }
+            onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
           >
             {isLoading(windowState.id) ? (
               <div className="flex h-full items-center justify-center">

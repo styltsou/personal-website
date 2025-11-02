@@ -3,6 +3,8 @@
  * Helper functions for constraining window positions and sizes to viewport
  */
 
+import { MENU_BAR_HEIGHT } from './windowUtils';
+
 export interface Position {
   x: number;
   y: number;
@@ -23,7 +25,7 @@ export function constrainPositionToViewport(
   size: Size
 ): Position {
   const minX = -(size.width - DRAG_TOLERANCE);
-  const minY = 0;
+  const minY = MENU_BAR_HEIGHT;
   const maxX = window.innerWidth - DRAG_TOLERANCE;
   const maxY = window.innerHeight - DRAG_TOLERANCE;
 
