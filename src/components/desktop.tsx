@@ -7,9 +7,11 @@
 import { useEffect, useMemo } from 'react';
 import Window from './window';
 import MenuBar from './menu-bar';
+import DesktopIcons from './desktop-icons';
 import { useWindowStore } from '../stores/window-store';
 import { useWindowContent } from '../hooks/use-window-content';
 import { useWindowPersistence } from '../hooks/use-window-persistence';
+import { useIconPersistence } from '../hooks/use-icon-persistence';
 import { useURLSync } from '../hooks/use-url-sync';
 
 export default function Desktop() {
@@ -68,6 +70,7 @@ export default function Desktop() {
 
   // Handle persistence
   useWindowPersistence();
+  useIconPersistence();
 
   // Load content for newly opened windows
   useEffect(() => {
@@ -92,7 +95,8 @@ export default function Desktop() {
       {/* Top Menu Bar */}
       <MenuBar />
 
-      {/* Desktop Icons - Hidden for cleaner look */}
+      {/* Desktop Icons */}
+      <DesktopIcons />
 
       {/* Render all open windows */}
       {windowStates

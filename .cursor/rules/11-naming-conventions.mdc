@@ -1,0 +1,11 @@
+# Naming Conventions
+
+- Use **kebab-case** for all file names (components, hooks, utils, stores, data, etc.)
+- Examples:
+  - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`, `window-controls.tsx`
+  - Hooks: `use-window-drag.ts`, `use-window-resize.ts`, `use-url-sync.ts`
+  - Utils: `window-utils.ts`, `viewport-constraints.ts`, `date-time.ts`
+  - Stores: `window-store.ts`
+  - Data: `windows.ts`
+- This follows modern React conventions and improves file system compatibility across different platforms
+- Always update imports when renaming files to maintain consistency

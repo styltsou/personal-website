@@ -26,7 +26,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Core Window Manager Implementation
 
-#### Window Component (`Window.tsx`)
+#### Window Component (`window.tsx`)
 - ✅ **Native Drag Functionality**: Custom drag implementation using React mouse events (no external drag library dependency)
   - Smooth dragging with position constraints to keep windows within viewport
   - Drag prevention when clicking on window control buttons
@@ -68,7 +68,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Window positions saved on drag end
   - State always reflects actual position/size (never overridden)
 
-#### Desktop Component (`Desktop.tsx`)
+#### Desktop Component (`desktop.tsx`)
 - ✅ **Window Stack Management**: 
   - Z-index ordering with automatic focus-to-front behavior
   - Active window tracking
@@ -92,10 +92,13 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Minimized windows excluded from rendering
   - Efficient rendering with proper React keys
 
-#### Menu Bar Component (`MenuBar.tsx`)
+#### Menu Bar Component (`menu-bar/index.tsx`)
 - ✅ **Window Quick Access**: 
   - Buttons for each window type
   - Opens windows on click
+  - Visual state indicators (open, minimized, active)
+  - Animated close icons with Framer Motion
+  - Smooth transitions and hover states
 - ✅ **Theme Toggle**: 
   - Dark/light theme switching
   - Persistent theme preference (localStorage)
@@ -103,10 +106,18 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **Clock and Date**: 
   - Live updating time and date display
   - Formatted for readability
+- ✅ **Framer Motion Variants**: 
+  - Clean variant-based animations for button states
+  - Transition configurations defined within variants
+  - Consistent 0.03s transition duration across all animations
+- ✅ **Code Organization**: 
+  - Separated helper functions for state calculation, class generation, and event handling
+  - Cleaner, more maintainable code structure
+  - Reduced duplication through consolidated state management
 
 ### State Management Architecture
 
-#### Zustand Store (`windowStore.ts`)
+#### Zustand Store (`window-store.ts`)
 - ✅ **Centralized State**: 
   - Window states array with position, size, z-index, and flags
   - Active window ID tracking
@@ -140,7 +151,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Positioning and Layout Features
 
-#### Window Utilities (`windowUtils.ts`)
+#### Window Utilities (`window-utils.ts`)
 - ✅ **Centered Positioning**: 
   - Calculates centered position accounting for viewport size
   - 15% vertical offset for better visual balance
@@ -169,7 +180,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Custom Hooks
 
-#### `useWindowDrag`
+#### `use-window-drag.ts`
 - ✅ **Window Dragging**: 
   - Smooth drag implementation with mouse event handling
   - Position constraints to keep windows within viewport
@@ -186,7 +197,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Ratio-based cursor position preservation in title bar
   - Handles unsnap during mouse move and mouse up events
 
-#### `useWindowResize`
+#### `use-window-resize.ts`
 - ✅ **Window Resizing**: 
   - Eight-directional resize handles support
   - Minimum size enforcement
@@ -194,7 +205,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Smooth resize with cursor feedback
   - Position synchronization with drag hook
 
-#### `useWindowPersistence`
+#### `use-window-persistence.ts`
 - ✅ **Session Persistence**: 
   - Loads window states from sessionStorage on mount
   - Saves window states on every change (including snap states)
@@ -203,14 +214,14 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Prevents multiple initialization from persistence
   - One-time load on component mount
 
-#### `useWindowContent`
+#### `use-window-content.ts`
 - ✅ **Content Loading**: 
   - Fetches content from static HTML pages
   - Loading state tracking per window
   - Content caching to prevent redundant fetches
   - Error handling for failed loads
 
-#### `useURLSync`
+#### `use-url-sync.ts`
 - ✅ **URL Synchronization**: 
   - Initial mount detection to prevent unintended window opening
   - Browser back/forward navigation support
@@ -404,12 +415,31 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 ### Code Organization
 ```
 src/
-├── components/        # React components (Window, Desktop, MenuBar)
-├── stores/           # Zustand stores (windowStore)
-├── hooks/            # Custom React hooks (persistence, URL sync, content)
-├── utils/            # Pure utility functions (positioning, calculations)
-├── data/             # Static data (window configs)
-├── styles/           # CSS files (retro.css)
+├── components/        # React components (kebab-case naming)
+│   ├── desktop.tsx
+│   ├── window.tsx
+│   ├── title-bar.tsx
+│   ├── window-controls.tsx
+│   ├── resize-handles.tsx
+│   └── menu-bar/      # Menu bar component and subcomponents
+│       ├── index.tsx
+│       └── theme-toggle.tsx
+├── stores/           # Zustand stores (kebab-case naming)
+│   └── window-store.ts
+├── hooks/            # Custom React hooks (kebab-case naming)
+│   ├── use-window-drag.ts
+│   ├── use-window-resize.ts
+│   ├── use-window-persistence.ts
+│   ├── use-window-content.ts
+│   └── use-url-sync.ts
+├── utils/            # Pure utility functions (kebab-case naming)
+│   ├── window-utils.ts
+│   ├── viewport-constraints.ts
+│   └── date-time.ts
+├── data/             # Static data (kebab-case naming)
+│   └── windows.ts
+├── styles/           # CSS files
+│   └── retro.css
 └── pages/             # Astro pages (static content)
 ```
 
@@ -497,8 +527,32 @@ src/
 - ✅ Removed redundant originalSize/originalPosition tracking
 - ✅ Simplified ClosedWindowState (removed unused snapSide, originalSize/originalPosition)
 
+### Code Quality & Naming Conventions (2024)
+
+#### Menu Bar Refactoring
+- ✅ **Component Cleanup**: Refactored menu bar component for better maintainability
+  - Extracted state calculation logic into helper functions
+  - Separated button class generation, style calculation, and event handling
+  - Consolidated window state logic to eliminate duplication
+  - Improved code readability and organization
+- ✅ **Framer Motion Variants**: 
+  - Migrated to variant-based animation system
+  - Transitions defined directly within variants
+  - Consistent 0.03s transition duration for button and close icon animations
+  - Cleaner animation configuration with better maintainability
+
+#### Naming Convention Migration
+- ✅ **Kebab-Case Naming**: Migrated all files to kebab-case naming convention
+  - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`, `window-controls.tsx`, `resize-handles.tsx`
+  - Hooks: `use-window-drag.ts`, `use-window-resize.ts`, `use-window-persistence.ts`, `use-window-content.ts`, `use-url-sync.ts`
+  - Utils: `window-utils.ts`, `viewport-constraints.ts`, `date-time.ts`
+  - Stores: `window-store.ts`
+  - Follows modern React conventions and improves cross-platform compatibility
+- ✅ **Import Updates**: All import statements updated to reflect new kebab-case file names
+- ✅ **Cursor Rule Added**: Created `.cursor/rules/11-naming-conventions.mdc` to enforce kebab-case naming going forward
+
 ---
 
-**Last Updated**: 2024  
+**Last Updated**: 2024 (Recent updates: Menu bar refactoring, kebab-case naming migration, Framer Motion variants)  
 **Maintained By**: Personal project  
 **Status**: Active development

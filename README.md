@@ -1,32 +1,63 @@
-# Astro Starter Kit: Basics
+# Personal Website with Retro 90s OS Window Manager
 
-```sh
-pnpm create astro@latest -- --template basics
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+A personal portfolio website designed with a nostalgic 90s operating system aesthetic, featuring an interactive window manager where visitors can navigate between different sections (About, Projects, Contact) as draggable, resizable windows.
 
 ## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+The project follows modern React conventions with kebab-case naming for all files:
 
 ```text
 /
 ├── public/
-│   └── favicon.svg
 ├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
+│   ├── components/        # React components (kebab-case naming)
+│   │   ├── desktop.tsx
+│   │   ├── window.tsx
+│   │   ├── title-bar.tsx
+│   │   ├── window-controls.tsx
+│   │   ├── resize-handles.tsx
+│   │   └── menu-bar/
+│   │       ├── index.tsx
+│   │       └── theme-toggle.tsx
+│   ├── stores/           # Zustand stores (kebab-case naming)
+│   │   └── window-store.ts
+│   ├── hooks/            # Custom React hooks (kebab-case naming)
+│   │   ├── use-window-drag.ts
+│   │   ├── use-window-resize.ts
+│   │   ├── use-window-persistence.ts
+│   │   ├── use-window-content.ts
+│   │   └── use-url-sync.ts
+│   ├── utils/            # Pure utility functions (kebab-case naming)
+│   │   ├── window-utils.ts
+│   │   ├── viewport-constraints.ts
+│   │   └── date-time.ts
+│   ├── data/             # Static data (kebab-case naming)
+│   │   └── windows.ts
+│   ├── styles/           # CSS files
+│   │   └── retro.css
+│   ├── layouts/          # Astro layouts
+│   │   ├── BaseLayout.astro
+│   │   └── Layout.astro
+│   └── pages/            # Astro pages (static content)
+│       ├── index.astro
+│       ├── about.astro
+│       ├── projects.astro
+│       └── contact.astro
+├── .cursor/
+│   └── rules/            # Cursor IDE rules (including naming conventions)
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 📋 Naming Conventions
+
+All files use **kebab-case** naming convention:
+- Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`
+- Hooks: `use-window-drag.ts`, `use-url-sync.ts`
+- Utils: `window-utils.ts`, `viewport-constraints.ts`
+- Stores: `window-store.ts`
+- Data: `windows.ts`
+
+See `.cursor/rules/11-naming-conventions.mdc` for complete naming guidelines.
 
 ## 🧞 Commands
 
@@ -41,6 +72,23 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `pnpm astro -- --help` | Get help using the Astro CLI                     |
 
+## 🛠️ Tech Stack
+
+- **Framework**: Astro (static site generation)
+- **UI Framework**: React (for interactive components)
+- **State Management**: Zustand
+- **Styling**: Tailwind CSS + Custom CSS
+- **Type Safety**: TypeScript (strict mode)
+- **Animation**: Framer Motion (via Motion)
+- **Build Tool**: Vite (via Astro)
+
+## 📚 Documentation
+
+For detailed project progress and features, see [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md).
+
 ## 👀 Want to learn more?
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [Astro Documentation](https://docs.astro.build)
+- [Zustand Documentation](https://zustand-demo.pmnd.rs/)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
