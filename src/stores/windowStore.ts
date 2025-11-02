@@ -220,30 +220,25 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
           if (ws.id !== windowId) return ws;
 
           if (ws.isMaximized) {
-            // Restore - use originalSize/originalPosition if available, otherwise current values
-            const restoreSize = ws.originalSize || ws.size;
-            const restorePosition = ws.originalPosition || ws.position;
+            // Restore - just set isMaximized to false, position/size are already correct
+            // The component will stop overriding display when isMaximized becomes false
             return {
               ...ws,
               isMaximized: false,
-              size: restoreSize,
-              position: restorePosition,
-              // Keep originalSize/originalPosition for next maximize
               snapSide: null, // Unsnap when restoring from maximized
               zIndex: newZIndex, // Bring to front when restoring
+              // Keep originalSize/originalPosition for next maximize
             };
           } else {
-            // Maximize - save current state to originalSize/originalPosition
-            const maximizedSize = getMaximizedWindowSize();
-            const maximizedPosition = getMaximizedWindowPosition();
+            // Maximize - save current state to originalSize/originalPosition but DON'T change position/size
+            // The component will override display when isMaximized is true
             return {
               ...ws,
               isMaximized: true,
               snapSide: null, // Unsnap when maximizing
               originalSize: ws.size, // Save current size before maximizing
               originalPosition: ws.position, // Save current position before maximizing
-              position: maximizedPosition,
-              size: maximizedSize,
+              // Keep position and size unchanged - component will override display
               zIndex: newZIndex, // Bring to front when maximizing
             };
           }
@@ -327,16 +322,16 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       return {
         windowStates: state.windowStates.map((ws) => {
           if (ws.id !== windowId) return ws;
-            return {
-              ...ws,
-              snapSide,
-              // Always save current size/position as original when snapping
-              // This ensures originalSize reflects the actual size before snapping
-              originalSize: ws.size,
-              originalPosition: ws.position,
-              // Keep the actual size/position unchanged - snapping is visual only
-              zIndex: newZIndex,
-            };
+          return {
+            ...ws,
+            snapSide,
+            // Always save current size/position as original when snapping
+            // This ensures originalSize reflects the actual size before snapping
+            originalSize: ws.size,
+            originalPosition: ws.position,
+            // Keep the actual size/position unchanged - snapping is visual only
+            zIndex: newZIndex,
+          };
         }),
         activeWindowId: windowId,
         nextZIndex: state.nextZIndex + 1,

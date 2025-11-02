@@ -109,14 +109,6 @@ export default function Window({
     }
   }, [zIndex]);
 
-  // Handle maximized state - move below menu bar
-  useEffect(() => {
-    if (isMaximized && windowRef.current) {
-      windowRef.current.style.left = '0px';
-      windowRef.current.style.top = `${MENU_BAR_HEIGHT}px`;
-    }
-  }, [isMaximized]);
-
   // Handle focus on window click
   const handleWindowClick = () => {
     if (onFocus) {
@@ -141,15 +133,17 @@ export default function Window({
   }
 
   // Calculate window size and position
+  // If maximized, override display to maximized values (but keep actual position/size in store)
   // If snapped, derive snapped size/position visually (but keep actual size/position in store)
-  // If maximized, use maximized size/position
   let windowWidth: number;
   let windowHeight: number;
   let displayPosition = position;
 
   if (isMaximized) {
+    // Override display with maximized size/position - actual position/size in store unchanged
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+    displayPosition = { x: 0, y: MENU_BAR_HEIGHT };
   } else if (snapSide) {
     // When snapped, show snapped size/position visually
     // This applies whether dragging or not - size only changes when unsnapping

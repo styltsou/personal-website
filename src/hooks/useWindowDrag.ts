@@ -98,6 +98,7 @@ export function useWindowDrag({
 
       // If window is snapped, start dragging from the snapped visual position
       // We'll unsnap only when the mouse moves away from the snap side
+      // Position is always correct in store (not overridden when maximized)
       let startPosition = position;
       hasUnsnappedDuringDragRef.current = false;
       snapStartMouseEdgeRef.current = null;
@@ -119,11 +120,12 @@ export function useWindowDrag({
         // This will be used to determine resize direction when unsnapping
         const mouseOffsetX = e.clientX - startPosition.x;
         const titleBarMidpoint = snappedWidth / 2;
-        snapStartMouseEdgeRef.current = mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
+        snapStartMouseEdgeRef.current =
+          mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
 
         // Set the current position to the snapped position so drag starts smoothly
         setPosition(startPosition);
-        
+
         // Use original size for constraints
         if (originalSize) {
           currentSizeRef.current = originalSize;
@@ -144,6 +146,7 @@ export function useWindowDrag({
       isMaximized,
       onFocus,
       position,
+      initialPosition,
       snapSide,
       onUnsnap,
       originalPosition,
@@ -163,19 +166,26 @@ export function useWindowDrag({
 
       // If window was snapped and we're moving away from the snap side, unsnap it
       // This restores the original size by resizing from the opposite edge
-      if (snapSide && !hasUnsnappedDuringDragRef.current && onUnsnap && onSizeChange) {
+      if (
+        snapSide &&
+        !hasUnsnappedDuringDragRef.current &&
+        onUnsnap &&
+        onSizeChange
+      ) {
         // Check if we're moving away from the snap side
         // This happens if detectedSnapSide is different OR null (not detecting a snap)
         const isMovingAway = detectedSnapSide !== snapSide;
-        
+
         if (isMovingAway) {
           // Get the original size to restore to - must be valid
           if (!originalSize) {
             // If originalSize is missing, fall back to initialSize but log a warning
-            console.warn('originalSize is missing during unsnap, using initialSize');
+            console.warn(
+              'originalSize is missing during unsnap, using initialSize'
+            );
           }
           const newSize = originalSize || initialSize;
-          
+
           // Validate size is reasonable
           if (!newSize || newSize.width <= 0 || newSize.height <= 0) {
             console.error('Invalid size during unsnap:', newSize);
@@ -183,45 +193,50 @@ export function useWindowDrag({
             newSize.width = initialSize.width || 900;
             newSize.height = initialSize.height || 700;
           }
-          
+
           currentSizeRef.current = newSize;
 
           // Calculate new position based on which edge to resize from
           // Use the cursor's CURRENT position relative to the window's CURRENT position during drag
           let newPosition: Position;
-          
+
           // Calculate the window's current position during dragging
           const deltaX = e.clientX - dragMouseStartRef.current.x;
           const currentWindowX = dragStartPosRef.current.x + deltaX;
-          
+
           // Get the snapped window's visual size (width is half viewport)
           const viewportWidth = window.innerWidth;
           const snappedWidth = viewportWidth / 2;
-          
+
           // Calculate where the cursor is relative to the window's CURRENT title bar position
           const mouseOffsetX = e.clientX - currentWindowX;
           const titleBarMidpoint = snappedWidth / 2;
-          const currentMouseEdge = mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
-          
+          const currentMouseEdge =
+            mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
+
           // The goal is to keep the cursor at the same relative position in the title bar
           // Calculate the cursor's offset from the window's left edge as a ratio
           const cursorRatioInTitleBar = mouseOffsetX / snappedWidth;
-          
+
           if (snapSide === 'left') {
             if (currentMouseEdge === 'right') {
               // Mouse is currently on right side of left-snapped window
               // Resize from left: keep the cursor at the same relative position
               // Cursor should be at: cursorRatio * newSize.width from the left edge
               newPosition = {
-                x: e.clientX - (cursorRatioInTitleBar * newSize.width),
-                y: dragStartPosRef.current.y + (e.clientY - dragMouseStartRef.current.y),
+                x: e.clientX - cursorRatioInTitleBar * newSize.width,
+                y:
+                  dragStartPosRef.current.y +
+                  (e.clientY - dragMouseStartRef.current.y),
               };
             } else {
               // Mouse is currently on left side of left-snapped window
               // Resize from right: keep the cursor at the same relative position
               newPosition = {
-                x: e.clientX - (cursorRatioInTitleBar * newSize.width),
-                y: dragStartPosRef.current.y + (e.clientY - dragMouseStartRef.current.y),
+                x: e.clientX - cursorRatioInTitleBar * newSize.width,
+                y:
+                  dragStartPosRef.current.y +
+                  (e.clientY - dragMouseStartRef.current.y),
               };
             }
           } else {
@@ -230,21 +245,28 @@ export function useWindowDrag({
               // Mouse is currently on left side of right-snapped window
               // Resize from right: keep the cursor at the same relative position
               newPosition = {
-                x: e.clientX - (cursorRatioInTitleBar * newSize.width),
-                y: dragStartPosRef.current.y + (e.clientY - dragMouseStartRef.current.y),
+                x: e.clientX - cursorRatioInTitleBar * newSize.width,
+                y:
+                  dragStartPosRef.current.y +
+                  (e.clientY - dragMouseStartRef.current.y),
               };
             } else {
               // Mouse is currently on right side of right-snapped window
               // Resize from left: keep the cursor at the same relative position
               newPosition = {
-                x: e.clientX - (cursorRatioInTitleBar * newSize.width),
-                y: dragStartPosRef.current.y + (e.clientY - dragMouseStartRef.current.y),
+                x: e.clientX - cursorRatioInTitleBar * newSize.width,
+                y:
+                  dragStartPosRef.current.y +
+                  (e.clientY - dragMouseStartRef.current.y),
               };
             }
           }
 
           // Constrain position to viewport
-          const constrainedPosition = constrainPositionToViewport(newPosition, newSize);
+          const constrainedPosition = constrainPositionToViewport(
+            newPosition,
+            newSize
+          );
 
           // Update size and position in store BEFORE unsnapping
           onSizeChange(newSize);
@@ -258,7 +280,7 @@ export function useWindowDrag({
 
           // Update local state with new position
           setPosition(constrainedPosition);
-          
+
           // Update drag start references for smooth continuation
           dragStartPosRef.current = { ...constrainedPosition };
           dragMouseStartRef.current = { x: e.clientX, y: e.clientY };
@@ -325,50 +347,58 @@ export function useWindowDrag({
           onSnap(detectedSnapSide);
         }
         // If already snapped to same side, do nothing (already snapped correctly)
-      } else if (snapSide && !hasUnsnappedDuringDragRef.current && onUnsnap && onSizeChange) {
+      } else if (
+        snapSide &&
+        !hasUnsnappedDuringDragRef.current &&
+        onUnsnap &&
+        onSizeChange
+      ) {
         // No snap detected but window was previously snapped - unsnap it
         // This handles the case where we didn't unsnap during mouse move
         // Get the original size to restore to - must be valid
         if (!originalSize) {
-          console.warn('originalSize is missing during unsnap on mouse up, using initialSize');
+          console.warn(
+            'originalSize is missing during unsnap on mouse up, using initialSize'
+          );
         }
         const newSize = originalSize || initialSize;
-        
+
         // Validate size is reasonable
         if (!newSize || newSize.width <= 0 || newSize.height <= 0) {
           console.error('Invalid size during unsnap on mouse up:', newSize);
           newSize.width = initialSize.width || 900;
           newSize.height = initialSize.height || 700;
         }
-        
+
         currentSizeRef.current = newSize;
 
         // Calculate new position based on which edge to resize from
         // Use the cursor's CURRENT position relative to the window's CURRENT position during drag
         const viewportWidth = window.innerWidth;
         const snappedWidth = viewportWidth / 2;
-        
+
         // Calculate the window's current position during dragging (from the final position)
         const currentWindowX = constrainedFinalPosition.x;
-        
+
         // Calculate where the cursor is relative to the window's CURRENT title bar position
         const mouseOffsetX = e.clientX - currentWindowX;
-        const titleBarMidpoint = snappedWidth / 2;
-        const currentMouseEdge = mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
-        
+
         // The goal is to keep the cursor at the same relative position in the title bar
         // Calculate the cursor's offset from the window's left edge as a ratio
         const cursorRatioInTitleBar = mouseOffsetX / snappedWidth;
-        
+
         // Position the window so the cursor is at the same relative position in the new window
         // Formula: windowX = mouseX - (cursorRatio * newWindowWidth)
         const newPosition: Position = {
-          x: e.clientX - (cursorRatioInTitleBar * newSize.width),
+          x: e.clientX - cursorRatioInTitleBar * newSize.width,
           y: constrainedFinalPosition.y,
         };
 
         // Constrain position to viewport
-        const adjustedPosition = constrainPositionToViewport(newPosition, newSize);
+        const adjustedPosition = constrainPositionToViewport(
+          newPosition,
+          newSize
+        );
 
         // Update size and position in store BEFORE unsnapping
         onSizeChange(newSize);
