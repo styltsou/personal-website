@@ -19,6 +19,7 @@ export interface UseWindowDragOptions {
   onSizeChange?: (size: Size) => void;
   onSnap?: (snapSide: SnapSide) => void;
   onUnsnap?: () => void;
+  onMaximize?: () => void;
 }
 
 export function useWindowDrag({
@@ -31,6 +32,7 @@ export function useWindowDrag({
   onSizeChange,
   onSnap,
   onUnsnap,
+  onMaximize,
 }: UseWindowDragOptions) {
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
@@ -40,6 +42,7 @@ export function useWindowDrag({
   const lastSyncedPositionRef = useRef(initialPosition);
   const currentSizeRef = useRef(initialSize);
   const hasUnsnappedDuringDragRef = useRef(false);
+  const hasRestoredFromMaximizedRef = useRef(false);
   const snapStartMouseEdgeRef = useRef<'left' | 'right' | null>(null); // Which edge mouse was on when dragging started from snapped window
   const lastClickTimeRef = useRef(0);
   const lastClickPositionRef = useRef({ x: 0, y: 0 });
@@ -75,10 +78,9 @@ export function useWindowDrag({
   // Handle drag start - only on title bar, not on buttons
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      // Don't drag if clicking on buttons or if maximized
+      // Don't drag if clicking on buttons
       const target = e.target as HTMLElement;
       if (
-        isMaximized ||
         target.closest('button') ||
         target.closest('.retro-titlebar-controls')
       ) {
@@ -127,32 +129,50 @@ export function useWindowDrag({
         onFocus();
       }
 
-      // If window is snapped, start dragging from the snapped visual position
-      // We'll unsnap only when the mouse moves away from the snap side
+      // If window is snapped or maximized, start dragging from the visual position
+      // We'll unsnap/restore only when the mouse moves away
       // Position is always correct in store (not overridden when maximized)
       let startPosition = position;
       hasUnsnappedDuringDragRef.current = false;
+      hasRestoredFromMaximizedRef.current = false;
       snapStartMouseEdgeRef.current = null;
 
-      if (snapSide) {
+      if (isMaximized) {
+        // Maximized - start from maximized position (top-left, full width)
+        startPosition = { x: 0, y: MENU_BAR_HEIGHT };
+        setPosition(startPosition);
+        currentSizeRef.current = initialSize;
+      } else if (snapSide) {
         // Calculate the snapped visual position to start drag from
         // This prevents the window from jumping when dragging starts
         const viewportWidth = window.innerWidth;
         const halfWidth = viewportWidth / 2;
-        const snappedWidth = halfWidth;
+        let snappedWidth: number;
 
-        if (snapSide === 'left') {
+        if (snapSide === 'top') {
+          // Top-snapped (maximized) - full width
           startPosition = { x: 0, y: MENU_BAR_HEIGHT };
-        } else if (snapSide === 'right') {
+          snappedWidth = viewportWidth;
+          // For top snapping, we don't need edge tracking (no left/right resize logic needed)
+          snapStartMouseEdgeRef.current = null;
+        } else if (snapSide === 'left') {
+          startPosition = { x: 0, y: MENU_BAR_HEIGHT };
+          snappedWidth = halfWidth;
+        } else {
+          // snapSide === 'right'
           startPosition = { x: halfWidth, y: MENU_BAR_HEIGHT };
+          snappedWidth = halfWidth;
         }
 
         // Determine which edge of the title bar the mouse is on
         // This will be used to determine resize direction when unsnapping
-        const mouseOffsetX = e.clientX - startPosition.x;
-        const titleBarMidpoint = snappedWidth / 2;
-        snapStartMouseEdgeRef.current =
-          mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
+        // Only relevant for left/right snapping, not top
+        if (snapSide !== 'top') {
+          const mouseOffsetX = e.clientX - startPosition.x;
+          const titleBarMidpoint = snappedWidth / 2;
+          snapStartMouseEdgeRef.current =
+            mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
+        }
 
         // Set the current position to the snapped position so drag starts smoothly
         setPosition(startPosition);
@@ -160,7 +180,7 @@ export function useWindowDrag({
         // Use actual size for constraints (size never changes during snapping)
         currentSizeRef.current = initialSize;
       } else {
-        // Not snapped - use current size for constraints
+        // Not snapped or maximized - use current size for constraints
         currentSizeRef.current = initialSize;
       }
 
@@ -176,18 +196,71 @@ export function useWindowDrag({
       initialPosition,
       snapSide,
       onUnsnap,
+      onMaximize,
       onPositionChange,
     ]
   );
 
   // Handle drag movement and end
   useEffect(() => {
-    if (!isDragging || isMaximized) return;
+    if (!isDragging) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       // Detect snap preview during dragging based on mouse cursor position
-      const detectedSnapSide = detectSnapSideFromMouse(e.clientX);
+      const detectedSnapSide = detectSnapSideFromMouse(e.clientX, e.clientY);
       setPreviewSnapSide(detectedSnapSide);
+
+      // If window was maximized and we're dragging away, restore it
+      if (
+        isMaximized &&
+        !hasRestoredFromMaximizedRef.current &&
+        onMaximize &&
+        onSizeChange &&
+        onPositionChange
+      ) {
+        // Restore from maximized - use original size and calculate position based on cursor
+        const newSize = initialSize;
+        const viewportWidth = window.innerWidth;
+
+        // Calculate cursor position relative to maximized window's title bar
+        const deltaX = e.clientX - dragMouseStartRef.current.x;
+        const currentWindowX = dragStartPosRef.current.x + deltaX;
+        const mouseOffsetX = e.clientX - currentWindowX;
+        const cursorRatioInTitleBar = mouseOffsetX / viewportWidth;
+
+        // Position window so cursor stays at same relative position in title bar
+        const newPosition: Position = {
+          x: e.clientX - cursorRatioInTitleBar * newSize.width,
+          y:
+            dragStartPosRef.current.y +
+            (e.clientY - dragMouseStartRef.current.y),
+        };
+
+        // Constrain position to viewport
+        const constrainedPosition = constrainPositionToViewport(
+          newPosition,
+          newSize
+        );
+
+        // Update size and position in store BEFORE restoring
+        onSizeChange(newSize);
+        onPositionChange(constrainedPosition);
+
+        // Restore from maximized (toggles isMaximized to false)
+        onMaximize();
+        hasRestoredFromMaximizedRef.current = true;
+
+        // Update local state
+        setPosition(constrainedPosition);
+        currentSizeRef.current = newSize;
+
+        // Update drag start references for smooth continuation
+        dragStartPosRef.current = { ...constrainedPosition };
+        dragMouseStartRef.current = { x: e.clientX, y: e.clientY };
+
+        // Return early - position and size are already set
+        return;
+      }
 
       // If window was snapped and we're moving away from the snap side, unsnap it
       // This restores the original size by resizing from the opposite edge
@@ -223,21 +296,31 @@ export function useWindowDrag({
           const deltaX = e.clientX - dragMouseStartRef.current.x;
           const currentWindowX = dragStartPosRef.current.x + deltaX;
 
-          // Get the snapped window's visual size (width is half viewport)
+          // Get the snapped window's visual size
           const viewportWidth = window.innerWidth;
-          const snappedWidth = viewportWidth / 2;
+          const snappedWidth =
+            snapSide === 'top' ? viewportWidth : viewportWidth / 2;
 
           // Calculate where the cursor is relative to the window's CURRENT title bar position
           const mouseOffsetX = e.clientX - currentWindowX;
-          const titleBarMidpoint = snappedWidth / 2;
-          const currentMouseEdge =
-            mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
 
           // The goal is to keep the cursor at the same relative position in the title bar
           // Calculate the cursor's offset from the window's left edge as a ratio
           const cursorRatioInTitleBar = mouseOffsetX / snappedWidth;
 
-          if (snapSide === 'left') {
+          if (snapSide === 'top') {
+            // Top-snapped (maximized) - restore original size and position
+            // Keep cursor at same relative horizontal position in title bar
+            newPosition = {
+              x: e.clientX - cursorRatioInTitleBar * newSize.width,
+              y:
+                dragStartPosRef.current.y +
+                (e.clientY - dragMouseStartRef.current.y),
+            };
+          } else if (snapSide === 'left') {
+            const titleBarMidpoint = snappedWidth / 2;
+            const currentMouseEdge =
+              mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
             if (currentMouseEdge === 'right') {
               // Mouse is currently on right side of left-snapped window
               // Resize from left: keep the cursor at the same relative position
@@ -260,6 +343,9 @@ export function useWindowDrag({
             }
           } else {
             // snapSide === 'right'
+            const titleBarMidpoint = snappedWidth / 2;
+            const currentMouseEdge =
+              mouseOffsetX < titleBarMidpoint ? 'left' : 'right';
             if (currentMouseEdge === 'left') {
               // Mouse is currently on left side of right-snapped window
               // Resize from right: keep the cursor at the same relative position
@@ -334,7 +420,7 @@ export function useWindowDrag({
     const handleMouseUp = (e: MouseEvent) => {
       // Detect snap condition BEFORE setting isDragging to false
       // This ensures we can check state before React batches updates
-      const detectedSnapSide = detectSnapSideFromMouse(e.clientX);
+      const detectedSnapSide = detectSnapSideFromMouse(e.clientX, e.clientY);
 
       // Calculate final position
       const deltaX = e.clientX - dragMouseStartRef.current.x;
@@ -367,6 +453,44 @@ export function useWindowDrag({
         }
         // If already snapped to same side, do nothing (already snapped correctly)
       } else if (
+        isMaximized &&
+        !hasRestoredFromMaximizedRef.current &&
+        onMaximize &&
+        onSizeChange &&
+        onPositionChange
+      ) {
+        // No snap detected but window was maximized - restore it
+        // This handles the case where we didn't restore during mouse move
+        const newSize = initialSize;
+        const viewportWidth = window.innerWidth;
+
+        // Calculate cursor position relative to maximized window's title bar
+        const currentWindowX = constrainedFinalPosition.x;
+        const mouseOffsetX = e.clientX - currentWindowX;
+        const cursorRatioInTitleBar = mouseOffsetX / viewportWidth;
+
+        // Position window so cursor stays at same relative position in title bar
+        const newPosition: Position = {
+          x: e.clientX - cursorRatioInTitleBar * newSize.width,
+          y: constrainedFinalPosition.y,
+        };
+
+        // Constrain position to viewport
+        const adjustedPosition = constrainPositionToViewport(
+          newPosition,
+          newSize
+        );
+
+        // Update size and position in store BEFORE restoring
+        onSizeChange(newSize);
+        onPositionChange(adjustedPosition);
+
+        // Restore from maximized (toggles isMaximized to false)
+        onMaximize();
+
+        // Update position with adjusted position
+        setPosition(adjustedPosition);
+      } else if (
         snapSide &&
         !hasUnsnappedDuringDragRef.current &&
         onUnsnap &&
@@ -389,7 +513,8 @@ export function useWindowDrag({
         // Calculate new position based on which edge to resize from
         // Use the cursor's CURRENT position relative to the window's CURRENT position during drag
         const viewportWidth = window.innerWidth;
-        const snappedWidth = viewportWidth / 2;
+        const snappedWidth =
+          snapSide === 'top' ? viewportWidth : viewportWidth / 2;
 
         // Calculate the window's current position during dragging (from the final position)
         const currentWindowX = constrainedFinalPosition.x;
@@ -447,6 +572,7 @@ export function useWindowDrag({
     onPositionChange,
     onSnap,
     onUnsnap,
+    onMaximize,
     initialSize,
     snapSide,
   ]);

@@ -20,7 +20,7 @@ import {
   type WindowSize,
 } from '../utils/windowUtils';
 
-export type SnapSide = 'left' | 'right' | null;
+export type SnapSide = 'left' | 'right' | 'top' | null;
 
 export interface WindowState {
   id: string;

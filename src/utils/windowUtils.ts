@@ -37,7 +37,10 @@ export function calculateCenteredPosition(
 
   const centeredX = Math.max(0, (viewportWidth - width) / 2);
   const verticalOffset = viewportHeight * VERTICAL_OFFSET_RATIO;
-  const centeredY = Math.max(MENU_BAR_HEIGHT, (viewportHeight - height) / 2 - verticalOffset);
+  const centeredY = Math.max(
+    MENU_BAR_HEIGHT,
+    (viewportHeight - height) / 2 - verticalOffset
+  );
 
   return { x: centeredX, y: centeredY };
 }
@@ -132,21 +135,36 @@ const SNAP_THRESHOLD = 16; // Distance in pixels from edge to trigger snap
 
 /**
  * Detect which side a window should snap to based on its position
- * Only detects left and right snapping
+ * Detects left, right, and top snapping
  * Returns null if no snap should occur
  */
 export function detectSnapSide(
   position: WindowPosition,
   size: WindowSize
-): 'left' | 'right' | null {
+): 'left' | 'right' | 'top' | null {
   const viewportWidth = window.innerWidth;
 
   // Check left edge
-  const nearLeft = position.x <= SNAP_THRESHOLD && position.x >= -SNAP_THRESHOLD;
+  const nearLeft =
+    position.x <= SNAP_THRESHOLD && position.x >= -SNAP_THRESHOLD;
   // Check right edge
-  const nearRight = position.x + size.width >= viewportWidth - SNAP_THRESHOLD && position.x + size.width <= viewportWidth + SNAP_THRESHOLD;
+  const nearRight =
+    position.x + size.width >= viewportWidth - SNAP_THRESHOLD &&
+    position.x + size.width <= viewportWidth + SNAP_THRESHOLD;
+  // Check top edge (positioned right at menu bar height)
+  const nearTop =
+    position.y <= MENU_BAR_HEIGHT + SNAP_THRESHOLD &&
+    position.y >= MENU_BAR_HEIGHT - SNAP_THRESHOLD;
 
-  // Detect edge snaps
+  // Detect edge snaps (top takes priority if both horizontal and vertical are detected)
+  if (
+    nearTop &&
+    size.width === viewportWidth &&
+    size.height === window.innerHeight - MENU_BAR_HEIGHT
+  ) {
+    // Only consider it top-snapped if it's also maximized (full width and height)
+    return 'top';
+  }
   if (nearLeft) return 'left';
   if (nearRight) return 'right';
 
@@ -158,16 +176,22 @@ export function detectSnapSide(
  * Returns null if no snap should occur
  */
 export function detectSnapSideFromMouse(
-  mouseX: number
-): 'left' | 'right' | null {
+  mouseX: number,
+  mouseY: number
+): 'left' | 'right' | 'top' | null {
   const viewportWidth = window.innerWidth;
 
   // Check if mouse is near left edge
   const nearLeft = mouseX <= SNAP_THRESHOLD && mouseX >= 0;
   // Check if mouse is near right edge
-  const nearRight = mouseX >= viewportWidth - SNAP_THRESHOLD && mouseX <= viewportWidth;
+  const nearRight =
+    mouseX >= viewportWidth - SNAP_THRESHOLD && mouseX <= viewportWidth;
+  // Check if mouse is near top edge (below menu bar)
+  const nearTop =
+    mouseY >= MENU_BAR_HEIGHT && mouseY <= MENU_BAR_HEIGHT + SNAP_THRESHOLD;
 
-  // Detect edge snaps
+  // Detect edge snaps (top takes priority if both horizontal and vertical are detected)
+  if (nearTop) return 'top';
   if (nearLeft) return 'left';
   if (nearRight) return 'right';
 
@@ -177,9 +201,10 @@ export function detectSnapSideFromMouse(
 /**
  * Calculate the snapped position and size for a preview
  */
-export function getSnappedPreview(
-  snapSide: 'left' | 'right'
-): { position: WindowPosition; size: WindowSize } {
+export function getSnappedPreview(snapSide: 'left' | 'right' | 'top'): {
+  position: WindowPosition;
+  size: WindowSize;
+} {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   const halfWidth = viewportWidth / 2;
@@ -187,12 +212,26 @@ export function getSnappedPreview(
   let snappedPosition: WindowPosition;
   let snappedSize: WindowSize;
 
-  if (snapSide === 'left') {
+  if (snapSide === 'top') {
+    // Top snap = maximize (full width, full height minus menu bar)
     snappedPosition = { x: 0, y: MENU_BAR_HEIGHT };
-    snappedSize = { width: halfWidth, height: viewportHeight - MENU_BAR_HEIGHT };
+    snappedSize = {
+      width: viewportWidth,
+      height: viewportHeight - MENU_BAR_HEIGHT,
+    };
+  } else if (snapSide === 'left') {
+    snappedPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    snappedSize = {
+      width: halfWidth,
+      height: viewportHeight - MENU_BAR_HEIGHT,
+    };
   } else {
+    // snapSide === 'right'
     snappedPosition = { x: halfWidth, y: MENU_BAR_HEIGHT };
-    snappedSize = { width: halfWidth, height: viewportHeight - MENU_BAR_HEIGHT };
+    snappedSize = {
+      width: halfWidth,
+      height: viewportHeight - MENU_BAR_HEIGHT,
+    };
   }
 
   return { position: snappedPosition, size: snappedSize };

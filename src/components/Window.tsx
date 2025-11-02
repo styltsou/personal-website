@@ -71,6 +71,7 @@ export default function Window({
     onSizeChange,
     onSnap,
     onUnsnap,
+    onMaximize,
   });
 
   // Use resize hook for window resizing
@@ -137,7 +138,13 @@ export default function Window({
     // Override display with maximized size/position - actual position/size in store unchanged
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
-    displayPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    // During dragging, use the drag position; otherwise use maximized position
+    if (isDragging) {
+      // Keep maximized size but use drag position for smooth transition
+      displayPosition = position; // position from drag hook
+    } else {
+      displayPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    }
   } else if (snapSide) {
     // When snapped, show snapped size/position visually
     // This applies whether dragging or not - size only changes when unsnapping
