@@ -11,11 +11,8 @@ import {
   getMaxZIndex,
   calculateNextZIndex,
   getDefaultWindowSize,
-  getMaximizedWindowSize,
-  getMaximizedWindowPosition,
   constrainWindowSize,
   BASE_Z_INDEX,
-  MENU_BAR_HEIGHT,
   type WindowPosition,
   type WindowSize,
 } from '../utils/windowUtils';
