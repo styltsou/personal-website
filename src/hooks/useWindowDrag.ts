@@ -12,8 +12,6 @@ import type { SnapSide } from '../stores/windowStore';
 export interface UseWindowDragOptions {
   initialPosition: Position;
   initialSize: Size;
-  originalPosition?: Position;
-  originalSize?: Size;
   isMaximized: boolean;
   snapSide: SnapSide;
   onFocus?: () => void;
@@ -26,8 +24,6 @@ export interface UseWindowDragOptions {
 export function useWindowDrag({
   initialPosition,
   initialSize,
-  originalPosition,
-  originalSize,
   isMaximized,
   snapSide,
   onFocus,
@@ -45,6 +41,8 @@ export function useWindowDrag({
   const currentSizeRef = useRef(initialSize);
   const hasUnsnappedDuringDragRef = useRef(false);
   const snapStartMouseEdgeRef = useRef<'left' | 'right' | null>(null); // Which edge mouse was on when dragging started from snapped window
+  const lastClickTimeRef = useRef(0);
+  const lastClickPositionRef = useRef({ x: 0, y: 0 });
 
   // Sync position from store when initialPosition changes (e.g., after snapping)
   // Only sync when not maximized and not dragging
@@ -87,6 +85,39 @@ export function useWindowDrag({
         return;
       }
 
+      // Check if this is a potential double-click scenario
+      // If clicks are very close in time and position, prevent drag start
+      const now = Date.now();
+      const timeSinceLastClick = now - lastClickTimeRef.current;
+      const clickPosition = { x: e.clientX, y: e.clientY };
+      const distanceFromLastClick = Math.sqrt(
+        Math.pow(clickPosition.x - lastClickPositionRef.current.x, 2) +
+          Math.pow(clickPosition.y - lastClickPositionRef.current.y, 2)
+      );
+
+      // If clicks are within 400ms and 10px of each other, it might be a double-click
+      // Prevent drag start to let double-click handler take over
+      const isPotentialDoubleClick =
+        timeSinceLastClick < 400 && distanceFromLastClick < 10;
+
+      // If this might be a double-click, prevent drag start and cancel any ongoing drag
+      if (isPotentialDoubleClick) {
+        // Cancel any ongoing drag if we're in a double-click scenario
+        if (isDragging) {
+          setIsDragging(false);
+          setPreviewSnapSide(null);
+        }
+        // Update tracking for the next potential click
+        lastClickTimeRef.current = now;
+        lastClickPositionRef.current = clickPosition;
+        // Don't start drag - let double-click handler take over if it's a double-click
+        return;
+      }
+
+      // Update click tracking
+      lastClickTimeRef.current = now;
+      lastClickPositionRef.current = clickPosition;
+
       // Prevent default to avoid text selection
       e.preventDefault();
       e.stopPropagation();
@@ -126,12 +157,8 @@ export function useWindowDrag({
         // Set the current position to the snapped position so drag starts smoothly
         setPosition(startPosition);
 
-        // Use original size for constraints
-        if (originalSize) {
-          currentSizeRef.current = originalSize;
-        } else {
-          currentSizeRef.current = initialSize;
-        }
+        // Use actual size for constraints (size never changes during snapping)
+        currentSizeRef.current = initialSize;
       } else {
         // Not snapped - use current size for constraints
         currentSizeRef.current = initialSize;
@@ -149,8 +176,6 @@ export function useWindowDrag({
       initialPosition,
       snapSide,
       onUnsnap,
-      originalPosition,
-      originalSize,
       onPositionChange,
     ]
   );
@@ -177,14 +202,8 @@ export function useWindowDrag({
         const isMovingAway = detectedSnapSide !== snapSide;
 
         if (isMovingAway) {
-          // Get the original size to restore to - must be valid
-          if (!originalSize) {
-            // If originalSize is missing, fall back to initialSize but log a warning
-            console.warn(
-              'originalSize is missing during unsnap, using initialSize'
-            );
-          }
-          const newSize = originalSize || initialSize;
+          // Size never changes during snapping, so use initialSize
+          const newSize = initialSize;
 
           // Validate size is reasonable
           if (!newSize || newSize.width <= 0 || newSize.height <= 0) {
@@ -355,13 +374,8 @@ export function useWindowDrag({
       ) {
         // No snap detected but window was previously snapped - unsnap it
         // This handles the case where we didn't unsnap during mouse move
-        // Get the original size to restore to - must be valid
-        if (!originalSize) {
-          console.warn(
-            'originalSize is missing during unsnap on mouse up, using initialSize'
-          );
-        }
-        const newSize = originalSize || initialSize;
+        // Size never changes during snapping, so use initialSize
+        const newSize = initialSize;
 
         // Validate size is reasonable
         if (!newSize || newSize.width <= 0 || newSize.height <= 0) {

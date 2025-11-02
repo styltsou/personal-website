@@ -18,8 +18,6 @@ export interface WindowProps {
   children: ReactNode;
   initialPosition?: { x: number; y: number };
   initialSize?: { width: number; height: number };
-  originalPosition?: { x: number; y: number };
-  originalSize?: { width: number; height: number };
   snapSide?: SnapSide;
   onClose?: () => void;
   onMinimize?: () => void;
@@ -41,8 +39,6 @@ export default function Window({
   children,
   initialPosition = { x: 100, y: 100 },
   initialSize = { width: 900, height: 700 },
-  originalPosition,
-  originalSize,
   snapSide = null,
   onClose,
   onMinimize,
@@ -68,8 +64,6 @@ export default function Window({
   } = useWindowDrag({
     initialPosition,
     initialSize,
-    originalPosition,
-    originalSize,
     isMaximized,
     snapSide,
     onFocus,
@@ -165,7 +159,9 @@ export default function Window({
   }
 
   // Calculate preview snap position/size if previewing
-  const snapPreview = previewSnapSide ? getSnappedPreview(previewSnapSide) : null;
+  const snapPreview = previewSnapSide
+    ? getSnappedPreview(previewSnapSide)
+    : null;
 
   return (
     <>
@@ -182,7 +178,8 @@ export default function Window({
             zIndex: zIndex - 1,
             pointerEvents: 'none',
             border: '1px dashed var(--retro-titlebar-default)',
-            backgroundColor: 'color-mix(in srgb, var(--retro-titlebar-default) 10%, transparent)',
+            backgroundColor:
+              'color-mix(in srgb, var(--retro-titlebar-default) 10%, transparent)',
             boxSizing: 'border-box',
           }}
         />
@@ -204,29 +201,29 @@ export default function Window({
         aria-labelledby={`window-title-${id}`}
         tabIndex={-1}
       >
-      {/* Title Bar */}
-      <TitleBar
-        id={id}
-        title={title}
-        isMaximized={isMaximized}
-        position={position}
-        onMouseDown={handleMouseDown}
-        onKeyDown={handleTitleBarKeyDown}
-        onMinimize={onMinimize}
-        onMaximize={onMaximize}
-        onClose={onClose}
-        onFocus={onFocus}
-        onPositionChange={onPositionChange}
-      />
+        {/* Title Bar */}
+        <TitleBar
+          id={id}
+          title={title}
+          isMaximized={isMaximized}
+          position={position}
+          onMouseDown={handleMouseDown}
+          onKeyDown={handleTitleBarKeyDown}
+          onMinimize={onMinimize}
+          onMaximize={onMaximize}
+          onClose={onClose}
+          onFocus={onFocus}
+          onPositionChange={onPositionChange}
+        />
 
-      {/* Window Content */}
-      <div className="retro-window-content h-[calc(100%-32px)] overflow-auto p-6">
-        {children}
+        {/* Window Content */}
+        <div className="retro-window-content h-[calc(100%-32px)] overflow-auto p-6">
+          {children}
+        </div>
+
+        {/* Resize Handles - only show when not maximized */}
+        {!isMaximized && <ResizeHandles onResizeStart={handleResizeStart} />}
       </div>
-
-      {/* Resize Handles - only show when not maximized */}
-      {!isMaximized && <ResizeHandles onResizeStart={handleResizeStart} />}
-    </div>
     </>
   );
 }

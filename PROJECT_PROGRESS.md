@@ -46,17 +46,17 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Snap preview overlay during dragging
   - Windows snap to half viewport width when dragged to edges
   - Smooth visual transition during snap/unsnap
-  - Original size and position preserved when snapping
-  - Visual snapped state while maintaining actual size/position in store
+  - Visual snapped state while maintaining actual size/position in store (no state mutation)
 - ✅ **Unsnap Behavior**: 
   - Automatic unsnap when dragging away from snap side
-  - Original size restored immediately upon unsnap
+  - Size never changes during snap/unsnap (visual only)
   - Cursor position preserved in title bar during unsnap (ratio-based positioning)
   - Works seamlessly during drag (mouse move) and on mouse up
   - Smart position calculation to keep cursor within title bar bounds
 - ✅ **Maximized Window Handling**: 
   - Windows maximize below menu bar (32px offset)
-  - Position and size preserved when restoring from maximized state
+  - Position and size never change (only display is overridden)
+  - Restoring just toggles display override - no state restoration needed
 - ✅ **Keyboard Accessibility**: 
   - Full keyboard navigation support (Tab, Enter, Escape)
   - Keyboard shortcuts for window operations
@@ -66,7 +66,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Dialog role and modal semantics
 - ✅ **Position Persistence**: 
   - Window positions saved on drag end
-  - Original position preserved for restore operations
+  - State always reflects actual position/size (never overridden)
 
 #### Desktop Component (`Desktop.tsx`)
 - ✅ **Window Stack Management**: 
@@ -111,13 +111,13 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Window states array with position, size, z-index, and flags
   - Active window ID tracking
   - Z-index counter management
-  - Snap side tracking (`snapSide`: 'left' | 'right' | null)
-  - Original size/position preservation for snapped windows
+  - Snap side tracking (`snapSide`: 'left' | 'right' | null) for display override only
+  - Position/size always reflect actual values (never mutated for maximize/snap)
 - ✅ **Window Operations**: 
   - `openWindow()`: Opens or focuses existing windows with cascading positioning
   - `closeWindow()`: Removes window from stack
   - `minimizeWindow()`: Hides window while preserving state
-  - `maximizeWindow()`: Fullscreen with position/size preservation
+  - `maximizeWindow()`: Sets maximized flag (display override, position/size unchanged)
   - `focusWindow()`: Brings window to front with z-index update
   - `updateWindowPosition()`: Updates window position on drag
   - `updateWindowSize()`: Updates window size on resize
@@ -126,9 +126,13 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - `unsnapWindow()`: Restores window from snapped state
   - `closeAllWindows()`: Clears all windows
 - ✅ **Window Snapping State Management**: 
-  - Snapping preserves original size/position in store
+  - Snapping sets `snapSide` flag only (no position/size mutation)
   - Visual snapping (derived during rendering) without modifying actual position/size
-  - Original size/position always saved when snapping (ensures reliable restore)
+  - Component overrides display when `snapSide` is set
+- ✅ **Window Maximization State Management**: 
+  - Maximization sets `isMaximized` flag only (no position/size mutation)
+  - Component overrides display when `isMaximized` is true
+  - Restoring just clears the flag - no state restoration needed
 - ✅ **Smart Window Opening**: 
   - Existing window detection (brings to front instead of duplicating)
   - Cascading position calculation
@@ -178,10 +182,9 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Visual preview overlay during drag
 - ✅ **Unsnap Logic**: 
   - Automatic unsnap when dragging away from snap side
-  - Immediate original size restoration on unsnap
+  - Size never changes (visual override removed)
   - Ratio-based cursor position preservation in title bar
   - Handles unsnap during mouse move and mouse up events
-  - Validates original size before restoring
 
 #### `useWindowResize`
 - ✅ **Window Resizing**: 
@@ -251,9 +254,8 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Fixed URL sync logic to prevent unintended window reopening
   - Added initial mount detection
 - ✅ **Position Loss on Minimize/Maximize**: 
-  - Added position tracking on drag end
-  - Position saved before maximize operation
-  - Original position preserved for restore
+  - Fixed by keeping position/size unchanged during maximize
+  - Display override approach eliminates restore complexity
 - ✅ **Windows Not Coming to Front**: 
   - Fixed z-index updates on focus
   - Direct DOM manipulation for z-index to bypass potential Framer Motion issues
@@ -277,17 +279,17 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **Window Snapping Implementation**: 
   - Snap detection based on window position and mouse cursor
   - Visual snap preview during dragging
-  - Original size/position preservation
+  - Visual-only snapping (no state mutation)
   - Smooth snap/unsnap transitions
 - ✅ **Unsnap Cursor Position Issue**: 
   - Fixed cursor ending up outside title bar when unsnapping
   - Implemented ratio-based positioning to preserve cursor relative position
   - Works correctly when unsnapping from opposite side of snap direction
-- ✅ **Original Size Loss**: 
-  - Fixed issue where original size was lost during unsnap
-  - Store now always saves current size when snapping (not conditional)
-  - Added validation and fallbacks for missing original size
-  - Original size properly maintained across snap/unsnap cycles
+- ✅ **Maximize/Restore Simplification**: 
+  - Refactored to display-override approach instead of state mutation
+  - Position/size never change during maximize (only display is overridden)
+  - Eliminated need for originalSize/originalPosition tracking
+  - Restore now just toggles flag - much simpler and more maintainable
 
 ---
 
@@ -311,6 +313,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - **Utility Functions**: Pure functions for calculations
 - **Component Composition**: Small, focused components
 - **Progressive Enhancement**: Works without JavaScript (static pages)
+- **Display-Override Pattern**: State = actual data, Display = visual override (used for maximize/snap)
 
 ---
 
@@ -430,6 +433,8 @@ src/
 - Cascading positioning algorithm
 - Drag functionality with proper constraints
 - Maximized window positioning below menu bar
+- Display-override pattern for maximize/snap (state = data, display = view)
+- Eliminated complex state sync logic through simpler architecture
 
 ---
 
@@ -457,15 +462,22 @@ src/
 - ✅ Implemented left/right edge snapping with 16px threshold
 - ✅ Visual snap preview overlay during dragging
 - ✅ Half-viewport width snapped layout
-- ✅ Original size/position preservation during snap state
+- ✅ Visual-only snapping (size/position never change in state)
 - ✅ Smooth snap/unsnap transitions
 
 #### Unsnap Behavior
 - ✅ Automatic unsnap when dragging away from snap side
-- ✅ Immediate original size restoration on unsnap
+- ✅ Visual override removed (size/position already correct in state)
 - ✅ Ratio-based cursor position preservation (cursor stays in title bar)
 - ✅ Works correctly when unsnapping from opposite side of snap direction
 - ✅ Handles unsnap both during mouse move and mouse up events
+
+#### Maximize/Restore Simplification
+- ✅ Refactored to display-override approach (2024)
+- ✅ Position/size never mutate during maximize - component overrides display
+- ✅ Eliminated originalSize/originalPosition tracking (redundant state removed)
+- ✅ Restore now just toggles isMaximized flag - no state restoration needed
+- ✅ Much simpler, more maintainable, and eliminates sync issues
 
 #### Window Resizing
 - ✅ Eight-directional resize handles (corners and edges)
@@ -478,11 +490,12 @@ src/
 - ✅ Viewport constraints updated to respect menu bar height
 - ✅ Centered positioning respects menu bar
 
-#### Bug Fixes
+#### Bug Fixes & Simplifications
 - ✅ Fixed cursor position issue during unsnap (ratio-based positioning)
-- ✅ Fixed original size loss during snap/unsnap cycles
-- ✅ Store now always saves current size when snapping
-- ✅ Added validation and fallbacks for missing original size
+- ✅ Fixed maximize/restore bug where window jumped to wrong position
+- ✅ Refactored to display-override approach - eliminated state mutation complexity
+- ✅ Removed redundant originalSize/originalPosition tracking
+- ✅ Simplified ClosedWindowState (removed unused snapSide, originalSize/originalPosition)
 
 ---
 

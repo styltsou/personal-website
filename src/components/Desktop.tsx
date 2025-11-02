@@ -110,8 +110,6 @@ export default function Desktop() {
             title={windowState.config.title}
             initialPosition={windowState.position}
             initialSize={windowState.size}
-            originalPosition={windowState.originalPosition}
-            originalSize={windowState.originalSize}
             snapSide={windowState.snapSide}
             zIndex={windowState.zIndex}
             isMinimized={windowState.isMinimized}

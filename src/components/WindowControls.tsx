@@ -9,8 +9,6 @@ export interface WindowControlsProps {
   onMinimize?: () => void;
   onMaximize?: () => void;
   onClose?: () => void;
-  onPositionChange?: (position: { x: number; y: number }) => void;
-  position: { x: number; y: number };
 }
 
 export default function WindowControls({
@@ -19,8 +17,6 @@ export default function WindowControls({
   onMinimize,
   onMaximize,
   onClose,
-  onPositionChange,
-  position,
 }: WindowControlsProps) {
   return (
     <div
@@ -49,10 +45,6 @@ export default function WindowControls({
           className="retro-window-control retro-focus-ring"
           onClick={(e) => {
             e.stopPropagation();
-            // Save current position before maximizing
-            if (!isMaximized && onPositionChange) {
-              onPositionChange(position);
-            }
             onMaximize();
           }}
           aria-label={`${isMaximized ? 'Restore' : 'Maximize'} ${title} window`}

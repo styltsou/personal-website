@@ -32,10 +32,27 @@ export default function TitleBar({
   onFocus,
   onPositionChange,
 }: TitleBarProps) {
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    // Don't maximize/restore if clicking on buttons
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') ||
+      target.closest('.retro-titlebar-controls')
+    ) {
+      return;
+    }
+
+    // Toggle maximize/restore
+    if (onMaximize) {
+      onMaximize();
+    }
+  };
+
   return (
     <div
       className="retro-titlebar cursor-move"
       onMouseDown={onMouseDown}
+      onDoubleClick={handleDoubleClick}
       onKeyDown={onKeyDown}
       tabIndex={0}
       role="button"
@@ -50,10 +67,7 @@ export default function TitleBar({
         onMinimize={onMinimize}
         onMaximize={onMaximize}
         onClose={onClose}
-        onPositionChange={onPositionChange}
-        position={position}
       />
     </div>
   );
 }
-
