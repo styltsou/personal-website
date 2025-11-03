@@ -60,6 +60,64 @@ const canonicalURL = new URL(
     <script>
       import('astro:transitions/client');
     </script>
+
+    <!-- Dynamic title change when window loses focus -->
+    <script define:inline>
+      (function () {
+        // Store the original title - capture it after page loads
+        let originalTitle = '';
+        let isTitleCaptured = false;
+
+        // Capture the original title when available
+        function captureOriginalTitle() {
+          if (!isTitleCaptured && document.title) {
+            originalTitle = document.title;
+            isTitleCaptured = true;
+          }
+        }
+
+        // Initialize: try to capture title immediately or wait for load
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          // Use setTimeout to ensure title is set by browser
+          setTimeout(captureOriginalTitle, 0);
+        } else {
+          window.addEventListener('load', captureOriginalTitle);
+          // Also try on DOMContentLoaded as fallback
+          document.addEventListener('DOMContentLoaded', captureOriginalTitle);
+        }
+
+        // Function to restore original title
+        function restoreTitle() {
+          if (!isTitleCaptured) {
+            captureOriginalTitle();
+          }
+          if (originalTitle) {
+            document.title = originalTitle;
+          }
+        }
+
+        // Function to change title when window loses focus
+        function changeTitleOnBlur() {
+          if (!isTitleCaptured) {
+            captureOriginalTitle();
+          }
+          document.title = 'miss you already';
+        }
+
+        // Listen for window blur/focus events
+        window.addEventListener('blur', changeTitleOnBlur);
+        window.addEventListener('focus', restoreTitle);
+
+        // Also handle visibility change (for mobile/tab switching)
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) {
+            changeTitleOnBlur();
+          } else {
+            restoreTitle();
+          }
+        });
+      })();
+    </script>
   </head>
   <body>
     <slot />
