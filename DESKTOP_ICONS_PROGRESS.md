@@ -253,8 +253,9 @@ These features are planned but not critical for core functionality:
 - [ ] **Responsive grid**: Adjust grid cell size based on viewport size for better mobile experience
 
 #### Icon Functionality
-- [ ] **Window opening on double-click**: Connect icons to window system (handler structure ready, needs window integration)
-- [ ] **Icon context menu**: Right-click menu for icon actions (rename, delete, properties, etc.)
+- [ ] **Window opening on double-click**: Connect icons to window system (✅ **Implemented** - terminal icon opens terminal window)
+- [ ] **Icon context menu**: Right-click menu for icon actions (rename, delete, properties, pin/unpin window, etc.)
+  - [ ] **Pin/Unpin window from menu bar**: Add context menu option to dynamically pin/unpin windows from menu bar (currently window pinning is static in config)
 - [ ] **Icon renaming**: Edit icon labels inline (click label to edit, or via context menu)
 - [ ] **Icon deletion**: Drag to trash or delete via context menu
 - [ ] **Icon properties**: View/edit icon metadata (label, icon image, window association)

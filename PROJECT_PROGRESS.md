@@ -99,6 +99,11 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Visual state indicators (open, minimized, active)
   - Animated close icons with Framer Motion
   - Smooth transitions and hover states
+- ✅ **Window Pinning**: 
+  - Static pinning configuration via `pinned` attribute in window config
+  - Pinned windows always visible in menu bar
+  - Unpinned windows only shown when open
+  - Terminal window configured as unpinned (only appears when open)
 - ✅ **Theme Toggle**: 
   - Dark/light theme switching
   - Persistent theme preference (localStorage)
@@ -364,6 +369,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - [ ] Better error states for failed content loads
 - [ ] Window animations for minimize/restore
 - [ ] Desktop icon customization
+- [ ] **Dynamic window pinning**: Add context menu to menu bar buttons or desktop icons to pin/unpin windows dynamically (currently pinning is static via config)
 - [ ] Top/bottom edge snapping (in addition to left/right)
 - [ ] Corner snapping (quarter-screen layouts)
 - [ ] Multiple desktop spaces/workspaces

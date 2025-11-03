@@ -7,6 +7,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { icons } from '../data/icons';
 import DesktopIcon from './desktop-icon';
 import { useIconStore } from '../stores/icon-store';
+import { useWindowStore } from '../stores/window-store';
 import { calculateGridDimensions, gridToPixel } from '../utils/icon-grid';
 import { BASE_Z_INDEX } from '../utils/window-utils';
 import type { GridPosition } from '../utils/icon-grid';
@@ -16,23 +17,27 @@ export default function DesktopIcons() {
   const selectedIconId = useIconStore((state) => state.selectedIconId);
   const deselectIcons = useIconStore((state) => state.deselectIcons);
   const updateIconPosition = useIconStore((state) => state.updateIconPosition);
+  const openWindow = useWindowStore((state) => state.openWindow);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Initialize icon positions with default positions if not present
+  // Run after persistence has loaded (when iconStates changes)
   useEffect(() => {
-    const { columns, rows } = calculateGridDimensions();
+    const { columns } = calculateGridDimensions();
 
     icons.forEach((icon, index) => {
       const existingState = iconStates.find((is) => is.id === icon.id);
       if (!existingState) {
         // Place icons in a grid pattern, starting from top-left
-        // Spread them out with some spacing
-        const gridX = index % Math.max(1, Math.floor(columns / 3));
-        const gridY = Math.floor(index / Math.max(1, Math.floor(columns / 3)));
+        // Spread them horizontally with spacing
+        // Use columns per row instead of columns/3 to spread them better
+        const iconsPerRow = Math.max(4, Math.floor(columns / 2)); // At least 4 icons per row, or half of columns
+        const gridX = index % iconsPerRow;
+        const gridY = Math.floor(index / iconsPerRow);
 
         // Ensure position is within bounds
         const constrainedGridX = Math.min(gridX, columns - 1);
-        const constrainedGridY = Math.min(gridY, rows - 1);
+        const constrainedGridY = Math.max(0, gridY); // Ensure non-negative
 
         updateIconPosition(icon.id, {
           gridX: constrainedGridX,
@@ -40,7 +45,7 @@ export default function DesktopIcons() {
         });
       }
     });
-  }, []); // Only run once on mount
+  }, [iconStates, updateIconPosition]); // Run when iconStates or updateIconPosition changes
 
   // Handle click outside to deselect icons
   const handleContainerClick = useCallback(
@@ -63,12 +68,13 @@ export default function DesktopIcons() {
     return { gridX: 0, gridY: 0 };
   };
 
-  // Handle double-click on icon (future: open window)
+  // Handle double-click on icon - open window if windowId is configured
   const handleIconDoubleClick = useCallback((iconId: string) => {
-    // TODO: Open window when windowId is configured
-    // For now, this is a placeholder for future functionality
-    console.log(`Double-clicked icon: ${iconId}`);
-  }, []);
+    const icon = icons.find((i) => i.id === iconId);
+    if (icon?.windowId) {
+      openWindow(icon.windowId);
+    }
+  }, [openWindow]);
 
   // Icon z-index should be below windows (BASE_Z_INDEX = 1000)
   const ICON_Z_INDEX = BASE_Z_INDEX - 100; // 900

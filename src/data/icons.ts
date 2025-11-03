@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { CvIcon, RecycleBinIcon } from './icon-components';
+import { CvIcon, RecycleBinIcon, TerminalIcon } from './icon-components.tsx';
 
 export interface IconConfig {
   id: string;
@@ -18,12 +18,17 @@ export const icons: IconConfig[] = [
     id: 'cv',
     label: 'cv.pdf',
     icon: CvIcon,
-    // windowId can be added later when we implement window opening
+    // windowId can be added later when we implement window opening and an actual window for it
   },
   {
     id: 'recycle-bin',
     label: 'Trash',
     icon: RecycleBinIcon,
-    // windowId can be added later when we implement window opening
+  },
+  {
+    id: 'terminal',
+    label: 'Terminal',
+    icon: TerminalIcon,
+    windowId: 'terminal', // Opens terminal window on double-click
   },
 ];

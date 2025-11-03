@@ -147,43 +147,48 @@ export default function MenuBar() {
     <div className="retro-menu-bar">
       <div className="retro-menu-bar-left">
         <span className="retro-menu-bar-logo">styltsou</span>
-        {windows.map((window) => {
-          const state = getWindowButtonState(window.id);
+        {windows
+          .filter((window) => {
+            // Show pinned windows always, or unpinned windows only if they exist (are open)
+            return window.pinned === true || windowStates.some((ws) => ws.id === window.id);
+          })
+          .map((window) => {
+            const state = getWindowButtonState(window.id);
 
-          return (
-            <motion.button
-              key={window.id}
-              type="button"
-              className={getButtonClasses(state)}
-              onClick={() => openWindow(window.id)}
-              aria-label={getAriaLabel(window.title, state)}
-              initial={false}
-              variants={buttonVariants}
-              animate={getButtonVariant(state)}
-            >
-              <AnimatePresence mode="wait">
-                {state.exists && (
-                  <motion.span
-                    key="close-icon"
-                    className="retro-menu-bar-button-close-icon"
-                    variants={closeIconVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    onClick={(e) => handleCloseClick(window.id, e)}
-                    onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Close ${window.title} window`}
-                  >
-                    ×
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              <span>{window.title}</span>
-            </motion.button>
-          );
-        })}
+            return (
+              <motion.button
+                key={window.id}
+                type="button"
+                className={getButtonClasses(state)}
+                onClick={() => openWindow(window.id)}
+                aria-label={getAriaLabel(window.title, state)}
+                initial={false}
+                variants={buttonVariants}
+                animate={getButtonVariant(state)}
+              >
+                <AnimatePresence mode="wait">
+                  {state.exists && (
+                    <motion.span
+                      key="close-icon"
+                      className="retro-menu-bar-button-close-icon"
+                      variants={closeIconVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      onClick={(e) => handleCloseClick(window.id, e)}
+                      onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Close ${window.title} window`}
+                    >
+                      ×
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                <span>{window.title}</span>
+              </motion.button>
+            );
+          })}
       </div>
       <div className="retro-menu-bar-right">
         <div className="retro-menu-bar-time">

@@ -8,6 +8,7 @@ import { useEffect, useMemo } from 'react';
 import Window from './window';
 import MenuBar from './menu-bar';
 import DesktopIcons from './desktop-icons';
+import TerminalWindow from './terminal-window';
 import { useWindowStore } from '../stores/window-store';
 import { useWindowContent } from '../hooks/use-window-content';
 import { useWindowPersistence } from '../hooks/use-window-persistence';
@@ -72,9 +73,12 @@ export default function Desktop() {
   useWindowPersistence();
   useIconPersistence();
 
-  // Load content for newly opened windows
+  // Load content for newly opened windows (skip terminal as it has custom component)
   useEffect(() => {
     windowStates.forEach((ws) => {
+      // Skip terminal window - it uses custom component
+      if (ws.id === 'terminal') return;
+
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
           if (content) {
@@ -128,7 +132,9 @@ export default function Desktop() {
             }
             onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
           >
-            {isLoading(windowState.id) ? (
+            {windowState.id === 'terminal' ? (
+              <TerminalWindow />
+            ) : isLoading(windowState.id) ? (
               <div className="flex h-full items-center justify-center">
                 <p>Loading...</p>
               </div>
