@@ -131,20 +131,19 @@ export default function Desktop() {
               windowActions.snapWindow(windowState.id, snapSide)
             }
             onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
+            isLoading={
+              windowState.id !== 'terminal' && isLoading(windowState.id)
+            }
           >
             {windowState.id === 'terminal' ? (
               <TerminalWindow />
-            ) : isLoading(windowState.id) ? (
-              <div className="flex h-full items-center justify-center">
-                <p>Loading...</p>
-              </div>
             ) : windowState.content ? (
               <div dangerouslySetInnerHTML={{ __html: windowState.content }} />
-            ) : (
+            ) : !isLoading(windowState.id) ? (
               <div className="flex h-full items-center justify-center">
                 <p>No content available</p>
               </div>
-            )}
+            ) : null}
           </Window>
         ))}
     </div>

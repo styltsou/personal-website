@@ -11,6 +11,7 @@ import { useWindowResize } from '../hooks/use-window-resize';
 import type { SnapSide } from '../stores/window-store';
 import TitleBar from './title-bar';
 import ResizeHandles from './resize-handles';
+import LoadingProgressBar from './loading-progress-bar';
 
 export interface WindowProps {
   id: string;
@@ -31,6 +32,7 @@ export interface WindowProps {
   isMinimized?: boolean;
   isMaximized?: boolean;
   isActive?: boolean;
+  isLoading?: boolean;
 }
 
 export default function Window({
@@ -52,6 +54,7 @@ export default function Window({
   isMinimized = false,
   isMaximized = false,
   isActive = false,
+  isLoading = false,
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -222,6 +225,9 @@ export default function Window({
           onFocus={onFocus}
           onPositionChange={onPositionChange}
         />
+
+        {/* Loading Progress Bar - shown at top when loading */}
+        {isLoading && <LoadingProgressBar />}
 
         {/* Window Content */}
         <div className="retro-window-content h-[calc(100%-32px)] overflow-auto p-6">
