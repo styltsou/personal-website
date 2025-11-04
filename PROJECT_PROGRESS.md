@@ -100,6 +100,11 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **Window Filtering**: 
   - Minimized windows excluded from rendering
   - Efficient rendering with proper React keys
+- ✅ **Generic Window Component**: 
+  - Window component is generic and reusable
+  - No default padding (each window handles its own padding)
+  - Generic `hideOverflow` prop for windows that manage their own scrolling
+  - Wikipedia window uses `hideOverflow` to prevent window-level scrollbars
 
 #### Menu Bar Component (`menu-bar/index.tsx`)
 - ✅ **Window Quick Access**: 
@@ -129,6 +134,47 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Separated helper functions for state calculation, class generation, and event handling
   - Cleaner, more maintainable code structure
   - Reduced duplication through consolidated state management
+
+#### Wikipedia Window Component (`wikipedia-window/index.tsx`)
+- ✅ **Iframe Integration**: 
+  - Wikipedia embedded via iframe
+  - Full-screen iframe with proper sizing
+  - No window-level scrollbars (iframe handles its own scrolling)
+  - Overflow properly managed to prevent content clipping
+- ✅ **Theme Support**: 
+  - CSS filters applied to match site theme
+  - Light theme: Wikipedia appears light (no filter)
+  - Dark theme: Wikipedia inverted to dark mode
+  - Smooth transitions between themes
+  - Works across all Wikipedia pages (including navigation within iframe)
+- ✅ **Scrollbar Management**: 
+  - Window content overflow hidden for Wikipedia window
+  - Iframe scrollbar visible and functional
+  - No content clipping or double scrollbars
+
+#### Terminal Window Component (`terminal-window/index.tsx`)
+- ✅ **Functional Terminal**: 
+  - Real input field with keyboard support
+  - Command execution structure with extensible switch statement
+  - Command history with up/down arrow navigation
+  - Auto-scroll to bottom when new output is added
+  - Auto-focus on input when terminal opens
+- ✅ **Theme Support**: 
+  - Light theme: White background with black text
+  - Dark theme: Black background with light gray text
+  - Color-coded output (blue for output, red for errors)
+  - Green prompt symbol and cursor
+- ✅ **Built-in Commands**: 
+  - `help` - Shows available commands
+  - `clear` - Clears terminal output
+  - `echo <text>` - Echoes text back
+  - Error handling for unknown commands
+- ✅ **UI Features**: 
+  - Larger text size (1.125rem) for better readability
+  - Green caret cursor matching terminal aesthetic
+  - Monospace font for authentic terminal look
+  - Scrollable output area
+  - Proper line wrapping and whitespace preservation
 
 ### State Management Architecture
 
@@ -591,6 +637,33 @@ src/
 
 ---
 
-**Last Updated**: 2024 (Recent updates: Simplified icon click vs drag detection, mutual exclusivity with window focus, menu bar animation speed improvements)  
+### Wikipedia & Terminal Windows (2024)
+
+#### Wikipedia Window Implementation
+- ✅ **Iframe Integration**: Wikipedia embedded via iframe with proper overflow management
+- ✅ **Theme Support**: CSS filters applied to match site theme (light/dark mode)
+- ✅ **Scrollbar Management**: Window-level scrollbars hidden, iframe scrollbar functional
+- ✅ **No Content Clipping**: Proper container sizing prevents content from being cropped
+
+#### Terminal Window Implementation
+- ✅ **Functional Terminal**: Real input field with command execution structure
+- ✅ **Command System**: Extensible command execution with switch statement
+  - Built-in commands: `help`, `clear`, `echo`
+  - Error handling for unknown commands
+- ✅ **Command History**: Up/down arrow navigation through command history
+- ✅ **Theme Support**: Black background in dark theme, white in light theme
+- ✅ **UI Features**: Larger text (1.125rem), green caret cursor, scrollable output
+- ✅ **Auto-scroll**: Terminal automatically scrolls to bottom on new output
+- ✅ **Auto-focus**: Input field automatically focuses when terminal opens
+
+#### Window Component Improvements (2024)
+- ✅ **Generic Window Component**: Removed content-specific logic, made fully reusable
+- ✅ **No Default Padding**: Window component has no default padding (each window handles its own)
+- ✅ **Generic `hideOverflow` Prop**: Allows any window to disable overflow scrolling
+- ✅ **Wikipedia Integration**: Uses `hideOverflow` prop to prevent window-level scrollbars
+
+---
+
+**Last Updated**: 2024 (Recent updates: Wikipedia window with theme support, functional terminal with command system, generic window component improvements)  
 **Maintained By**: Personal project  
 **Status**: Active development
