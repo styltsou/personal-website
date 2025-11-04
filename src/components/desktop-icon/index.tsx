@@ -4,12 +4,13 @@
  */
 
 import { useCallback, useRef } from 'react';
-import { useIconDrag } from '../hooks/use-icon-drag';
-import { useIconStore } from '../stores/icon-store';
-import { useWindowStore } from '../stores/window-store';
-import { type IconConfig } from '../data/icons';
-import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../utils/icon-grid';
-import type { GridPosition } from '../utils/icon-grid';
+import { useIconDrag } from '../../hooks/use-icon-drag';
+import { useIconStore } from '../../stores/icon-store';
+import { useWindowStore } from '../../stores/window-store';
+import { type IconConfig } from '../../data/icons';
+import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../../utils/icon-grid';
+import type { GridPosition } from '../../utils/icon-grid';
+import { cn } from '../../utils/cn';
 
 export interface DesktopIconProps {
   iconConfig: IconConfig;
@@ -113,7 +114,7 @@ export default function DesktopIcon({
       {/* Original position ghost (only visible while dragging) */}
       {isDragging && (
         <div
-          className="desktop-icon desktop-icon--ghost"
+          className={cn('desktop-icon', 'desktop-icon--ghost')}
           style={{
             position: 'absolute',
             left: `${initialPixelPosition.x}px`,
@@ -131,7 +132,7 @@ export default function DesktopIcon({
       {/* Preview position (where icon will snap to) - just the outline box */}
       {isDragging && previewPixelPosition && (
         <div
-          className="desktop-icon desktop-icon--preview"
+          className={cn('desktop-icon', 'desktop-icon--preview')}
           style={{
             position: 'absolute',
             left: `${previewPixelPosition.x}px`,
@@ -149,7 +150,7 @@ export default function DesktopIcon({
       {/* When dragging, hide the icon here - it will be rendered at Desktop level */}
       {!isDragging && (
         <div
-          className={`desktop-icon ${isSelected ? 'desktop-icon--selected' : ''}`}
+          className={cn('desktop-icon', isSelected && 'desktop-icon--selected')}
           style={{
             position: 'absolute',
             left: `${displayPosition.x}px`,

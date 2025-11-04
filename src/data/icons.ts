@@ -4,7 +4,12 @@
  */
 
 import type { ReactNode } from 'react';
-import { CvIcon, RecycleBinIcon, TerminalIcon } from './icon-components.tsx';
+import {
+  WikipediaIcon,
+  CvIcon,
+  RecycleBinIcon,
+  TerminalIcon,
+} from './icon-components.tsx';
 
 export interface IconConfig {
   id: string;
@@ -30,5 +35,11 @@ export const icons: IconConfig[] = [
     label: 'Terminal',
     icon: TerminalIcon,
     windowId: 'terminal', // Opens terminal window on double-click
+  },
+  {
+    id: 'wikipedia',
+    label: 'Wikipedia',
+    icon: WikipediaIcon,
+    windowId: 'wikipedia',
   },
 ];

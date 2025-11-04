@@ -33,8 +33,11 @@ The project follows modern React conventions with kebab-case naming for all file
 │   │   └── date-time.ts
 │   ├── data/             # Static data (kebab-case naming)
 │   │   └── windows.ts
-│   ├── styles/           # CSS files
-│   │   └── retro.css
+│   ├── styles/           # SCSS files (CSS Modules)
+│   │   ├── index.scss
+│   │   ├── _variables.scss
+│   │   ├── _mixins.scss
+│   │   └── _base.scss
 │   ├── layouts/          # Astro layouts
 │   │   ├── BaseLayout.astro
 │   │   └── Layout.astro
@@ -77,7 +80,7 @@ All commands are run from the root of the project, from a terminal:
 - **Framework**: Astro (static site generation)
 - **UI Framework**: React (for interactive components)
 - **State Management**: Zustand
-- **Styling**: Tailwind CSS + Custom CSS
+- **Styling**: CSS Modules with Sass/SCSS
 - **Type Safety**: TypeScript (strict mode)
 - **Animation**: Framer Motion (via Motion)
 - **Build Tool**: Vite (via Astro)
@@ -91,4 +94,5 @@ For detailed project progress and features, see [PROJECT_PROGRESS.md](./PROJECT_
 - [Astro Documentation](https://docs.astro.build)
 - [Zustand Documentation](https://zustand-demo.pmnd.rs/)
 - [React Documentation](https://react.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [CSS Modules Documentation](https://github.com/css-modules/css-modules)
+- [Sass Documentation](https://sass-lang.com/documentation)

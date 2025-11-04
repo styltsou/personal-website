@@ -3,7 +3,7 @@
  * Eight resize handles (corners and edges) for window resizing
  */
 
-import { useIconStore } from '../stores/icon-store';
+import { useIconStore } from '../../stores/icon-store';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;

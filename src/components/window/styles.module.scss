@@ -1,0 +1,42 @@
+/**
+ * Window Component Styles
+ */
+
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.window {
+  display: flex;
+  flex-direction: column;
+
+  &.dragging {
+    cursor: grabbing;
+  }
+
+  &.resizing {
+    cursor: resizing;
+  }
+}
+
+.snapPreview {
+  position: fixed;
+  pointer-events: none;
+  border: 1px dashed var(--retro-titlebar-default);
+  background-color: color-mix(
+    in srgb,
+    var(--retro-titlebar-default) 10%,
+    transparent
+  );
+  box-sizing: border-box;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0;
+}
+

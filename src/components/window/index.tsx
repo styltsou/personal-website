@@ -5,14 +5,16 @@
  */
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { MENU_BAR_HEIGHT, getSnappedPreview } from '../utils/window-utils';
-import { useWindowDrag } from '../hooks/use-window-drag';
-import { useWindowResize } from '../hooks/use-window-resize';
-import { useIconStore } from '../stores/icon-store';
-import type { SnapSide } from '../stores/window-store';
-import TitleBar from './title-bar';
-import ResizeHandles from './resize-handles';
-import LoadingProgressBar from './loading-progress-bar';
+import { MENU_BAR_HEIGHT, getSnappedPreview } from '../../utils/window-utils';
+import { useWindowDrag } from '../../hooks/use-window-drag';
+import { useWindowResize } from '../../hooks/use-window-resize';
+import { useIconStore } from '../../stores/icon-store';
+import type { SnapSide } from '../../stores/window-store';
+import { cn } from '../../utils/cn';
+import TitleBar from '../title-bar';
+import ResizeHandles from '../resize-handles';
+import LoadingProgressBar from '../loading-progress-bar';
+import styles from './styles.module.scss';
 
 export interface WindowProps {
   id: string;
@@ -183,25 +185,19 @@ export default function Window({
       {/* Snap Preview Overlay */}
       {isDragging && previewSnapSide && snapPreview && (
         <div
-          className="retro-window-snap-preview"
+          className={styles.snapPreview}
           style={{
-            position: 'fixed',
             left: `${snapPreview.position.x}px`,
             top: `${snapPreview.position.y}px`,
             width: `${snapPreview.size.width}px`,
             height: `${snapPreview.size.height}px`,
             zIndex: zIndex - 1,
-            pointerEvents: 'none',
-            border: '1px dashed var(--retro-titlebar-default)',
-            backgroundColor:
-              'color-mix(in srgb, var(--retro-titlebar-default) 10%, transparent)',
-            boxSizing: 'border-box',
           }}
         />
       )}
       <div
         ref={windowRef}
-        className={`retro-window ${isActive ? 'active' : ''} ${isDragging ? 'cursor-grabbing' : ''} ${isResizing ? 'cursor-resizing' : ''}`}
+        className={cn('retro-window', styles.window, isActive && 'active', isDragging && styles.dragging, isResizing && styles.resizing)}
         style={{
           left: `${displayPosition.x}px`,
           top: `${displayPosition.y}px`,
@@ -235,7 +231,7 @@ export default function Window({
         {isLoading && <LoadingProgressBar />}
 
         {/* Window Content */}
-        <div className="retro-window-content h-[calc(100%-32px)] overflow-auto p-6">
+        <div className={cn('retro-window-content', styles.content)}>
           {children}
         </div>
 

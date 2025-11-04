@@ -5,16 +5,19 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import Window from './window';
-import MenuBar from './menu-bar';
-import DesktopIcons from './desktop-icons';
-import DraggingIcon from './dragging-icon';
-import TerminalWindow from './terminal-window';
-import { useWindowStore } from '../stores/window-store';
-import { useWindowContent } from '../hooks/use-window-content';
-import { useWindowPersistence } from '../hooks/use-window-persistence';
-import { useIconPersistence } from '../hooks/use-icon-persistence';
-import { useURLSync } from '../hooks/use-url-sync';
+import Window from '../window';
+import MenuBar from '../menu-bar';
+import DesktopIcons from '../desktop-icons';
+import DraggingIcon from '../dragging-icon';
+import TerminalWindow from '../terminal-window';
+import WikipediaWindow from '../wikipedia-window';
+import { useWindowStore } from '../../stores/window-store';
+import { useWindowContent } from '../../hooks/use-window-content';
+import { useWindowPersistence } from '../../hooks/use-window-persistence';
+import { useIconPersistence } from '../../hooks/use-icon-persistence';
+import { useURLSync } from '../../hooks/use-url-sync';
+import { cn } from '../../utils/cn';
+import styles from './styles.module.scss';
 
 export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
@@ -74,11 +77,11 @@ export default function Desktop() {
   useWindowPersistence();
   useIconPersistence();
 
-  // Load content for newly opened windows (skip terminal as it has custom component)
+  // Load content for newly opened windows (skip terminal and wikipedia as they have custom components)
   useEffect(() => {
     windowStates.forEach((ws) => {
-      // Skip terminal window - it uses custom component
-      if (ws.id === 'terminal') return;
+      // Skip terminal and wikipedia windows - they use custom components
+      if (ws.id === 'terminal' || ws.id === 'wikipedia') return;
 
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
@@ -96,7 +99,7 @@ export default function Desktop() {
   }, [activeWindowId, updateURL]);
 
   return (
-    <div className="retro-desktop relative h-screen w-full overflow-hidden">
+    <div className={cn('retro-desktop', styles.desktop)}>
       {/* Top Menu Bar */}
       <MenuBar />
 
@@ -136,15 +139,19 @@ export default function Desktop() {
             }
             onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
             isLoading={
-              windowState.id !== 'terminal' && isLoading(windowState.id)
+              windowState.id !== 'terminal' &&
+              windowState.id !== 'wikipedia' &&
+              isLoading(windowState.id)
             }
           >
             {windowState.id === 'terminal' ? (
               <TerminalWindow />
+            ) : windowState.id === 'wikipedia' ? (
+              <WikipediaWindow />
             ) : windowState.content ? (
               <div dangerouslySetInnerHTML={{ __html: windowState.content }} />
             ) : !isLoading(windowState.id) ? (
-              <div className="flex h-full items-center justify-center">
+              <div className={styles.noContent}>
                 <p>No content available</p>
               </div>
             ) : null}

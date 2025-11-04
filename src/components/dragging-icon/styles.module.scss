@@ -1,0 +1,12 @@
+/**
+ * Dragging Icon Component Styles
+ * Note: Most styles are in global base styles (desktop-icon, desktop-icon--dragging)
+ */
+
+.draggingIcon {
+  position: absolute;
+  transition: none; // No transitions - instant snap like real OS
+  z-index: 99; // Above all windows (10-98) but below menu bar (100)
+  pointer-events: none; // Don't block interactions
+}
+

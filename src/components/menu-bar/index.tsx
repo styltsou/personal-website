@@ -11,6 +11,8 @@ import ThemeToggle from './theme-toggle';
 import { windows } from '../../data/windows';
 import { useWindowStore } from '../../stores/window-store';
 import { formatDate, formatTime } from '../../utils/date-time';
+import { cn } from '../../utils/cn';
+import styles from './styles.module.scss';
 
 // Animation variants
 const buttonVariants = {
@@ -124,19 +126,13 @@ export default function MenuBar() {
   };
 
   const getButtonClasses = (state: ReturnType<typeof getWindowButtonState>) => {
-    const classes = ['retro-menu-bar-button', 'retro-focus-ring'];
-
-    if (state.isOpen) {
-      classes.push('retro-menu-bar-button-open');
-    } else if (state.exists && state.isMinimized) {
-      classes.push('retro-menu-bar-button-minimized');
-    }
-
-    if (state.isActive) {
-      classes.push('retro-menu-bar-button-focused');
-    }
-
-    return classes.join(' ');
+    return cn(
+      'retro-menu-bar-button',
+      'retro-focus-ring',
+      state.isOpen && 'retro-menu-bar-button-open',
+      state.exists && state.isMinimized && 'retro-menu-bar-button-minimized',
+      state.isActive && 'retro-menu-bar-button-focused'
+    );
   };
 
   const getButtonVariant = (state: ReturnType<typeof getWindowButtonState>) => {
@@ -193,7 +189,7 @@ export default function MenuBar() {
                 <motion.button
                   key={window.id}
                   type="button"
-                  className={getButtonClasses(state)}
+                  className={cn(getButtonClasses(state), styles.button)}
                   onClick={() => openWindow(window.id)}
                   aria-label={getAriaLabel(window.title, state)}
                   initial="initial"
@@ -217,12 +213,6 @@ export default function MenuBar() {
                       duration: 0.05,
                       ease: 'easeOut',
                     },
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    overflow: 'hidden',
                   }}
                 >
                   <AnimatePresence mode="wait">

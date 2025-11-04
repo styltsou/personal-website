@@ -4,13 +4,13 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import { icons } from '../data/icons';
-import DesktopIcon from './desktop-icon';
-import { useIconStore } from '../stores/icon-store';
-import { useWindowStore } from '../stores/window-store';
-import { calculateGridDimensions, gridToPixel } from '../utils/icon-grid';
-import { BASE_Z_INDEX } from '../utils/window-utils';
-import type { GridPosition } from '../utils/icon-grid';
+import { icons } from '../../data/icons';
+import DesktopIcon from '../desktop-icon';
+import { useIconStore } from '../../stores/icon-store';
+import { useWindowStore } from '../../stores/window-store';
+import { calculateGridDimensions, gridToPixel } from '../../utils/icon-grid';
+import { BASE_Z_INDEX } from '../../utils/window-utils';
+import type { GridPosition } from '../../utils/icon-grid';
 
 export default function DesktopIcons() {
   const iconStates = useIconStore((state) => state.iconStates);

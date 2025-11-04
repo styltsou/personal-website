@@ -3,7 +3,7 @@
 > **Feature**: Desktop Icon System with Drag-and-Drop, Snap-to-Grid Positioning  
 > **Status**: ✅ Completed - Core Implementation + Refinements  
 > **Date Started**: 2024  
-> **Tech Stack**: React, Zustand, TypeScript, Tailwind CSS  
+> **Tech Stack**: React, Zustand, TypeScript, CSS Modules + Sass  
 > **Latest Updates**: Simplified click vs drag (5px threshold), mutual exclusivity with window focus, menu bar animation speed improvements
 
 ---

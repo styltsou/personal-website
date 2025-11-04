@@ -4,9 +4,11 @@
  * This ensures it appears above windows despite stacking context issues
  */
 
-import { useIconStore } from '../stores/icon-store';
-import { icons, type IconConfig } from '../data/icons';
-import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../utils/icon-grid';
+import { useIconStore } from '../../stores/icon-store';
+import { icons, type IconConfig } from '../../data/icons';
+import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../../utils/icon-grid';
+import { cn } from '../../utils/cn';
+import styles from './styles.module.scss';
 
 export default function DraggingIcon() {
   const draggingIconId = useIconStore((state) => state.draggingIconId);
@@ -47,16 +49,12 @@ export default function DraggingIcon() {
 
   return (
     <div
-      className="desktop-icon desktop-icon--dragging"
+      className={cn('desktop-icon', 'desktop-icon--dragging', styles.draggingIcon)}
       style={{
-        position: 'absolute',
         left: `${draggingIconPosition.x}px`,
         top: `${draggingIconPosition.y}px`,
         width: `${ICON_WIDTH}px`,
         height: `${ICON_HEIGHT}px`,
-        transition: 'none', // No transitions - instant snap like real OS
-        zIndex: 99, // Above all windows (10-98) but below menu bar (100)
-        pointerEvents: 'none', // Don't block interactions
       }}
     >
       {renderIcon()}

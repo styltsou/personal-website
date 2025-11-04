@@ -1,0 +1,64 @@
+/**
+ * Terminal Window Component Styles
+ */
+
+.terminal {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #d0d0d0;
+}
+
+.prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.promptSymbol {
+  color: #00ff00;
+}
+
+.promptPath {
+  color: #7da3d1;
+}
+
+.output {
+  color: #7da3d1;
+}
+
+.text {
+  color: #d0d0d0;
+}
+
+.command {
+  margin-top: 0.5rem;
+  color: #888;
+}
+
+.cursor {
+  display: inline-block;
+  height: 1rem;
+  width: 0.5rem;
+  animation: pulse 1s ease-in-out infinite;
+  background-color: #00ff00;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+

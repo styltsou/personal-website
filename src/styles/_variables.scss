@@ -1,0 +1,89 @@
+/**
+ * CSS Variables for 80s Nostalgic Theme
+ * Light and Dark theme variables
+ */
+
+/* Light Theme */
+:root {
+  /* Background Colors - Warm Beige/Tan */
+  --retro-bg: #eaddcf;
+  --retro-window-bg: #f8f5ed;
+  --retro-desktop-pattern: rgba(0, 0, 0, 0.02);
+
+  /* Border Colors - Softer, Warmer */
+  --retro-window-border-light: #ffffff;
+  --retro-window-border-dark: #d4c4b0;
+  --retro-window-border-shadow: rgba(0, 0, 0, 0.15);
+
+  /* Button Colors */
+  --retro-button-bg: #f0e6d8;
+  --retro-button-border-light: #ffffff;
+  --retro-button-border-dark: #d4c4b0;
+  --retro-button-active-bg: #e8ddd0;
+  --retro-button-active-border-light: #d4c4b0;
+  --retro-button-active-border-dark: #ffffff;
+
+  /* Text Colors */
+  --retro-text: #2a2a2a;
+  --retro-text-light: #5a5a5a;
+  --retro-text-inverse: #ffffff;
+
+  /* Title Bar Colors - Pastel Palette */
+  --retro-titlebar-yellow: #f9d78c;
+  --retro-titlebar-orange: #f09c7c;
+  --retro-titlebar-teal: #8cd7d7;
+  --retro-titlebar-pink: #f0b0b0;
+  --retro-titlebar-blue: #7da3d1;
+  --retro-titlebar-default: #7da3d1; /* Default to blue */
+  --retro-titlebar-text: #ffffff;
+  --retro-titlebar-shadow: rgba(0, 0, 0, 0.1);
+  /* Subtle accent colors for focused states */
+  --retro-focus-blue: #b5cfe8; /* Lighter, more subtle blue */
+
+  /* Shadows - Softer */
+  --retro-shadow: rgba(0, 0, 0, 0.2);
+  --retro-shadow-soft: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+:root.dark-theme {
+  /* Background Colors - Very Dark Gray */
+  --retro-bg: #0f0f0f;
+  --retro-window-bg: #1a1a1a;
+  --retro-desktop-pattern: rgba(255, 255, 255, 0.02);
+
+  /* Border Colors - Darker Gray */
+  --retro-window-border-light: #2a2a2a;
+  --retro-window-border-dark: #050505;
+  --retro-window-border-shadow: rgba(0, 0, 0, 0.7);
+
+  /* Button Colors */
+  --retro-button-bg: #1f1f1f;
+  --retro-button-border-light: #2a2a2a;
+  --retro-button-border-dark: #050505;
+  --retro-button-active-bg: #2a2a2a;
+  --retro-button-active-border-light: #050505;
+  --retro-button-active-border-dark: #2a2a2a;
+
+  /* Text Colors */
+  --retro-text: #d0d0d0;
+  --retro-text-light: #8a8a8a;
+  --retro-text-inverse: #000000;
+
+  /* Title Bar Colors - Dark Gray Shades */
+  --retro-titlebar-yellow: #3a3a2a;
+  --retro-titlebar-orange: #3a2a2a;
+  --retro-titlebar-teal: #2a3a3a;
+  --retro-titlebar-pink: #3a2a2a;
+  --retro-titlebar-blue: #2a2a3a;
+  --retro-titlebar-default: #2a2a3a;
+  --retro-titlebar-text: #d0d0d0;
+  --retro-titlebar-shadow: rgba(0, 0, 0, 0.5);
+  /* Subtle accent colors for focused states */
+  --retro-focus-blue: #2a3540; /* Subtle blue tint for dark theme */
+
+  /* Shadows - Darker */
+  --retro-shadow: rgba(0, 0, 0, 0.7);
+  --retro-shadow-soft: rgba(0, 0, 0, 0.5);
+}
+

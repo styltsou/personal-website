@@ -15,5 +15,6 @@ export const windows: WindowConfig[] = [
   { id: 'about', title: 'About Me', path: '/about', pinned: true },
   { id: 'projects', title: 'Projects', path: '/projects', pinned: true },
   { id: 'contact', title: 'Contact', path: '/contact', pinned: true },
-  { id: 'terminal', title: 'Terminal', path: '', pinned: false }, // Terminal is not pinned - only shows when open
+  { id: 'terminal', title: 'Terminal', path: '', pinned: false },
+  { id: 'wikipedia', title: 'Wikipedia', path: '', pinned: false },
 ];

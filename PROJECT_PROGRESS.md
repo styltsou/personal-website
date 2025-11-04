@@ -1,7 +1,7 @@
 # Project Progress Tracker
 
 > **Project**: Personal Website with Retro 90s OS Window Manager  
-> **Tech Stack**: Astro, React, TypeScript, Zustand, Tailwind CSS  
+> **Tech Stack**: Astro, React, TypeScript, Zustand, CSS Modules + Sass  
 > **Status**: Active Development
 
 ---
@@ -16,11 +16,11 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Setup Phase
 
-- ✅ Installed all required dependencies (@astrojs/tailwind, astro-compress, ESLint, Prettier)
-- ✅ Configured Astro with Tailwind, Compress integrations and View Transitions API
-- ✅ Set up ESLint and Prettier configuration for Astro, React, TypeScript, and Tailwind
-- ✅ Created retro.css with 90s OS aesthetic styling (window borders, buttons, CSS variables)
-- ✅ Created BaseLayout.astro with SEO meta tags, Tailwind import, retro.css, and View Transitions
+- ✅ Installed all required dependencies (sass, astro-compress, ESLint, Prettier)
+- ✅ Configured Astro with Compress integration and View Transitions API
+- ✅ Set up ESLint and Prettier configuration for Astro, React, and TypeScript
+- ✅ Created SCSS structure with CSS Modules (_variables.scss, _mixins.scss, _base.scss, index.scss)
+- ✅ Created BaseLayout.astro with SEO meta tags, SCSS import, and View Transitions
 - ✅ Created windows.ts data file with window configurations (about, projects, contact)
 - ✅ Created static pages: about.astro, projects.astro, contact.astro with SEO-friendly content
 
@@ -361,7 +361,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - **Framework**: Astro (static site generation)
 - **UI Framework**: React (for interactive components)
 - **State Management**: Zustand
-- **Styling**: Tailwind CSS + Custom CSS
+- **Styling**: CSS Modules with Sass/SCSS
 - **Type Safety**: TypeScript (strict mode)
 - **Build Tool**: Vite (via Astro)
 
@@ -511,7 +511,8 @@ src/
 - [Astro Documentation](https://docs.astro.build)
 - [Zustand Documentation](https://zustand-demo.pmnd.rs/)
 - [React Documentation](https://react.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [CSS Modules Documentation](https://github.com/css-modules/css-modules)
+- [Sass Documentation](https://sass-lang.com/documentation)
 
 ### Inspiration
 - Classic 90s operating systems (Windows 95, Mac OS System 7)

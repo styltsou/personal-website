@@ -3,7 +3,9 @@
  * Window title bar with drag functionality and controls
  */
 
-import WindowControls from './window-controls';
+import { cn } from '../../utils/cn';
+import WindowControls from '../window-controls';
+import styles from './styles.module.scss';
 
 export interface TitleBarProps {
   id: string;
@@ -50,7 +52,7 @@ export default function TitleBar({
 
   return (
     <div
-      className="retro-titlebar cursor-move"
+      className={cn('retro-titlebar', styles.titleBar)}
       onMouseDown={onMouseDown}
       onDoubleClick={handleDoubleClick}
       onKeyDown={onKeyDown}
