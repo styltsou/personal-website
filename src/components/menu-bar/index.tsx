@@ -76,7 +76,7 @@ const windowButtonVariants = {
     opacity: 0,
     x: -8,
     transition: {
-      duration: 0.2,
+      duration: 0.05,
       ease: 'easeOut' as const,
     },
   },
@@ -84,7 +84,7 @@ const windowButtonVariants = {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.2,
+      duration: 0.05,
       ease: 'easeOut' as const,
     },
   },
@@ -92,7 +92,7 @@ const windowButtonVariants = {
     opacity: 0,
     x: -8,
     transition: {
-      duration: 0.2,
+      duration: 0.05,
       ease: 'easeIn' as const,
     },
   },
@@ -187,6 +187,8 @@ export default function MenuBar() {
             .map((window) => {
               const state = getWindowButtonState(window.id);
 
+              // TODO: Variants stuff looks weird, I need to understand them
+
               return (
                 <motion.button
                   key={window.id}
@@ -212,7 +214,7 @@ export default function MenuBar() {
                   layout="position"
                   transition={{
                     layout: {
-                      duration: 0.2,
+                      duration: 0.05,
                       ease: 'easeOut',
                     },
                   }}

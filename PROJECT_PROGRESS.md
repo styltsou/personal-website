@@ -69,6 +69,15 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - State always reflects actual position/size (never overridden)
 
 #### Desktop Component (`desktop.tsx`)
+- ✅ **Desktop Icons System**: Complete icon drag-and-drop implementation
+  - See `DESKTOP_ICONS_PROGRESS.md` for detailed documentation
+  - Drag-and-drop with snap-to-grid positioning
+  - **Simplified click vs drag**: 5px movement threshold distinguishes clicks from drags
+  - Collision detection and drop prevention
+  - Z-index management and stacking context handling
+  - Cursor management (grabbing/not-allowed)
+  - Icon persistence in localStorage
+  - **Mutual exclusivity**: Icon selection and window focus are mutually exclusive
 - ✅ **Window Stack Management**: 
   - Z-index ordering with automatic focus-to-front behavior
   - Active window tracking
@@ -115,6 +124,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Clean variant-based animations for button states
   - Transition configurations defined within variants
   - Consistent 0.03s transition duration across all animations
+  - **Fast presence animations**: Window button presence animations set to 0.05s for snappier feel
 - ✅ **Code Organization**: 
   - Separated helper functions for state calculation, class generation, and event handling
   - Cleaner, more maintainable code structure
@@ -179,11 +189,23 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - `constrainWindowSize()`: Enforces minimum and maximum window sizes
   - Menu bar height consideration (prevents windows above menu bar)
 - ✅ **Z-index Management**: 
-  - Automatic z-index calculation
-  - Base z-index of 1000 with 1000 increments
-  - Max z-index tracking for proper stacking
+  - Simplified z-index system with smaller values (1-100)
+  - Base z-index of 10 for windows, incrementing by 1 per focus
+  - Windows capped at 98 (leaves room for dragging icons at 99 and menu bar at 100)
+  - Menu bar at 100 (always on top)
+  - Icons at 1 (desktop surface, below windows)
+  - Dragging icons at 99 (above all windows, below menu bar)
 
 ### Custom Hooks
+
+#### Icon Hooks
+- ✅ **use-icon-drag.ts**: Icon drag functionality with snap-to-grid, collision detection, drop prevention, and cursor management
+  - **Simplified click vs drag**: Uses 5px movement threshold to distinguish clicks from drags
+  - Proper event listener management with state-triggered effects
+  - Click events work normally until drag threshold is crossed
+- ✅ **use-icon-persistence.ts**: Icon position persistence in localStorage
+
+#### Window Hooks
 
 #### `use-window-drag.ts`
 - ✅ **Window Dragging**: 
@@ -368,7 +390,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - [ ] Window content caching improvements
 - [ ] Better error states for failed content loads
 - [ ] Window animations for minimize/restore
-- [ ] Desktop icon customization
+- [ ] Desktop icon customization (✅ Core implementation complete - see `DESKTOP_ICONS_PROGRESS.md`)
 - [ ] **Dynamic window pinning**: Add context menu to menu bar buttons or desktop icons to pin/unpin windows dynamically (currently pinning is static via config)
 - [ ] Top/bottom edge snapping (in addition to left/right)
 - [ ] Corner snapping (quarter-screen layouts)
@@ -423,6 +445,9 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 src/
 ├── components/        # React components (kebab-case naming)
 │   ├── desktop.tsx
+│   ├── desktop-icon.tsx
+│   ├── desktop-icons.tsx
+│   ├── dragging-icon.tsx
 │   ├── window.tsx
 │   ├── title-bar.tsx
 │   ├── window-controls.tsx
@@ -431,19 +456,25 @@ src/
 │       ├── index.tsx
 │       └── theme-toggle.tsx
 ├── stores/           # Zustand stores (kebab-case naming)
-│   └── window-store.ts
+│   ├── window-store.ts
+│   └── icon-store.ts
 ├── hooks/            # Custom React hooks (kebab-case naming)
 │   ├── use-window-drag.ts
 │   ├── use-window-resize.ts
 │   ├── use-window-persistence.ts
 │   ├── use-window-content.ts
-│   └── use-url-sync.ts
+│   ├── use-url-sync.ts
+│   ├── use-icon-drag.ts
+│   └── use-icon-persistence.ts
 ├── utils/            # Pure utility functions (kebab-case naming)
 │   ├── window-utils.ts
+│   └── icon-grid.ts
 │   ├── viewport-constraints.ts
 │   └── date-time.ts
 ├── data/             # Static data (kebab-case naming)
-│   └── windows.ts
+│   ├── windows.ts
+│   ├── icons.ts
+│   └── icon-components.tsx
 ├── styles/           # CSS files
 │   └── retro.css
 └── pages/             # Astro pages (static content)
@@ -559,6 +590,6 @@ src/
 
 ---
 
-**Last Updated**: 2024 (Recent updates: Menu bar refactoring, kebab-case naming migration, Framer Motion variants)  
+**Last Updated**: 2024 (Recent updates: Simplified icon click vs drag detection, mutual exclusivity with window focus, menu bar animation speed improvements)  
 **Maintained By**: Personal project  
 **Status**: Active development

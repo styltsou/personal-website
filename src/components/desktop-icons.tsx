@@ -18,6 +18,7 @@ export default function DesktopIcons() {
   const deselectIcons = useIconStore((state) => state.deselectIcons);
   const updateIconPosition = useIconStore((state) => state.updateIconPosition);
   const openWindow = useWindowStore((state) => state.openWindow);
+  const unfocusWindow = useWindowStore((state) => state.unfocusWindow);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Initialize icon positions with default positions if not present
@@ -47,15 +48,16 @@ export default function DesktopIcons() {
     });
   }, [iconStates, updateIconPosition]); // Run when iconStates or updateIconPosition changes
 
-  // Handle click outside to deselect icons
+  // Handle click outside to deselect icons and unfocus windows
   const handleContainerClick = useCallback(
     (e: React.MouseEvent) => {
       // Only deselect if clicking directly on container (not on an icon)
       if (e.target === containerRef.current) {
         deselectIcons();
+        unfocusWindow(); // Deselect active window when clicking desktop background
       }
     },
-    [deselectIcons]
+    [deselectIcons, unfocusWindow]
   );
 
   // Get grid position for an icon (from store or default)

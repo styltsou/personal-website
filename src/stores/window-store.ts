@@ -52,6 +52,7 @@ interface WindowStore {
   minimizeWindow: (windowId: string) => void;
   maximizeWindow: (windowId: string) => void;
   focusWindow: (windowId: string) => void;
+  unfocusWindow: () => void;
   updateWindowPosition: (windowId: string, position: WindowPosition) => void;
   updateWindowSize: (windowId: string, size: WindowSize) => void;
   updateWindowContent: (windowId: string, content: string) => void;
@@ -240,6 +241,11 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
         nextZIndex: state.nextZIndex + 1,
       };
     });
+  },
+
+  // Unfocus window (clear active window)
+  unfocusWindow: () => {
+    set({ activeWindowId: null });
   },
 
   // Update window position

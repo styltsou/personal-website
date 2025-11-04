@@ -8,6 +8,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { MENU_BAR_HEIGHT, getSnappedPreview } from '../utils/window-utils';
 import { useWindowDrag } from '../hooks/use-window-drag';
 import { useWindowResize } from '../hooks/use-window-resize';
+import { useIconStore } from '../stores/icon-store';
 import type { SnapSide } from '../stores/window-store';
 import TitleBar from './title-bar';
 import ResizeHandles from './resize-handles';
@@ -108,7 +109,11 @@ export default function Window({
   }, [zIndex]);
 
   // Handle focus on window click
+  const deselectIcons = useIconStore((state) => state.deselectIcons);
+
   const handleWindowClick = () => {
+    // Deselect any selected icon when window is clicked
+    deselectIcons();
     if (onFocus) {
       onFocus();
     }

@@ -6,6 +6,7 @@
 import { useCallback, useRef } from 'react';
 import { useIconDrag } from '../hooks/use-icon-drag';
 import { useIconStore } from '../stores/icon-store';
+import { useWindowStore } from '../stores/window-store';
 import { type IconConfig } from '../data/icons';
 import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../utils/icon-grid';
 import type { GridPosition } from '../utils/icon-grid';
@@ -24,6 +25,7 @@ export default function DesktopIcon({
   const selectedIconId = useIconStore((state) => state.selectedIconId);
   const selectIcon = useIconStore((state) => state.selectIcon);
   const updateIconPosition = useIconStore((state) => state.updateIconPosition);
+  const unfocusWindow = useWindowStore((state) => state.unfocusWindow);
   const doubleClickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSelected = selectedIconId === iconConfig.id;
@@ -53,9 +55,13 @@ export default function DesktopIcon({
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      selectIcon(iconConfig.id);
+      // Only select if we didn't drag
+      if (!isDragging) {
+        selectIcon(iconConfig.id);
+        unfocusWindow();
+      }
     },
-    [iconConfig.id, selectIcon]
+    [iconConfig.id, selectIcon, unfocusWindow, isDragging]
   );
 
   // Handle double-click

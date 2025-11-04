@@ -1,9 +1,10 @@
 # Desktop Icons Feature Progress
 
 > **Feature**: Desktop Icon System with Drag-and-Drop, Snap-to-Grid Positioning  
-> **Status**: ✅ Completed - Core Implementation  
+> **Status**: ✅ Completed - Core Implementation + Refinements  
 > **Date Started**: 2024  
-> **Tech Stack**: React, Zustand, TypeScript, Tailwind CSS
+> **Tech Stack**: React, Zustand, TypeScript, Tailwind CSS  
+> **Latest Updates**: Simplified click vs drag (5px threshold), mutual exclusivity with window focus, menu bar animation speed improvements
 
 ---
 
@@ -24,7 +25,8 @@
 - ✅ Created `src/stores/icon-store.ts`
   - Zustand store managing icon positions (grid coordinates)
   - Selected icon ID state
-  - Actions: `updateIconPosition`, `selectIcon`, `deselectIcons`, `initializeFromPersistence`
+  - Dragging icon ID and position tracking (for rendering at Desktop level)
+  - Actions: `updateIconPosition`, `selectIcon`, `deselectIcons`, `setDraggingIcon`, `initializeFromPersistence`
   - Selectors for better performance
 
 ### Grid System
@@ -42,16 +44,26 @@
 
 ### Drag and Drop
 - ✅ Created `src/hooks/use-icon-drag.ts`
-  - Mouse down/up/move event handling
-  - Drag state tracking
+  - **Simplified click vs drag detection**: Uses 5px movement threshold to distinguish clicks from drags
+  - Mouse down/up/move event handling with proper state management
+  - Drag state tracking using refs and state for reliable event listener management
   - On drag end: snap to grid, check collisions, find nearest free cell
   - Visual feedback during drag:
     - **Ghost state**: Semi-transparent icon at original position (opacity 0.3)
     - **Preview state**: Dashed outline box showing where icon will snap (matches window snap preview style)
     - **Dragging state**: Icon follows cursor with blue background, elevated shadow, and scale
-  - Double-click detection to prevent drag start
+  - **Click handling**: Single click selects icon without starting drag (only drags if moved >5px)
   - **Instant snap**: No transitions on drop (snaps immediately like real OS)
   - Preview grid position calculated in real-time during drag
+  - **Drop prevention**: Icons cannot be dropped over windows or other icons
+  - **Preview hiding**: Preview outline hidden when dragging over invalid drop locations (windows/icons)
+  - **Cursor management**: 
+    - `grabbing` cursor when dragging on desktop
+    - `not-allowed` cursor when dragging over windows or other icons
+    - Global cursor management via body classes and CSS
+  - **Window overlap detection**: Checks if icon position overlaps with any visible window (maximized, snapped, or normal)
+  - **Icon overlap detection**: Checks if icon position overlaps with another icon's grid cell
+  - **Dragging icon tracking**: Tracks dragging icon ID and position in store for rendering at Desktop level
 
 ### Icon Component
 - ✅ Created `src/components/desktop-icon.tsx`
@@ -60,7 +72,7 @@
   - Three visual states during drag:
     - **Ghost**: Semi-transparent icon at original position
     - **Preview**: Dashed outline box at destination position (no icon content)
-    - **Main**: Dragging icon with blue background and elevated styling
+    - **Main**: Hidden when dragging (rendered at Desktop level instead)
   - Selected state styling (highlighted border/background with blue focus color)
   - Click handler (select icon)
   - Double-click handler (ready for future window opening integration)
@@ -87,9 +99,11 @@
 ### Integration
 - ✅ Modified `src/components/desktop.tsx`
   - Added DesktopIcons component rendering
+  - Added DraggingIcon component rendering (at Desktop level for proper z-index)
   - Placed icons between menu bar and windows
   - Ensured proper z-index ordering: menu bar > windows > icons
   - Added useIconPersistence hook call
+  - Dragging icon rendered outside icon container to escape stacking context
 
 ### Styling
 - ✅ Added icon-specific styles to `src/styles/retro.css`
@@ -104,12 +118,13 @@
     - Blue background (`var(--retro-focus-blue)`)
     - Thin border (1px solid) matching titlebar blue
     - Subtle shadow
-  - `.desktop-icon--ghost` - Ghost state at original position (opacity 0.3, z-index 1998)
+  - `.desktop-icon--ghost` - Ghost state at original position (opacity 0.3, z-index 1)
   - `.desktop-icon--preview` - Preview outline at destination:
     - Dashed border matching window snap preview style
     - Semi-transparent background (color-mix)
     - No icon content (just outline box)
-    - z-index 1999
+    - z-index 1 (below windows, on desktop surface)
+    - Hidden when dragging over windows or other icons
   - `.desktop-icon-image` - Icon image styling (64x64px, centered)
   - `.desktop-icon-label` - Label text styling:
     - **Theme-aware colors**: Black on light theme, light on dark theme
@@ -118,6 +133,12 @@
     - Text ellipsis for overflow, nowrap for single line
     - Positioned below icon image
   - Dark theme adjustments with proper contrast
+  - **Icon dragging cursor management**:
+    - `body.icon-dragging` - Sets grabbing cursor on all elements
+    - `body.icon-dragging.icon-dragging-over-window` - Sets not-allowed cursor on windows
+    - `body.icon-dragging.icon-dragging-over-icon` - Sets not-allowed cursor on icons
+    - Overrides resize handle cursors when dragging icons
+    - Overrides titlebar cursor-move class when dragging icons
 
 ---
 
@@ -133,10 +154,13 @@
 - Snap positions are equal in size to icon containers for perfect alignment
 
 ### Z-Index Management
-- **Icons**: Base z-index 900 (well below windows' BASE_Z_INDEX of 1000)
-- **Windows**: 1000+
-- **Menu bar**: Highest (10000)
-- **While dragging**: Temporarily z-index 2000 to appear above non-active windows
+- **Simplified z-index system**: Using smaller, more manageable values
+- **Icons**: Base z-index 1 (desktop surface, below windows)
+- **Windows**: 10-98 (starting at 10, incrementing by 1 per focus, capped at 98)
+- **Menu bar**: 100 (highest, always on top)
+- **While dragging**: z-index 99 (above all windows, below menu bar)
+- **Ghost/Preview**: z-index 1 (stay on desktop surface, below windows)
+- **Dragging icon rendered at Desktop level**: Escapes icon container stacking context to appear above windows
 
 ### Collision Detection
 - Store occupied grid cells as Set<string> (format: "x,y")
@@ -167,19 +191,21 @@ interface PersistedIconState {
   - **Blue background and border** (appears even if not selected before drag)
   - Elevated shadow (4px 4px 12px)
   - Slight scale (1.05)
-  - Cursor: grabbing
+  - Cursor: grabbing (on desktop), not-allowed (over windows/icons)
   - Border radius 4px
-  - z-index 2000 (above non-active windows)
+  - z-index 99 (above all windows, below menu bar)
+  - Rendered at Desktop level to escape icon container stacking context
 - **Ghost** (original position while dragging):
   - Opacity 0.3
   - Shows icon and label at original position
-  - z-index 1998 (below dragging icon)
+  - z-index 1 (below windows, on desktop surface)
 - **Preview** (destination position while dragging):
   - Dashed border outline (1px dashed)
   - Semi-transparent background (color-mix 10%)
   - No icon content (just bounding box)
-  - z-index 1999 (above ghost, below dragging icon)
+  - z-index 1 (below windows, on desktop surface)
   - Matches window snap preview styling
+  - **Hidden when dragging over windows or other icons**
 - **Hover**: Subtle scale (1.02) transition
 
 ### Label Styling
@@ -210,18 +236,30 @@ interface PersistedIconState {
 - Icons move freely during drag (no grid constraints)
 - **Visual feedback during drag**:
   - Ghost icon at original position (semi-transparent)
-  - Preview outline at destination position (dashed box)
+  - Preview outline at destination position (dashed box) - **hidden when over invalid drop locations**
   - Dragging icon follows cursor with blue background
+  - Dragging icon rendered at Desktop level (above all windows)
 - On drop, **instant snap** to nearest grid cell (no transition animation)
 - If target cell is occupied, find nearest free cell using Manhattan distance
-- Preview position updates in real-time during drag
+- **Drop prevention**: Icons cannot be dropped over windows or other icons
+- Preview position updates in real-time during drag (only when not over invalid locations)
 - Blue background appears during drag regardless of selection state
+- **Cursor feedback**:
+  - `grabbing` cursor when dragging on desktop
+  - `not-allowed` cursor when dragging over windows or other icons
+  - Resize handles show grabbing cursor when dragging icons (not resize cursors)
+  - Titlebar cursor-move class overridden when dragging icons
 
 ### Selection
 - Single click selects icon (highlighted with blue border and background)
+- **Click vs drag**: Only selects if mouse movement is <5px (prevents accidental drag on click)
 - Click outside (on desktop container) deselects all icons
 - Selected state persists until deselected or another icon is selected
 - Selection styling uses thin border (1px) for cleaner look
+- **Mutual exclusivity with window focus**: 
+  - Selecting an icon unfocuses the active window
+  - Focusing a window deselects any selected icon
+  - Clicking desktop background unfocuses windows and deselects icons
 
 ### Double-Click
 - Double-click handler ready for future window opening integration
@@ -239,6 +277,13 @@ interface PersistedIconState {
 4. ✅ **Invalid persisted data**: Resets to default positions (fallback in initialization)
 5. ✅ **Double-click during drag**: Cancel drag, trigger double-click handler (prevent default drag end)
 6. ✅ **Viewport resize**: Grid recalculated dynamically on each operation (full resize handling deferred to future enhancement)
+7. ✅ **Icon dragged over window**: Drop prevented, icon stays at original position, cursor shows not-allowed
+8. ✅ **Icon dragged over another icon**: Drop prevented, icon stays at original position, cursor shows not-allowed, preview hidden
+9. ✅ **Stacking context issues**: Dragging icon rendered at Desktop level to escape icon container stacking context
+10. ✅ **Cursor conflicts**: Resize handles and titlebar cursors properly overridden when dragging icons
+11. ✅ **Z-index management**: Simplified to small values (1-100) with proper caps and increments
+12. ✅ **Click vs drag distinction**: Uses 5px movement threshold to properly distinguish clicks from drags
+13. ✅ **Mutual exclusivity**: Icon selection and window focus are mutually exclusive (selecting icon unfocuses window, focusing window deselects icon)
 
 ---
 
@@ -320,7 +365,13 @@ These features are planned but not critical for core functionality:
 - ✅ Icon positions persist in localStorage
 - ✅ Icon positions load from localStorage on page reload
 - ✅ Icons appear behind windows (correct z-index)
-- ✅ Icons appear above desktop while dragging
+- ✅ Dragging icon appears above all windows (rendered at Desktop level)
+- ✅ Cursor shows grabbing when dragging on desktop
+- ✅ Cursor shows not-allowed when dragging over windows
+- ✅ Cursor shows not-allowed when dragging over other icons
+- ✅ Preview outline hidden when dragging over invalid drop locations
+- ✅ Icons cannot be dropped over windows or other icons
+- ✅ Resize handles show grabbing cursor when dragging icons (not resize cursors)
 - ✅ Double-click detection doesn't interfere with drag
 - ✅ Grid respects menu bar height
 - ✅ Grid respects viewport padding (20px)
@@ -355,9 +406,14 @@ The desktop icon system is fully implemented with all core features:
 - ✅ **Visual feedback**:
   - Ghost icon at original position while dragging
   - Preview outline at destination position (matches window snap style)
+  - Preview hidden when dragging over invalid drop locations
   - Blue background during drag (even if not selected)
   - Selected state with blue highlight
-- ✅ **Proper z-index layering** - Icons below windows, elevated while dragging
+  - Dragging icon rendered at Desktop level (above all windows)
+- ✅ **Drop prevention** - Icons cannot be dropped over windows or other icons
+- ✅ **Cursor management** - Proper cursor feedback (grabbing/not-allowed) based on drop validity
+- ✅ **Proper z-index layering** - Simplified system (1-100), icons below windows, elevated while dragging
+- ✅ **Stacking context handling** - Dragging icon escapes icon container to appear above windows
 - ✅ **Theme-aware labels** - Black on light theme, light on dark theme with proper contrast
 - ✅ **80s aesthetic styling** - Retro color palette, rounded corners, soft shadows
 - ✅ **Rectangular icons** - 100x100px to fit labels, matching grid cell size
