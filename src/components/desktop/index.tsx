@@ -143,13 +143,14 @@ export default function Desktop() {
               windowState.id !== 'wikipedia' &&
               isLoading(windowState.id)
             }
+            hideOverflow={windowState.id === 'wikipedia'}
           >
             {windowState.id === 'terminal' ? (
               <TerminalWindow />
             ) : windowState.id === 'wikipedia' ? (
               <WikipediaWindow />
             ) : windowState.content ? (
-              <div dangerouslySetInnerHTML={{ __html: windowState.content }} />
+              <div className={styles.content} dangerouslySetInnerHTML={{ __html: windowState.content }} />
             ) : !isLoading(windowState.id) ? (
               <div className={styles.noContent}>
                 <p>No content available</p>

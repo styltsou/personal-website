@@ -36,6 +36,7 @@ export interface WindowProps {
   isMaximized?: boolean;
   isActive?: boolean;
   isLoading?: boolean;
+  hideOverflow?: boolean; // If true, prevents window content scrollbars
 }
 
 export default function Window({
@@ -58,6 +59,7 @@ export default function Window({
   isMaximized = false,
   isActive = false,
   isLoading = false,
+  hideOverflow = false,
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -231,7 +233,7 @@ export default function Window({
         {isLoading && <LoadingProgressBar />}
 
         {/* Window Content */}
-        <div className={cn('retro-window-content', styles.content)}>
+        <div className={cn('retro-window-content', styles.content, hideOverflow && styles.noOverflow)}>
           {children}
         </div>
 
