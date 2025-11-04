@@ -7,49 +7,114 @@
   width: 100%;
   padding: 1rem;
   font-family: monospace;
-  font-size: 0.875rem;
+  font-size: 1.125rem; // Larger text for better readability
+  line-height: 1.6;
+  background-color: #ffffff; // White background for light theme
+  color: #000000; // Black text for light theme
+  overflow: hidden; // Prevent terminal from overflowing
+}
+
+// Dark theme: black background with light text
+:global(.dark-theme) .terminal {
+  background-color: #000000;
+  color: #d0d0d0;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  color: #d0d0d0;
+  gap: 0.5rem;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .prompt {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .promptSymbol {
-  color: #00ff00;
+  color: #00ff00; // Green for prompt symbol
 }
 
 .promptPath {
-  color: #7da3d1;
+  color: #7da3d1; // Blue for path
+}
+
+:global(.dark-theme) .promptPath {
+  color: #7da3d1; // Keep blue in dark theme
 }
 
 .output {
-  color: #7da3d1;
+  color: #7da3d1; // Blue for output
+  white-space: pre-wrap; // Preserve whitespace and wrap
+  word-break: break-word;
 }
 
-.text {
-  color: #d0d0d0;
+:global(.dark-theme) .output {
+  color: #7da3d1; // Keep blue in dark theme
+}
+
+.error {
+  color: #ff4444; // Red for errors in light theme
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+:global(.dark-theme) .error {
+  color: #ff6666; // Lighter red for dark theme
 }
 
 .command {
-  margin-top: 0.5rem;
-  color: #888;
+  color: #666666; // Dark gray for light theme
+  white-space: pre-wrap;
+}
+
+:global(.dark-theme) .command {
+  color: #888888; // Light gray for dark theme
+}
+
+.inputForm {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  // Show native caret as block cursor
+  caret-color: #00ff00; // Green caret to match block cursor
+  min-width: 0;
+}
+
+:global(.dark-theme) .input {
+  caret-color: #00ff00; // Green caret in dark theme too
 }
 
 .cursor {
   display: inline-block;
-  height: 1rem;
-  width: 0.5rem;
+  height: 1.125rem; // Match line height
+  width: 0.6em; // Width of one character (monospace)
+  margin-left: 0.05em;
   animation: pulse 1s ease-in-out infinite;
-  background-color: #00ff00;
+  background-color: #00ff00; // Green cursor
+  vertical-align: middle;
+  // Make cursor appear like a block cursor
+  border-radius: 0;
+  // Ensure it's positioned correctly
+  position: relative;
 }
 
 @keyframes pulse {
