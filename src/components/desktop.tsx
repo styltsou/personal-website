@@ -8,6 +8,7 @@ import { useEffect, useMemo } from 'react';
 import Window from './window';
 import MenuBar from './menu-bar';
 import DesktopIcons from './desktop-icons';
+import DraggingIcon from './dragging-icon';
 import TerminalWindow from './terminal-window';
 import { useWindowStore } from '../stores/window-store';
 import { useWindowContent } from '../hooks/use-window-content';
@@ -101,6 +102,9 @@ export default function Desktop() {
 
       {/* Desktop Icons */}
       <DesktopIcons />
+
+      {/* Dragging Icon - rendered at Desktop level to escape icon container stacking context */}
+      <DraggingIcon />
 
       {/* Render all open windows */}
       {windowStates

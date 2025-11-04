@@ -260,7 +260,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
-  z-index: 10000;
+  z-index: 100; /* Always on top */
   box-shadow: 0 1px 3px var(--retro-shadow-soft);
 }
 
@@ -471,7 +471,7 @@
   box-shadow:
     4px 4px 12px var(--retro-shadow),
     0 0 0 1px var(--retro-shadow-soft);
-  z-index: 2000; /* Above non-active windows while dragging */
+  z-index: 99; /* Above all windows (10-98) but below menu bar (100) */
 }
 
 /* Desktop Icon - Selected State */
@@ -488,7 +488,7 @@
 .desktop-icon--ghost {
   opacity: 0.3;
   pointer-events: none;
-  z-index: 1998; /* Below dragging icon but visible */
+  z-index: 1; /* Below windows, on desktop surface */
 }
 
 /* Desktop Icon - Preview State (where icon will snap to) - matches window snap preview */
@@ -503,7 +503,7 @@
   );
   box-sizing: border-box;
   pointer-events: none;
-  z-index: 1999; /* Below dragging icon but above ghost */
+  z-index: 1; /* Below windows, on desktop surface */
   /* Hide icon content inside preview */
 }
 
@@ -718,6 +718,30 @@
   bottom: 8px;
   width: 4px;
   cursor: ew-resize;
+}
+
+/* Icon dragging cursor management - handled in icon drag hook */
+body.icon-dragging .retro-window,
+body.icon-dragging .retro-window *,
+body.icon-dragging .retro-titlebar,
+body.icon-dragging .retro-titlebar *,
+body.icon-dragging .cursor-move,
+body.icon-dragging .desktop-icon,
+body.icon-dragging .desktop-icon * {
+  cursor: grabbing !important;
+}
+
+body.icon-dragging.icon-dragging-over-window .retro-window,
+body.icon-dragging.icon-dragging-over-window .retro-window *,
+body.icon-dragging.icon-dragging-over-window .retro-titlebar,
+body.icon-dragging.icon-dragging-over-window .retro-titlebar *,
+body.icon-dragging.icon-dragging-over-window .cursor-move {
+  cursor: not-allowed !important;
+}
+
+body.icon-dragging.icon-dragging-over-icon .desktop-icon,
+body.icon-dragging.icon-dragging-over-icon .desktop-icon * {
+  cursor: not-allowed !important;
 }
 
 /* Retro Loading Progress Bar - Animated angled stripes */

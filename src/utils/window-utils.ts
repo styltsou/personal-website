@@ -17,8 +17,9 @@ const DEFAULT_WINDOW_WIDTH = 1100;
 const DEFAULT_WINDOW_HEIGHT = 800;
 const MIN_WINDOW_WIDTH = 800;
 const MIN_WINDOW_HEIGHT = 600;
-export const BASE_Z_INDEX = 1000;
-const Z_INDEX_INCREMENT = 1000;
+export const BASE_Z_INDEX = 10; // Windows start at 10
+const Z_INDEX_INCREMENT = 1; // Increment by 1 per focus (much simpler!)
+const MAX_WINDOW_Z_INDEX = 98; // Cap windows at 98 (dragging icon uses 99, menu bar uses 100)
 const VERTICAL_OFFSET_RATIO = 0.15; // 15% of viewport height
 export const MENU_BAR_HEIGHT = 32; // Menu bar height in pixels
 const CASCADE_OFFSET_X = 40; // Horizontal offset for cascading windows (px)
@@ -57,12 +58,15 @@ export function getMaxZIndex(
 
 /**
  * Calculate next z-index for a new or focused window
+ * Caps at MAX_WINDOW_Z_INDEX to ensure dragging icons (99) stay above
  */
 export function calculateNextZIndex(
   currentMaxZIndex: number,
   nextZIndex: number = BASE_Z_INDEX
 ): number {
-  return Math.max(currentMaxZIndex + Z_INDEX_INCREMENT, nextZIndex);
+  const calculated = Math.max(currentMaxZIndex + Z_INDEX_INCREMENT, nextZIndex);
+  // Cap at MAX_WINDOW_Z_INDEX to leave room for dragging icons (99) and menu bar (100)
+  return Math.min(calculated, MAX_WINDOW_Z_INDEX);
 }
 
 /**

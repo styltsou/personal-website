@@ -63,7 +63,7 @@ export default function DesktopIcon({
     (e: React.MouseEvent) => {
       e.stopPropagation();
       e.preventDefault();
-      
+
       // Clear any pending single-click timer
       if (doubleClickTimerRef.current) {
         clearTimeout(doubleClickTimerRef.current);
@@ -94,7 +94,11 @@ export default function DesktopIcon({
     } else {
       // Function that returns ReactNode (SVG component)
       const IconComponent = iconConfig.icon;
-      return <div className="desktop-icon-image"><IconComponent /></div>;
+      return (
+        <div className="desktop-icon-image">
+          <IconComponent />
+        </div>
+      );
     }
   };
 
@@ -136,30 +140,29 @@ export default function DesktopIcon({
       )}
 
       {/* Main icon (follows cursor while dragging, normal position otherwise) */}
-      <div
-        className={`desktop-icon ${isSelected ? 'desktop-icon--selected' : ''} ${
-          isDragging ? 'desktop-icon--dragging' : ''
-        }`}
-        style={{
-          position: 'absolute',
-          left: `${displayPosition.x}px`,
-          top: `${displayPosition.y}px`,
-          width: `${ICON_WIDTH}px`,
-          height: `${ICON_HEIGHT}px`,
-          transition: 'none', // No transitions - instant snap like real OS
-          zIndex: isDragging ? 2000 : 'auto',
-        }}
-        onMouseDown={handleMouseDown}
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        role="button"
-        tabIndex={0}
-        aria-label={`${iconConfig.label} icon`}
-      >
-        {renderIcon()}
-        <div className="desktop-icon-label">{iconConfig.label}</div>
-      </div>
+      {/* When dragging, hide the icon here - it will be rendered at Desktop level */}
+      {!isDragging && (
+        <div
+          className={`desktop-icon ${isSelected ? 'desktop-icon--selected' : ''}`}
+          style={{
+            position: 'absolute',
+            left: `${displayPosition.x}px`,
+            top: `${displayPosition.y}px`,
+            width: `${ICON_WIDTH}px`,
+            height: `${ICON_HEIGHT}px`,
+            transition: 'none', // No transitions - instant snap like real OS
+          }}
+          onMouseDown={handleMouseDown}
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
+          role="button"
+          tabIndex={0}
+          aria-label={`${iconConfig.label} icon`}
+        >
+          {renderIcon()}
+          <div className="desktop-icon-label">{iconConfig.label}</div>
+        </div>
+      )}
     </>
   );
 }
-

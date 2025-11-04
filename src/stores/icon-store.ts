@@ -19,12 +19,15 @@ interface IconStore {
   // State
   iconStates: IconState[];
   selectedIconId: string | null;
+  draggingIconId: string | null; // Track which icon is currently being dragged
+  draggingIconPosition: { x: number; y: number } | null; // Position of dragging icon
   hasLoadedFromPersistence: boolean;
 
   // Actions
   updateIconPosition: (iconId: string, position: IconPosition) => void;
   selectIcon: (iconId: string) => void;
   deselectIcons: () => void;
+  setDraggingIcon: (iconId: string | null, position?: { x: number; y: number } | null) => void;
   initializeFromPersistence: (
     persistedStates: IconState[]
   ) => void;
@@ -35,6 +38,8 @@ export const useIconStore = create<IconStore>((set, get) => ({
   // Initial state
   iconStates: [],
   selectedIconId: null,
+  draggingIconId: null,
+  draggingIconPosition: null,
   hasLoadedFromPersistence: false,
 
   // Update icon position
@@ -68,6 +73,14 @@ export const useIconStore = create<IconStore>((set, get) => ({
   deselectIcons: () => {
     set({
       selectedIconId: null,
+    });
+  },
+
+  // Set which icon is being dragged and its position
+  setDraggingIcon: (iconId: string | null, position?: { x: number; y: number } | null) => {
+    set({
+      draggingIconId: iconId,
+      draggingIconPosition: position ?? null,
     });
   },
 

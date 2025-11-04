@@ -76,8 +76,8 @@ export default function DesktopIcons() {
     }
   }, [openWindow]);
 
-  // Icon z-index should be below windows (BASE_Z_INDEX = 1000)
-  const ICON_Z_INDEX = BASE_Z_INDEX - 100; // 900
+  // Icon z-index should be below windows (BASE_Z_INDEX = 10)
+  const ICON_Z_INDEX = 1; // Desktop icons stay on desktop surface
 
   return (
     <div
