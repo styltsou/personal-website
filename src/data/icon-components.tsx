@@ -71,78 +71,6 @@ export const CvIcon = (): ReactNode => (
   </svg>
 );
 
-export const RecycleBinIcon = (): ReactNode => (
-  <svg
-    width="64"
-    height="64"
-    viewBox="0 0 64 64"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Trash can body */}
-    <rect
-      x="16"
-      y="20"
-      width="32"
-      height="36"
-      rx="2"
-      fill="#f8f5ed"
-      stroke="#d4c4b0"
-      strokeWidth="2"
-    />
-    {/* Lid */}
-    <rect
-      x="14"
-      y="18"
-      width="36"
-      height="6"
-      rx="1"
-      fill="#e8ddd0"
-      stroke="#d4c4b0"
-      strokeWidth="2"
-    />
-    {/* Lid handle */}
-    <rect
-      x="28"
-      y="12"
-      width="8"
-      height="8"
-      rx="1"
-      fill="#d4c4b0"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-    />
-    {/* Vertical lines for texture */}
-    <line
-      x1="26"
-      y1="28"
-      x2="26"
-      y2="48"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-      opacity="0.5"
-    />
-    <line
-      x1="32"
-      y1="28"
-      x2="32"
-      y2="48"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-      opacity="0.5"
-    />
-    <line
-      x1="38"
-      y1="28"
-      x2="38"
-      y2="48"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-      opacity="0.5"
-    />
-  </svg>
-);
-
 export const TerminalIcon = (): ReactNode => (
   <svg
     width="64"
@@ -250,5 +178,91 @@ export const WikipediaIcon = (): React.ReactNode => (
     {/* Text lines below */}
     <rect x="20" y="42" width="24" height="2" rx="1" fill="#7da3d1" />
     <rect x="22" y="46" width="20" height="2" rx="1" fill="#b8b8b8" />
+  </svg>
+);
+
+export const FlappyBirdIcon = (): React.ReactNode => (
+  <svg
+    width="64"
+    height="64"
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Sky background */}
+    <rect
+      x="8"
+      y="8"
+      width="48"
+      height="48"
+      rx="4"
+      fill="#87ceeb"
+      stroke="#7da3d1"
+      strokeWidth="2"
+    />
+    {/* Ground */}
+    <rect
+      x="8"
+      y="48"
+      width="48"
+      height="8"
+      fill="#8b7355"
+      stroke="#7da3d1"
+      strokeWidth="1"
+    />
+    {/* Bird (gold/yellow circle) */}
+    <ellipse
+      cx="24"
+      cy="32"
+      rx="6"
+      ry="8"
+      fill="#ffd700"
+      stroke="#ffa500"
+      strokeWidth="1.5"
+    />
+    {/* Bird eye */}
+    <circle cx="26" cy="30" r="1.5" fill="#000" />
+    {/* Pipe */}
+    <rect
+      x="40"
+      y="20"
+      width="8"
+      height="20"
+      fill="#4caf50"
+      stroke="#2e7d32"
+      strokeWidth="1"
+      rx="1"
+    />
+    <rect
+      x="40"
+      y="36"
+      width="8"
+      height="12"
+      fill="#4caf50"
+      stroke="#2e7d32"
+      strokeWidth="1"
+      rx="1"
+    />
+    {/* Pipe cap */}
+    <rect
+      x="38"
+      y="20"
+      width="12"
+      height="4"
+      fill="#66bb6a"
+      stroke="#2e7d32"
+      strokeWidth="1"
+      rx="1"
+    />
+    <rect
+      x="38"
+      y="44"
+      width="12"
+      height="4"
+      fill="#66bb6a"
+      stroke="#2e7d32"
+      strokeWidth="1"
+      rx="1"
+    />
   </svg>
 );

@@ -11,6 +11,7 @@ import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../dragging-icon';
 import TerminalWindow from '../terminal-window';
 import WikipediaWindow from '../wikipedia-window';
+import FlappyBirdWindow from '../flappy-bird-window';
 import { useWindowStore } from '../../stores/window-store';
 import { useWindowContent } from '../../hooks/use-window-content';
 import { useWindowPersistence } from '../../hooks/use-window-persistence';
@@ -80,8 +81,8 @@ export default function Desktop() {
   // Load content for newly opened windows (skip terminal and wikipedia as they have custom components)
   useEffect(() => {
     windowStates.forEach((ws) => {
-      // Skip terminal and wikipedia windows - they use custom components
-      if (ws.id === 'terminal' || ws.id === 'wikipedia') return;
+      // Skip terminal, wikipedia, and flappy-bird windows - they use custom components
+      if (ws.id === 'terminal' || ws.id === 'wikipedia' || ws.id === 'flappy-bird') return;
 
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
@@ -141,14 +142,18 @@ export default function Desktop() {
             isLoading={
               windowState.id !== 'terminal' &&
               windowState.id !== 'wikipedia' &&
+              windowState.id !== 'flappy-bird' &&
               isLoading(windowState.id)
             }
             hideOverflow={windowState.id === 'wikipedia'}
+            resizeConstraint={windowState.config.resizeConstraint}
           >
             {windowState.id === 'terminal' ? (
               <TerminalWindow />
             ) : windowState.id === 'wikipedia' ? (
               <WikipediaWindow />
+            ) : windowState.id === 'flappy-bird' ? (
+              <FlappyBirdWindow />
             ) : windowState.content ? (
               <div className={styles.content} dangerouslySetInnerHTML={{ __html: windowState.content }} />
             ) : !isLoading(windowState.id) ? (

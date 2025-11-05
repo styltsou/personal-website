@@ -11,6 +11,15 @@ import compress from 'astro-compress';
 export default defineConfig({
   // Enable View Transitions API for smooth page navigation
   output: 'static',
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import'],
+        },
+      },
+    },
+  },
   integrations: [
     react(),
     partytown(),
