@@ -60,7 +60,7 @@ export function useSpotify(): UseSpotifyReturn {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/spotify/tracks');
+      const response = await fetch('/api/tracks');
 
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);

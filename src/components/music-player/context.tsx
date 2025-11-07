@@ -4,9 +4,9 @@
  */
 
 import { createContext, useContext, useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
-import { useSpotify } from './hooks/use-spotify';
 import { useAudioPlayer } from './hooks/use-audio-player';
 import type { Track } from './types';
+import tracksData from '../../content/tracks/tracks.json';
 
 type LoopMode = 'none' | 'playlist' | 'song';
 
@@ -62,7 +62,11 @@ interface MusicPlayerProviderProps {
 }
 
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
-  const { tracks, loading, error } = useSpotify();
+  // Get tracks from Content Collection (imported as static JSON)
+  const tracks: Track[] = tracksData.tracks || [];
+  const loading = false; // No loading needed for static data
+  const error: string | null = tracksData.error || null;
+  
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [playlistVisible, setPlaylistVisible] = useState(true);
   const [loopMode, setLoopMode] = useState<LoopMode>('none');
