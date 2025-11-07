@@ -3,7 +3,7 @@
  * Imports all SCSS partials
  */
 
-@import './variables';
-@import './mixins';
-@import './base';
+@use './variables' as *;
+@use './mixins' as *;
+@use './base';
 

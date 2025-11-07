@@ -1,0 +1,145 @@
+/**
+ * PlaylistPanel Component Styles
+ */
+
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--retro-text-on-light);
+  border-bottom: 1px solid var(--retro-window-border-dark);
+  background-color: var(--retro-titlebar-orange);
+  @include retro-3d-outset;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hideButton {
+  @include retro-button;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--retro-text);
+  transition: all 0.08s ease;
+  
+  &:hover {
+    background-color: var(--retro-button-active-bg);
+    transform: scale(1.02);
+  }
+  
+  &:active {
+    @include retro-3d-inset;
+    transform: scale(0.99);
+  }
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+  padding: 0.75rem;
+  gap: 0.5rem;
+  background-color: var(--retro-window-bg);
+}
+
+.trackItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: var(--retro-button-bg);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  @include retro-3d-outset;
+
+  &:hover {
+    background-color: var(--retro-button-active-bg);
+    border-color: var(--retro-window-border-dark);
+  }
+
+  &:active {
+    @include retro-3d-inset;
+  }
+
+  &.active {
+    background-color: var(--retro-titlebar-orange);
+    color: var(--retro-text-on-light);
+    border-color: var(--retro-window-border-dark);
+    @include retro-3d-inset;
+    font-weight: 600;
+    
+    .trackNumber {
+      color: var(--retro-text-on-light);
+      font-weight: 600;
+    }
+    
+    .trackTitle {
+      color: var(--retro-text-on-light);
+      font-weight: 600;
+    }
+    
+    .trackArtist {
+      color: var(--retro-text-on-light);
+      opacity: 0.8;
+    }
+  }
+}
+
+.trackNumber {
+  flex-shrink: 0;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--retro-text-light);
+  min-width: 28px;
+  font-weight: 500;
+}
+
+.trackInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.trackTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--retro-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.trackArtist {
+  font-size: 12px;
+  color: var(--retro-text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+

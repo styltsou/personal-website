@@ -4,6 +4,16 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/stores/*": ["./src/stores/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/data/*": ["./src/data/*"],
+      "@/styles/*": ["./src/styles/*"]
+    }
   }
 }

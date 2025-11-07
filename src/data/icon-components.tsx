@@ -252,3 +252,219 @@ export const WikipediaIcon = (): React.ReactNode => (
     <rect x="22" y="46" width="20" height="2" rx="1" fill="#b8b8b8" />
   </svg>
 );
+
+export const MusicPlayerIcon = (): React.ReactNode => (
+  <svg
+    width="64"
+    height="64"
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Simple music note icon */}
+    <circle
+      cx="32"
+      cy="32"
+      r="20"
+      fill="#f8f5ed"
+      stroke="#7da3d1"
+      strokeWidth="2"
+    />
+    {/* Music note */}
+    <path
+      d="M 28 20 L 28 40 M 28 20 L 36 20 L 36 30 M 36 30 L 32 30 L 32 40"
+      stroke="#7da3d1"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Small circle at bottom */}
+    <circle
+      cx="28"
+      cy="42"
+      r="3"
+      fill="#7da3d1"
+    />
+    <circle
+      cx="32"
+      cy="42"
+      r="3"
+      fill="#7da3d1"
+    />
+  </svg>
+);
+
+// Music Player Control Icons
+export const PlayIcon = (): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 8 5 L 8 19 L 18 12 Z"
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const PauseIcon = (): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="7"
+      y="5"
+      width="4"
+      height="14"
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth="1"
+    />
+    <rect
+      x="13"
+      y="5"
+      width="4"
+      height="14"
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth="1"
+    />
+  </svg>
+);
+
+export const PreviousIcon = (): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 6 6 L 6 18 M 6 6 L 14 12 L 6 18"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <path
+      d="M 14 6 L 14 18"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const NextIcon = (): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 18 6 L 18 18 M 18 6 L 10 12 L 18 18"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <path
+      d="M 10 6 L 10 18"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const LoopIcon = ({ mode }: { mode: 'none' | 'song' | 'playlist' }): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 7 12 L 4 9 L 7 6 M 17 12 L 20 9 L 17 6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <path
+      d="M 4 9 L 20 9"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    {mode === 'song' && (
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+        fill="currentColor"
+      />
+    )}
+    {mode === 'playlist' && (
+      <>
+        <circle
+          cx="9"
+          cy="12"
+          r="2"
+          fill="currentColor"
+        />
+        <circle
+          cx="15"
+          cy="12"
+          r="2"
+          fill="currentColor"
+        />
+      </>
+    )}
+  </svg>
+);
+
+export const RefreshIcon = (): React.ReactNode => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M 20 8 C 18.5 5.5 15.5 4 12 4 C 7 4 3 8 3 13 C 3 18 7 22 12 22 C 16 22 19.5 19 20.5 15"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <path
+      d="M 20 4 L 20 8 L 16 8"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  </svg>
+);
