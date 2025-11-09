@@ -11,6 +11,7 @@ import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../dragging-icon';
 import TerminalWindow from '../terminal-window';
 import WikipediaWindow from '../wikipedia-window';
+import MusicPlayer from '../music-player';
 import { useWindowStore } from '../../stores/window-store';
 import { useWindowContent } from '../../hooks/use-window-content';
 import { useWindowPersistence } from '../../hooks/use-window-persistence';
@@ -77,11 +78,16 @@ export default function Desktop() {
   useWindowPersistence();
   useIconPersistence();
 
-  // Load content for newly opened windows (skip terminal and wikipedia as they have custom components)
+  // Load content for newly opened windows (skip terminal, wikipedia, and music-player as they have custom components)
   useEffect(() => {
     windowStates.forEach((ws) => {
-      // Skip terminal and wikipedia windows - they use custom components
-      if (ws.id === 'terminal' || ws.id === 'wikipedia') return;
+      // Skip terminal, wikipedia, and music-player windows - they use custom components
+      if (
+        ws.id === 'terminal' ||
+        ws.id === 'wikipedia' ||
+        ws.id === 'music-player'
+      )
+        return;
 
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
@@ -141,6 +147,7 @@ export default function Desktop() {
             isLoading={
               windowState.id !== 'terminal' &&
               windowState.id !== 'wikipedia' &&
+              windowState.id !== 'music-player' &&
               isLoading(windowState.id)
             }
             hideOverflow={windowState.id === 'wikipedia'}
@@ -149,8 +156,13 @@ export default function Desktop() {
               <TerminalWindow />
             ) : windowState.id === 'wikipedia' ? (
               <WikipediaWindow />
+            ) : windowState.id === 'music-player' ? (
+              <MusicPlayer />
             ) : windowState.content ? (
-              <div className={styles.content} dangerouslySetInnerHTML={{ __html: windowState.content }} />
+              <div
+                className={styles.content}
+                dangerouslySetInnerHTML={{ __html: windowState.content }}
+              />
             ) : !isLoading(windowState.id) ? (
               <div className={styles.noContent}>
                 <p>No content available</p>

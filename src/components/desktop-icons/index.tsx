@@ -71,12 +71,15 @@ export default function DesktopIcons() {
   };
 
   // Handle double-click on icon - open window if windowId is configured
-  const handleIconDoubleClick = useCallback((iconId: string) => {
-    const icon = icons.find((i) => i.id === iconId);
-    if (icon?.windowId) {
-      openWindow(icon.windowId);
-    }
-  }, [openWindow]);
+  const handleIconDoubleClick = useCallback(
+    (iconId: string) => {
+      const icon = icons.find((i) => i.id === iconId);
+      if (icon?.windowId) {
+        openWindow(icon.windowId);
+      }
+    },
+    [openWindow]
+  );
 
   // Icon z-index should be below windows (BASE_Z_INDEX = 10)
   const ICON_Z_INDEX = 1; // Desktop icons stay on desktop surface
@@ -115,4 +118,3 @@ export default function DesktopIcons() {
     </div>
   );
 }
-

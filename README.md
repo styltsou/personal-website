@@ -54,6 +54,7 @@ The project follows modern React conventions with kebab-case naming for all file
 ## 📋 Naming Conventions
 
 All files use **kebab-case** naming convention:
+
 - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`
 - Hooks: `use-window-drag.ts`, `use-url-sync.ts`
 - Utils: `window-utils.ts`, `viewport-constraints.ts`

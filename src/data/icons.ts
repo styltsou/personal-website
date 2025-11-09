@@ -9,6 +9,7 @@ import {
   CvIcon,
   RecycleBinIcon,
   TerminalIcon,
+  MusicPlayerIcon,
 } from './icon-components.tsx';
 
 export interface IconConfig {
@@ -41,5 +42,11 @@ export const icons: IconConfig[] = [
     label: 'Wikipedia',
     icon: WikipediaIcon,
     windowId: 'wikipedia',
+  },
+  {
+    id: 'music-player',
+    label: 'Music',
+    icon: MusicPlayerIcon,
+    windowId: 'music-player',
   },
 ];
