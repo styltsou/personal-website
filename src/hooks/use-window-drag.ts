@@ -5,7 +5,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { constrainPositionToViewport } from '../utils/viewport-constraints';
-import { detectSnapSideFromMouse, MENU_BAR_HEIGHT } from '../utils/window-utils';
+import {
+  detectSnapSideFromMouse,
+  MENU_BAR_HEIGHT,
+} from '../utils/window-utils';
 import type { Position, Size } from '../utils/viewport-constraints';
 import type { SnapSide } from '../stores/window-store';
 

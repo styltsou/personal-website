@@ -1,0 +1,108 @@
+/**
+ * ControlPanel Component Styles
+ */
+
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.container {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.shuffleWrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.mainControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  
+  // Ensure all buttons in mainControls have normal icon color
+  .button {
+    svg {
+      color: var(--retro-text);
+    }
+  }
+}
+
+.loopWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.button {
+  @include retro-button;
+  aspect-ratio: 1;
+  min-width: 60px;
+  height: 60px;
+  font-size: 24px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.08s ease;
+  color: var(--retro-text);
+  
+  // Ensure SVG icons are properly sized and inherit color
+  svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+  
+  &:hover {
+    background-color: var(--retro-button-active-bg);
+    transform: scale(1.02);
+  }
+  
+  &:active {
+    @include retro-3d-inset;
+    transform: scale(0.99);
+  }
+  
+}
+
+// Loop button active state (when loop is enabled)
+.loopActive {
+  @include retro-3d-inset;
+  
+  svg {
+    color: var(--retro-titlebar-orange);
+  }
+}
+
+// Shuffle button active state (when shuffle is enabled)
+.shuffleActive {
+  @include retro-3d-inset;
+  
+  svg {
+    color: var(--retro-titlebar-orange);
+  }
+}
+
+// Shuffle button inactive state (when shuffle is off)
+.shuffleWrapper .button:not(.shuffleActive) {
+  svg {
+    color: var(--retro-text-light);
+    opacity: 0.5;
+  }
+}
+
+// Loop button inactive state (when loop is off)
+.loopWrapper .button:not(.loopActive) {
+  svg {
+    color: var(--retro-text-light);
+    opacity: 0.5;
+  }
+}
+

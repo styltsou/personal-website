@@ -3,8 +3,8 @@
  * These are used across multiple components and kept as global classes
  */
 
-@import './variables';
-@import './mixins';
+@use './variables' as *;
+@use './mixins' as *;
 
 /* Nostalgic Window Style - Softer 3D Effect with Rounded Corners */
 .retro-window {

@@ -36,8 +36,9 @@ export function useIconDrag({
   const [isDragging, setIsDragging] = useState(false);
   const [isPotentialDrag, setIsPotentialDrag] = useState(false); // Track if mousedown happened
   const [dragPosition, setDragPosition] = useState<PixelPosition | null>(null);
-  const [previewGridPosition, setPreviewGridPosition] = useState<GridPosition | null>(null);
-  
+  const [previewGridPosition, setPreviewGridPosition] =
+    useState<GridPosition | null>(null);
+
   // Refs for drag state
   const dragStartPosRef = useRef<PixelPosition | null>(null);
   const dragMouseStartRef = useRef<{ x: number; y: number } | null>(null);
@@ -49,54 +50,66 @@ export function useIconDrag({
   const windowStates = useWindowStore((state) => state.windowStates);
 
   // Helper function to check if icon position overlaps with another icon
-  const isPositionOverIcon = useCallback((iconPos: PixelPosition): boolean => {
-    const snappedGrid = snapToGrid(iconPos.x, iconPos.y);
-    const constrainedGrid = constrainGridPosition(snappedGrid.gridX, snappedGrid.gridY);
-    const occupiedCells = getOccupiedCells(
-      iconStates
-        .filter((state) => state.id !== iconId)
-        .map((state) => state.position)
-    );
-    const targetCellKey = `${constrainedGrid.gridX},${constrainedGrid.gridY}`;
-    return occupiedCells.has(targetCellKey);
-  }, [iconId, iconStates]);
+  const isPositionOverIcon = useCallback(
+    (iconPos: PixelPosition): boolean => {
+      const snappedGrid = snapToGrid(iconPos.x, iconPos.y);
+      const constrainedGrid = constrainGridPosition(
+        snappedGrid.gridX,
+        snappedGrid.gridY
+      );
+      const occupiedCells = getOccupiedCells(
+        iconStates
+          .filter((state) => state.id !== iconId)
+          .map((state) => state.position)
+      );
+      const targetCellKey = `${constrainedGrid.gridX},${constrainedGrid.gridY}`;
+      return occupiedCells.has(targetCellKey);
+    },
+    [iconId, iconStates]
+  );
 
   // Helper function to check if icon position overlaps with any window
-  const isPositionOverWindow = useCallback((iconPos: PixelPosition): boolean => {
-    const iconCenterX = iconPos.x + ICON_WIDTH / 2;
-    const iconCenterY = iconPos.y + ICON_HEIGHT / 2;
+  const isPositionOverWindow = useCallback(
+    (iconPos: PixelPosition): boolean => {
+      const iconCenterX = iconPos.x + ICON_WIDTH / 2;
+      const iconCenterY = iconPos.y + ICON_HEIGHT / 2;
 
-    return windowStates.some((ws) => {
-      if (ws.isMinimized) return false;
+      return windowStates.some((ws) => {
+        if (ws.isMinimized) return false;
 
-      let windowX: number, windowY: number, windowWidth: number, windowHeight: number;
+        let windowX: number,
+          windowY: number,
+          windowWidth: number,
+          windowHeight: number;
 
-      if (ws.isMaximized) {
-        windowX = 0;
-        windowY = MENU_BAR_HEIGHT;
-        windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
-      } else if (ws.snapSide) {
-        const snapped = getSnappedPreview(ws.snapSide);
-        windowX = snapped.position.x;
-        windowY = snapped.position.y;
-        windowWidth = snapped.size.width;
-        windowHeight = snapped.size.height;
-      } else {
-        windowX = ws.position.x;
-        windowY = ws.position.y;
-        windowWidth = ws.size.width;
-        windowHeight = ws.size.height;
-      }
+        if (ws.isMaximized) {
+          windowX = 0;
+          windowY = MENU_BAR_HEIGHT;
+          windowWidth = window.innerWidth;
+          windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+        } else if (ws.snapSide) {
+          const snapped = getSnappedPreview(ws.snapSide);
+          windowX = snapped.position.x;
+          windowY = snapped.position.y;
+          windowWidth = snapped.size.width;
+          windowHeight = snapped.size.height;
+        } else {
+          windowX = ws.position.x;
+          windowY = ws.position.y;
+          windowWidth = ws.size.width;
+          windowHeight = ws.size.height;
+        }
 
-      return (
-        iconCenterX >= windowX &&
-        iconCenterX <= windowX + windowWidth &&
-        iconCenterY >= windowY &&
-        iconCenterY <= windowY + windowHeight
-      );
-    });
-  }, [windowStates]);
+        return (
+          iconCenterX >= windowX &&
+          iconCenterX <= windowX + windowWidth &&
+          iconCenterY >= windowY &&
+          iconCenterY <= windowY + windowHeight
+        );
+      });
+    },
+    [windowStates]
+  );
 
   // Convert initial grid position to pixel position
   const initialPixelPosition = gridToPixel(
@@ -108,7 +121,7 @@ export function useIconDrag({
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      
+
       const currentPixelPos = gridToPixel(
         initialGridPosition.gridX,
         initialGridPosition.gridY
@@ -124,7 +137,11 @@ export function useIconDrag({
 
   // Handle drag movement and end
   useEffect(() => {
-    if (!isPotentialDrag || !dragStartPosRef.current || !dragMouseStartRef.current) {
+    if (
+      !isPotentialDrag ||
+      !dragStartPosRef.current ||
+      !dragMouseStartRef.current
+    ) {
       return;
     }
 
@@ -167,8 +184,14 @@ export function useIconDrag({
           setPreviewGridPosition(null);
         } else {
           document.body.style.cursor = 'grabbing';
-          const snappedGrid = snapToGrid(constrainedPosition.x, constrainedPosition.y);
-          const constrainedGrid = constrainGridPosition(snappedGrid.gridX, snappedGrid.gridY);
+          const snappedGrid = snapToGrid(
+            constrainedPosition.x,
+            constrainedPosition.y
+          );
+          const constrainedGrid = constrainGridPosition(
+            snappedGrid.gridX,
+            snappedGrid.gridY
+          );
           const occupiedCells = getOccupiedCells(
             iconStates
               .filter((state) => state.id !== iconId)
@@ -188,7 +211,11 @@ export function useIconDrag({
 
     const handleMouseUp = (e: MouseEvent) => {
       // Only process drop if we were actually dragging
-      if (hasStartedDragRef.current && dragStartPosRef.current && dragMouseStartRef.current) {
+      if (
+        hasStartedDragRef.current &&
+        dragStartPosRef.current &&
+        dragMouseStartRef.current
+      ) {
         const deltaX = e.clientX - dragMouseStartRef.current.x;
         const deltaY = e.clientY - dragMouseStartRef.current.y;
 
@@ -198,8 +225,14 @@ export function useIconDrag({
         };
 
         const constrainedFinalPosition = constrainToViewport(finalPosition);
-        const snappedGrid = snapToGrid(constrainedFinalPosition.x, constrainedFinalPosition.y);
-        const constrainedGrid = constrainGridPosition(snappedGrid.gridX, snappedGrid.gridY);
+        const snappedGrid = snapToGrid(
+          constrainedFinalPosition.x,
+          constrainedFinalPosition.y
+        );
+        const constrainedGrid = constrainGridPosition(
+          snappedGrid.gridX,
+          snappedGrid.gridY
+        );
         const occupiedCells = getOccupiedCells(
           iconStates
             .filter((state) => state.id !== iconId)
@@ -230,7 +263,11 @@ export function useIconDrag({
       setDraggingIcon(null);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      document.body.classList.remove('icon-dragging', 'icon-dragging-over-window', 'icon-dragging-over-icon');
+      document.body.classList.remove(
+        'icon-dragging',
+        'icon-dragging-over-window',
+        'icon-dragging-over-icon'
+      );
     };
 
     document.addEventListener('mousemove', handleMouseMove, { passive: false });
@@ -245,7 +282,11 @@ export function useIconDrag({
       setDraggingIcon(null);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      document.body.classList.remove('icon-dragging', 'icon-dragging-over-window', 'icon-dragging-over-icon');
+      document.body.classList.remove(
+        'icon-dragging',
+        'icon-dragging-over-window',
+        'icon-dragging-over-icon'
+      );
     };
   }, [
     isPotentialDrag,
@@ -259,9 +300,10 @@ export function useIconDrag({
   ]);
 
   // Get current display position
-  const displayPosition = isDragging && dragPosition
-    ? dragPosition
-    : gridToPixel(initialGridPosition.gridX, initialGridPosition.gridY);
+  const displayPosition =
+    isDragging && dragPosition
+      ? dragPosition
+      : gridToPixel(initialGridPosition.gridX, initialGridPosition.gridY);
 
   // Get preview pixel position
   const previewPixelPosition = previewGridPosition

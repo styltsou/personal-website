@@ -21,4 +21,10 @@ export const windows: WindowConfig[] = [
   { id: 'terminal', title: 'Terminal', path: '', pinned: false },
   { id: 'wikipedia', title: 'Wikipedia', path: '', pinned: false },
   { id: 'flappy-bird', title: 'Flappy Bird', path: '', pinned: false, resizeConstraint: 'diagonal' },
+  {
+    id: 'music-player',
+    title: 'MusicPlayer Pro v1.0',
+    path: '',
+    pinned: false,
+  },
 ];

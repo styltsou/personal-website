@@ -11,6 +11,7 @@
 ## ✅ Completed Features
 
 ### Core Structure and Data
+
 - ✅ Created `src/data/icons.ts` with initial icon configurations
   - `cv.pdf` icon (id: 'cv', label: 'cv.pdf')
   - `Trash` icon (id: 'recycle-bin', label: 'Trash')
@@ -22,6 +23,7 @@
   - Both icons are 64x64px SVG elements
 
 ### State Management
+
 - ✅ Created `src/stores/icon-store.ts`
   - Zustand store managing icon positions (grid coordinates)
   - Selected icon ID state
@@ -30,6 +32,7 @@
   - Selectors for better performance
 
 ### Grid System
+
 - ✅ Created `src/utils/icon-grid.ts`
   - Constants: `GRID_CELL_SIZE = 100`, `GRID_PADDING = 20`, `ICON_WIDTH = 100`, `ICON_HEIGHT = 100`, `ICON_IMAGE_SIZE = 64`
   - Icons are rectangular (100x100px) to fit labels inside
@@ -43,6 +46,7 @@
   - `getOccupiedCells()` - Get set of occupied grid cells from icon states
 
 ### Drag and Drop
+
 - ✅ Created `src/hooks/use-icon-drag.ts`
   - **Simplified click vs drag detection**: Uses 5px movement threshold to distinguish clicks from drags
   - Mouse down/up/move event handling with proper state management
@@ -57,7 +61,7 @@
   - Preview grid position calculated in real-time during drag
   - **Drop prevention**: Icons cannot be dropped over windows or other icons
   - **Preview hiding**: Preview outline hidden when dragging over invalid drop locations (windows/icons)
-  - **Cursor management**: 
+  - **Cursor management**:
     - `grabbing` cursor when dragging on desktop
     - `not-allowed` cursor when dragging over windows or other icons
     - Global cursor management via body classes and CSS
@@ -66,6 +70,7 @@
   - **Dragging icon tracking**: Tracks dragging icon ID and position in store for rendering at Desktop level
 
 ### Icon Component
+
 - ✅ Created `src/components/desktop-icon.tsx`
   - Icon image rendering (SVG or img element)
   - Label text below icon (always visible)
@@ -80,6 +85,7 @@
   - Proper z-index management (icons below windows, elevated while dragging)
 
 ### Icon Container
+
 - ✅ Created `src/components/desktop-icons.tsx`
   - Calculates grid layout based on viewport size
   - Renders all icons using DesktopIcon components
@@ -89,6 +95,7 @@
   - Z-index: 900 (below windows' BASE_Z_INDEX of 1000)
 
 ### Persistence
+
 - ✅ Created `src/hooks/use-icon-persistence.ts`
   - Loads icon positions from localStorage on mount
   - Saves icon positions to localStorage whenever they change
@@ -97,6 +104,7 @@
   - Initializes store from persisted data
 
 ### Integration
+
 - ✅ Modified `src/components/desktop.tsx`
   - Added DesktopIcons component rendering
   - Added DraggingIcon component rendering (at Desktop level for proper z-index)
@@ -106,6 +114,7 @@
   - Dragging icon rendered outside icon container to escape stacking context
 
 ### Styling
+
 - ✅ Added icon-specific styles to `src/styles/retro.css`
   - `.desktop-icon-container` - Container styles with pointer-events management
   - `.desktop-icon` - Icon wrapper (100x100px rectangular, fits label inside, cursor pointer, box-sizing: border-box)
@@ -145,6 +154,7 @@
 ## 🔧 Technical Implementation Details
 
 ### Grid System
+
 - **Grid cell size**: 100x100px (matches icon container size exactly)
 - **Grid padding**: 20px from edges
 - **Icon container size**: 100x100px (rectangular to fit labels)
@@ -154,6 +164,7 @@
 - Snap positions are equal in size to icon containers for perfect alignment
 
 ### Z-Index Management
+
 - **Simplified z-index system**: Using smaller, more manageable values
 - **Icons**: Base z-index 1 (desktop surface, below windows)
 - **Windows**: 10-98 (starting at 10, incrementing by 1 per focus, capped at 98)
@@ -163,6 +174,7 @@
 - **Dragging icon rendered at Desktop level**: Escapes icon container stacking context to appear above windows
 
 ### Collision Detection
+
 - Store occupied grid cells as Set<string> (format: "x,y")
 - When snapping, check if target cell is occupied
 - If occupied, find nearest free cell using Manhattan distance
@@ -170,23 +182,25 @@
 - Exclude current icon's position during collision detection
 
 ### Persistence Format
+
 ```typescript
 interface PersistedIconState {
   [iconId: string]: {
     gridX: number;
     gridY: number;
-  }
+  };
 }
 ```
 
 ### Icon Visual States
+
 - **Default**: Normal opacity, normal shadow, subtle hover scale (1.02)
-- **Selected**: 
+- **Selected**:
   - Blue background (`var(--retro-focus-blue)`)
   - Thin border (1px solid `var(--retro-titlebar-blue)`)
   - Border radius 4px
   - Subtle shadow
-- **Dragging**: 
+- **Dragging**:
   - Reduced opacity (0.7)
   - **Blue background and border** (appears even if not selected before drag)
   - Elevated shadow (4px 4px 12px)
@@ -209,7 +223,8 @@ interface PersistedIconState {
 - **Hover**: Subtle scale (1.02) transition
 
 ### Label Styling
-- **Theme-aware colors**: 
+
+- **Theme-aware colors**:
   - Light theme: Black text (`var(--retro-text)`) for contrast
   - Dark theme: Light text (`var(--retro-text)`) with text shadow for contrast
 - **Typography**:
@@ -228,11 +243,13 @@ interface PersistedIconState {
 ## 🎨 Design Decisions
 
 ### Icon Positioning
+
 - Icons initialize in a grid pattern starting from top-left
 - Positions spread with spacing to avoid initial overlap
 - Default positions calculated based on viewport size
 
 ### Drag Behavior
+
 - Icons move freely during drag (no grid constraints)
 - **Visual feedback during drag**:
   - Ghost icon at original position (semi-transparent)
@@ -251,17 +268,19 @@ interface PersistedIconState {
   - Titlebar cursor-move class overridden when dragging icons
 
 ### Selection
+
 - Single click selects icon (highlighted with blue border and background)
 - **Click vs drag**: Only selects if mouse movement is <5px (prevents accidental drag on click)
 - Click outside (on desktop container) deselects all icons
 - Selected state persists until deselected or another icon is selected
 - Selection styling uses thin border (1px) for cleaner look
-- **Mutual exclusivity with window focus**: 
+- **Mutual exclusivity with window focus**:
   - Selecting an icon unfocuses the active window
   - Focusing a window deselects any selected icon
   - Clicking desktop background unfocuses windows and deselects icons
 
 ### Double-Click
+
 - Double-click handler ready for future window opening integration
 - Currently non-functional (icons remain decorative)
 - Double-click detection prevents drag start (within 400ms and 10px distance)
@@ -290,14 +309,17 @@ interface PersistedIconState {
 ## 📋 Known Limitations / Future Enhancements
 
 ### Deferred Features (Not Urgent)
+
 These features are planned but not critical for core functionality:
 
 #### Viewport & Layout
+
 - [ ] **Viewport resize handling**: Recalculate grid and reposition icons when viewport resizes (currently grid recalculates on each drag operation, but full resize handler with icon repositioning is deferred)
 - [ ] **Mobile/tablet support**: Make icons non-draggable or use different layout for smaller screens
 - [ ] **Responsive grid**: Adjust grid cell size based on viewport size for better mobile experience
 
 #### Icon Functionality
+
 - [ ] **Window opening on double-click**: Connect icons to window system (✅ **Implemented** - terminal icon opens terminal window)
 - [ ] **Icon context menu**: Right-click menu for icon actions (rename, delete, properties, pin/unpin window, etc.)
   - [ ] **Pin/Unpin window from menu bar**: Add context menu option to dynamically pin/unpin windows from menu bar (currently window pinning is static in config)
@@ -306,6 +328,7 @@ These features are planned but not critical for core functionality:
 - [ ] **Icon properties**: View/edit icon metadata (label, icon image, window association)
 
 #### Visual Enhancements
+
 - [ ] **Icon animations**: Smooth entrance/exit animations when icons are added/removed
 - [ ] **Icon grouping/folders**: Folder-like organization for multiple icons
 - [ ] **Icon customization**: User-configurable icon images/colors per icon
@@ -313,6 +336,7 @@ These features are planned but not critical for core functionality:
 - [ ] **Icon badges**: Small indicators on icons (notification count, status, etc.)
 
 #### Interaction Enhancements
+
 - [ ] **Keyboard shortcuts**: Keyboard shortcuts for icon selection/activation (arrow keys, Enter to open, etc.)
 - [ ] **Multi-select icons**: Select multiple icons with Ctrl+click or drag selection box
 - [ ] **Icon drag-to-trash**: Drag icon to trash icon to delete
@@ -321,6 +345,7 @@ These features are planned but not critical for core functionality:
 - [ ] **Icon sorting**: Auto-arrange or sort icons by name, date, type, etc.
 
 #### Advanced Features
+
 - [ ] **Icon aliases/shortcuts**: Create shortcuts to existing icons
 - [ ] **Icon stacks**: Visual representation of multiple files stacked (like macOS)
 - [ ] **Icon drag-to-folder**: Drag icons into folder icons to organize
@@ -333,12 +358,14 @@ These features are planned but not critical for core functionality:
 ## 📝 Code Quality Notes
 
 ### Architecture
+
 - Follows existing codebase patterns (Zustand store, custom hooks, component structure)
 - TypeScript strict mode compliance
 - Consistent with kebab-case naming conventions
 - Separation of concerns (data, store, hooks, components, utils)
 
 ### Performance
+
 - Efficient collision detection using Set data structure
 - Grid calculations cached within single drag operation
 - Position updates batched through Zustand store
@@ -347,6 +374,7 @@ These features are planned but not critical for core functionality:
 - Icon components separated for better code splitting
 
 ### Accessibility
+
 - ARIA labels on icon elements
 - Keyboard accessible (tabIndex, role="button")
 - Focus states (could be enhanced)
@@ -357,6 +385,7 @@ These features are planned but not critical for core functionality:
 ## 🧪 Testing Notes
 
 ### Manual Testing Checklist
+
 - ✅ Icons render correctly on desktop
 - ✅ Icons can be dragged around
 - ✅ Icons snap to grid on drop
@@ -399,6 +428,7 @@ These features are planned but not critical for core functionality:
 The desktop icon system is fully implemented with all core features:
 
 ### ✅ Core Features Implemented
+
 - ✅ **Drag and drop** with snap-to-grid positioning
 - ✅ **Collision detection** - Icons avoid overlapping, find nearest free cell
 - ✅ **Icon selection** - Single click to select, click outside to deselect
@@ -421,6 +451,7 @@ The desktop icon system is fully implemented with all core features:
 - ✅ **SSR compatibility** - All window-dependent code is client-side safe
 
 ### 🎨 Visual Polish
+
 - Labels are larger (13px) and bolder (600 weight) for better readability
 - Blue background appears during drag for clear visual feedback
 - Ghost and preview states provide intuitive drag experience
@@ -428,7 +459,9 @@ The desktop icon system is fully implemented with all core features:
 - Icon sizes perfectly match grid cells for pixel-perfect alignment
 
 ### 🚀 Ready for Future Extensions
+
 The system is architected to easily support:
+
 - Window opening on double-click
 - Context menus
 - Icon renaming
@@ -437,4 +470,3 @@ The system is architected to easily support:
 - And more (see Future Enhancements section)
 
 The desktop icon system is production-ready and provides a solid foundation for additional features as needed.
-

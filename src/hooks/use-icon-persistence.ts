@@ -28,7 +28,7 @@ export function useIconPersistence() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: PersistedIconState = JSON.parse(saved);
-        
+
         // Convert persisted format to IconState array
         const persistedStates: IconState[] = Object.entries(parsed).map(
           ([iconId, position]) => ({
@@ -63,7 +63,10 @@ export function useIconPersistence() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (error) {
       // Handle quota exceeded gracefully
-      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+      if (
+        error instanceof DOMException &&
+        error.name === 'QuotaExceededError'
+      ) {
         console.warn('localStorage quota exceeded for icon positions:', error);
       } else {
         console.warn('Failed to save icon positions to localStorage:', error);
@@ -71,4 +74,3 @@ export function useIconPersistence() {
     }
   }, [iconStates]);
 }
-

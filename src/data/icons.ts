@@ -9,6 +9,7 @@ import {
   CvIcon,
   TerminalIcon,
   FlappyBirdIcon,
+  MusicPlayerIcon,
 } from './icon-components.tsx';
 
 export interface IconConfig {
@@ -42,5 +43,12 @@ export const icons: IconConfig[] = [
     label: 'Flappy Bird',
     icon: FlappyBirdIcon,
     windowId: 'flappy-bird',
+  },
+  {
+    id: 'music-player',
+    label: 'Music',
+    icon: MusicPlayerIcon,
+    windowId: 'music-player',
+  },
   },
 ];

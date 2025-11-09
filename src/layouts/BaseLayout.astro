@@ -77,7 +77,10 @@ const canonicalURL = new URL(
         }
 
         // Initialize: try to capture title immediately or wait for load
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        if (
+          document.readyState === 'complete' ||
+          document.readyState === 'interactive'
+        ) {
           // Use setTimeout to ensure title is set by browser
           setTimeout(captureOriginalTitle, 0);
         } else {
