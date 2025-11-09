@@ -395,7 +395,7 @@ export default function TerminalWindow() {
                 <span className={styles.promptSeparator}>:</span>
                 <span className={styles.promptPath}>{currentDirectory}</span>
                 <span className={styles.promptSymbol}>$</span>
-                {' '}
+                <span className={styles.promptPath}>~</span>{' '}
               </span>
             )}
             {line.content}
@@ -411,7 +411,7 @@ export default function TerminalWindow() {
             <span className={styles.promptSeparator}>:</span>
             <span className={styles.promptPath}>{currentDirectory}</span>
             <span className={styles.promptSymbol}>$</span>
-            {' '}
+            <span className={styles.promptPath}>~</span>{' '}
           </span>
           <input
             ref={inputRef}

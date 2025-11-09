@@ -1,0 +1,51 @@
+name: Update Tracks
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  update-tracks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update tracks
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+        run: npm run update-tracks
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain src/content/tracks/tracks.json)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/content/tracks/tracks.json
+          git commit -m "chore: update tracks from Spotify [skip ci]"
+          git push

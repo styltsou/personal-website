@@ -5,13 +5,22 @@
 
 import { useIconStore } from '../../stores/icon-store';
 
+import type { ResizeConstraint } from '../../data/windows';
+
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
+  constraint?: ResizeConstraint; // Resize constraint: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
 }
 
 export default function ResizeHandles({
   onResizeStart,
+  constraint = 'none',
 }: ResizeHandlesProps) {
+  // Don't render any handles if resizing is disabled
+  if (constraint === 'disabled') {
+    return null;
+  }
+
   // Check if an icon is being dragged
   const draggingIconId = useIconStore((state) => state.draggingIconId);
   const isIconDragging = draggingIconId !== null;
@@ -24,50 +33,64 @@ export default function ResizeHandles({
     return resizeCursor; // Normal resize cursor
   };
 
+  // Determine which handles to show
+  // 'none' means no constraint (full resize - all handles)
+  // 'diagonal' means only corner handles
+  const showCornerHandles = true; // Always show corners
+  const showEdgeHandles = constraint !== 'diagonal'; // Only hide edges when constraint is 'diagonal'
+
   return (
     <>
-      {/* Corner handles */}
-      <div
-        className="retro-resize-handle retro-resize-handle-nw"
-        onMouseDown={(e) => onResizeStart(e, 'nw')}
-        style={{ cursor: getCursor('nwse-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-ne"
-        onMouseDown={(e) => onResizeStart(e, 'ne')}
-        style={{ cursor: getCursor('nesw-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-sw"
-        onMouseDown={(e) => onResizeStart(e, 'sw')}
-        style={{ cursor: getCursor('nesw-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-se"
-        onMouseDown={(e) => onResizeStart(e, 'se')}
-        style={{ cursor: getCursor('nwse-resize') }}
-      />
-      {/* Edge handles */}
-      <div
-        className="retro-resize-handle retro-resize-handle-n"
-        onMouseDown={(e) => onResizeStart(e, 'n')}
-        style={{ cursor: getCursor('ns-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-s"
-        onMouseDown={(e) => onResizeStart(e, 's')}
-        style={{ cursor: getCursor('ns-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-w"
-        onMouseDown={(e) => onResizeStart(e, 'w')}
-        style={{ cursor: getCursor('ew-resize') }}
-      />
-      <div
-        className="retro-resize-handle retro-resize-handle-e"
-        onMouseDown={(e) => onResizeStart(e, 'e')}
-        style={{ cursor: getCursor('ew-resize') }}
-      />
+      {/* Corner handles - always shown */}
+      {showCornerHandles && (
+        <>
+          <div
+            className="retro-resize-handle retro-resize-handle-nw"
+            onMouseDown={(e) => onResizeStart(e, 'nw')}
+            style={{ cursor: getCursor('nwse-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-ne"
+            onMouseDown={(e) => onResizeStart(e, 'ne')}
+            style={{ cursor: getCursor('nesw-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-sw"
+            onMouseDown={(e) => onResizeStart(e, 'sw')}
+            style={{ cursor: getCursor('nesw-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-se"
+            onMouseDown={(e) => onResizeStart(e, 'se')}
+            style={{ cursor: getCursor('nwse-resize') }}
+          />
+        </>
+      )}
+      {/* Edge handles - hidden when constraint is 'diagonal' */}
+      {showEdgeHandles && (
+        <>
+          <div
+            className="retro-resize-handle retro-resize-handle-n"
+            onMouseDown={(e) => onResizeStart(e, 'n')}
+            style={{ cursor: getCursor('ns-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-s"
+            onMouseDown={(e) => onResizeStart(e, 's')}
+            style={{ cursor: getCursor('ns-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-w"
+            onMouseDown={(e) => onResizeStart(e, 'w')}
+            style={{ cursor: getCursor('ew-resize') }}
+          />
+          <div
+            className="retro-resize-handle retro-resize-handle-e"
+            onMouseDown={(e) => onResizeStart(e, 'e')}
+            style={{ cursor: getCursor('ew-resize') }}
+          />
+        </>
+      )}
     </>
   );
 }

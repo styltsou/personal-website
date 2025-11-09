@@ -68,10 +68,7 @@ export function calculateGridDimensions(): GridDimensions {
 /**
  * Convert pixel position to nearest grid cell coordinates
  */
-export function snapToGrid(
-  pixelX: number,
-  pixelY: number
-): GridPosition {
+export function snapToGrid(pixelX: number, pixelY: number): GridPosition {
   const { startX, startY } = calculateGridDimensions();
 
   // Calculate grid coordinates (accounting for start position)
@@ -218,4 +215,3 @@ export function constrainToViewport(position: PixelPosition): PixelPosition {
     y: Math.max(startY, Math.min(position.y, maxY)),
   };
 }
-

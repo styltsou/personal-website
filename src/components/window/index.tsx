@@ -10,6 +10,7 @@ import { useWindowDrag } from '../../hooks/use-window-drag';
 import { useWindowResize } from '../../hooks/use-window-resize';
 import { useIconStore } from '../../stores/icon-store';
 import type { SnapSide } from '../../stores/window-store';
+import type { ResizeConstraint } from '../../data/windows';
 import { cn } from '../../utils/cn';
 import TitleBar from '../title-bar';
 import ResizeHandles from '../resize-handles';
@@ -37,6 +38,7 @@ export interface WindowProps {
   isActive?: boolean;
   isLoading?: boolean;
   hideOverflow?: boolean; // If true, prevents window content scrollbars
+  resizeConstraint?: ResizeConstraint; // Resize behavior: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
 }
 
 export default function Window({
@@ -60,6 +62,7 @@ export default function Window({
   isActive = false,
   isLoading = false,
   hideOverflow = false,
+  resizeConstraint = 'none',
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -199,7 +202,13 @@ export default function Window({
       )}
       <div
         ref={windowRef}
-        className={cn('retro-window', styles.window, isActive && 'active', isDragging && styles.dragging, isResizing && styles.resizing)}
+        className={cn(
+          'retro-window',
+          styles.window,
+          isActive && 'active',
+          isDragging && styles.dragging,
+          isResizing && styles.resizing
+        )}
         style={{
           left: `${displayPosition.x}px`,
           top: `${displayPosition.y}px`,
@@ -233,12 +242,18 @@ export default function Window({
         {isLoading && <LoadingProgressBar />}
 
         {/* Window Content */}
-        <div className={cn('retro-window-content', styles.content, hideOverflow && styles.noOverflow)}>
+        <div
+          className={cn(
+            'retro-window-content',
+            styles.content,
+            hideOverflow && styles.noOverflow
+          )}
+        >
           {children}
         </div>
 
         {/* Resize Handles - only show when not maximized */}
-        {!isMaximized && <ResizeHandles onResizeStart={handleResizeStart} />}
+        {!isMaximized && <ResizeHandles onResizeStart={handleResizeStart} constraint={resizeConstraint} />}
       </div>
     </>
   );

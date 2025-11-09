@@ -1,0 +1,142 @@
+/**
+ * VolumeControl Component Styles
+ */
+
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.muteButton {
+  @include retro-button;
+  min-width: 40px;
+  height: 32px;
+  font-size: 16px;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  
+  // Ensure SVG icons are properly sized
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    color: var(--retro-text);
+  }
+}
+
+// Dark theme: icons should be light
+:global(.dark-theme) .muteButton svg {
+  color: var(--retro-text);
+}
+
+.muteButton:hover {
+  background-color: var(--retro-button-active-bg);
+}
+
+.muteButton:active {
+  @include retro-3d-inset;
+}
+
+.slider {
+  flex: 1;
+  max-width: 180px;
+  height: 8px;
+  background-color: var(--retro-button-bg);
+  @include retro-3d-inset;
+  border-radius: 4px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--retro-titlebar-orange);
+    @include retro-3d-outset;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-top: -5px;
+    border: 1px solid var(--retro-titlebar-orange);
+
+    &:hover {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      @include retro-3d-inset;
+      transform: scale(0.95);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: var(--retro-titlebar-orange);
+    border: 1px solid var(--retro-titlebar-orange);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(0.95);
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(
+      to right,
+      var(--retro-titlebar-orange) 0%,
+      var(--retro-titlebar-orange) var(--progress, 0%),
+      var(--retro-button-bg) var(--progress, 0%),
+      var(--retro-button-bg) 100%
+    );
+    @include retro-3d-inset;
+    border-radius: 4px;
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(
+      to right,
+      var(--retro-titlebar-orange) 0%,
+      var(--retro-titlebar-orange) var(--progress, 0%),
+      var(--retro-button-bg) var(--progress, 0%),
+      var(--retro-button-bg) 100%
+    );
+    border-radius: 4px;
+  }
+}
+
+.volumeLabel {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--retro-titlebar-orange);
+  min-width: 45px;
+  text-align: center;
+  font-weight: 600;
+}
+

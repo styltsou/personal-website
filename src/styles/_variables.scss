@@ -27,6 +27,7 @@
   --retro-text: #2a2a2a;
   --retro-text-light: #5a5a5a;
   --retro-text-inverse: #ffffff;
+  --retro-text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
   /* Title Bar Colors - Pastel Palette */
   --retro-titlebar-yellow: #f9d78c;
@@ -69,15 +70,16 @@
   --retro-text: #d0d0d0;
   --retro-text-light: #8a8a8a;
   --retro-text-inverse: #000000;
+  --retro-text-on-light: #2a2a2a; /* Dark text for light colored backgrounds (pink, yellow, etc.) */
 
-  /* Title Bar Colors - Dark Gray Shades */
-  --retro-titlebar-yellow: #3a3a2a;
-  --retro-titlebar-orange: #3a2a2a;
-  --retro-titlebar-teal: #2a3a3a;
-  --retro-titlebar-pink: #3a2a2a;
-  --retro-titlebar-blue: #2a2a3a;
-  --retro-titlebar-default: #2a2a3a;
-  --retro-titlebar-text: #d0d0d0;
+  /* Title Bar Colors - Brighter versions for dark mode */
+  --retro-titlebar-yellow: #f9d78c;
+  --retro-titlebar-orange: #f09c7c;
+  --retro-titlebar-teal: #8cd7d7;
+  --retro-titlebar-pink: #f0b0b0;
+  --retro-titlebar-blue: #7da3d1;
+  --retro-titlebar-default: #7da3d1;
+  --retro-titlebar-text: #ffffff;
   --retro-titlebar-shadow: rgba(0, 0, 0, 0.5);
   /* Subtle accent colors for focused states */
   --retro-focus-blue: #2a3540; /* Subtle blue tint for dark theme */

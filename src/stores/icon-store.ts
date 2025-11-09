@@ -27,10 +27,11 @@ interface IconStore {
   updateIconPosition: (iconId: string, position: IconPosition) => void;
   selectIcon: (iconId: string) => void;
   deselectIcons: () => void;
-  setDraggingIcon: (iconId: string | null, position?: { x: number; y: number } | null) => void;
-  initializeFromPersistence: (
-    persistedStates: IconState[]
+  setDraggingIcon: (
+    iconId: string | null,
+    position?: { x: number; y: number } | null
   ) => void;
+  initializeFromPersistence: (persistedStates: IconState[]) => void;
   getIconState: (iconId: string) => IconState | undefined;
 }
 
@@ -77,7 +78,10 @@ export const useIconStore = create<IconStore>((set, get) => ({
   },
 
   // Set which icon is being dragged and its position
-  setDraggingIcon: (iconId: string | null, position?: { x: number; y: number } | null) => {
+  setDraggingIcon: (
+    iconId: string | null,
+    position?: { x: number; y: number } | null
+  ) => {
     set({
       draggingIconId: iconId,
       draggingIconPosition: position ?? null,
@@ -102,8 +106,7 @@ export const useIconStore = create<IconStore>((set, get) => ({
 }));
 
 // Selectors for better performance and cleaner usage
-export const useIconStates = () =>
-  useIconStore((state) => state.iconStates);
+export const useIconStates = () => useIconStore((state) => state.iconStates);
 export const useSelectedIconId = () =>
   useIconStore((state) => state.selectedIconId);
 export const useIconActions = () =>
@@ -112,4 +115,3 @@ export const useIconActions = () =>
     selectIcon: state.selectIcon,
     deselectIcons: state.deselectIcons,
   }));
-

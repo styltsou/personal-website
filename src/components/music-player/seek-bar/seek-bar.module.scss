@@ -1,0 +1,201 @@
+/**
+ * SeekBar Component Styles
+ */
+
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.sliderWrapper {
+  flex: 1;
+  position: relative;
+  height: 8px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+
+  &.buffering {
+    .stripesOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      $accent-color: #f09c7c; // --retro-titlebar-orange value
+      $light-color-1: lighten($accent-color, 20%);
+      $light-color-2: lighten($accent-color, 30%);
+      background: repeating-linear-gradient(-45deg,
+          $light-color-1 0px,
+          $light-color-1 10px,
+          $light-color-2 10px,
+          $light-color-2 20px);
+      background-size: 28px 28px;
+      background-position: 0 0;
+      animation: loading-stripes 1s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 4px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  }
+}
+
+// Dark theme variant for loading stripes
+:global(.dark-theme) {
+  .sliderWrapper.buffering .stripesOverlay {
+    $accent-color: #f09c7c; // --retro-titlebar-orange value
+    $dark-color-1: darken($accent-color, 10%);
+    $dark-color-2: darken($accent-color, 20%);
+    background: repeating-linear-gradient(-45deg,
+        $dark-color-1 0px,
+        $dark-color-1 10px,
+        $dark-color-2 10px,
+        $dark-color-2 20px);
+  }
+}
+
+.time {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--retro-titlebar-orange);
+  flex-shrink: 0;
+  min-width: 50px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.slider {
+  width: 100%;
+  height: 8px;
+  background-color: var(--retro-button-bg);
+  @include retro-3d-inset;
+  border-radius: 4px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  display: block;
+
+  &.buffering {
+    position: relative;
+    background-color: transparent;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--retro-titlebar-orange);
+    @include retro-3d-outset;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-top: -5px;
+    border: 1px solid var(--retro-titlebar-orange);
+    position: relative;
+
+    &:hover {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      @include retro-3d-inset;
+      transform: scale(0.95);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: var(--retro-titlebar-orange);
+    border: 1px solid var(--retro-titlebar-orange);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      background-color: var(--retro-titlebar-pink);
+      border-color: var(--retro-titlebar-pink);
+      transform: scale(0.95);
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right,
+        var(--retro-titlebar-orange) 0%,
+        var(--retro-titlebar-orange) var(--progress, 0%),
+        var(--retro-button-bg) var(--progress, 0%),
+        var(--retro-button-bg) 100%);
+    @include retro-3d-inset;
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right,
+        var(--retro-titlebar-orange) 0%,
+        var(--retro-titlebar-orange) var(--progress, 0%),
+        var(--retro-button-bg) var(--progress, 0%),
+        var(--retro-button-bg) 100%);
+    border-radius: 4px;
+  }
+
+  &.buffering {
+    &::-webkit-slider-runnable-track {
+      background: linear-gradient(to right,
+          var(--retro-titlebar-orange) 0%,
+          var(--retro-titlebar-orange) var(--progress, 0%),
+          transparent var(--progress, 0%),
+          transparent 100%);
+    }
+
+    &::-moz-range-track {
+      background: linear-gradient(to right,
+          var(--retro-titlebar-orange) 0%,
+          var(--retro-titlebar-orange) var(--progress, 0%),
+          transparent var(--progress, 0%),
+          transparent 100%);
+    }
+  }
+
+}
+
+@keyframes loading-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 28px 0;
+  }
+}
+
+.stripesOverlay {
+  display: block;
+}
