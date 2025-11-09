@@ -3,12 +3,15 @@
  * Defines available windows with their metadata
  */
 
+export type ResizeConstraint = 'diagonal' | 'none' | 'disabled';
+
 export interface WindowConfig {
   id: string;
   title: string;
   path: string;
   icon?: string;
   pinned?: boolean; // If true, always shown in menu bar. If false, only shown when window is open.
+  resizeConstraint?: ResizeConstraint; // Resize behavior: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
 }
 
 export const windows: WindowConfig[] = [
@@ -17,6 +20,7 @@ export const windows: WindowConfig[] = [
   { id: 'contact', title: 'Contact', path: '/contact', pinned: true },
   { id: 'terminal', title: 'Terminal', path: '', pinned: false },
   { id: 'wikipedia', title: 'Wikipedia', path: '', pinned: false },
+  { id: 'flappy-bird', title: 'Flappy Bird', path: '', pinned: false, resizeConstraint: 'diagonal' },
   {
     id: 'music-player',
     title: 'MusicPlayer Pro v1.0',

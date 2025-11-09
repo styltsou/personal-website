@@ -1,0 +1,214 @@
+/**
+ * Flappy Bird Game Window Component Styles
+ */
+
+.game {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.gameContainer {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+.gameArea {
+  position: relative;
+  border: none;
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 10%; // Extend to ground (ground is 10% of height)
+  background-color: #87ceeb; // Uniform light blue, no gradient
+}
+
+:global(.dark-theme) .sky {
+  background-color: #1a1a2e; // Dark blue for dark theme
+}
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10%; // Reduced from 20% to half
+  background-color: #e6d5c3; // Light beige/tan solid soil color
+  
+  // Black border at the top (1px)
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #000000; // Black border
+    z-index: 1;
+  }
+  
+  // Green bar below black border (12px)
+  &::after {
+    content: '';
+    position: absolute;
+    top: 1px; // Below black border
+    left: 0;
+    right: 0;
+    height: 12px;
+    background-color: #7cb342; // Green bar
+    z-index: 1;
+  }
+  
+  // Amber stripe below green bar (3px)
+  // Use linear-gradient to create the amber stripe
+  background-image: linear-gradient(to bottom, 
+    transparent 0,
+    transparent 13px,
+    #ffa500 13px,
+    #ffa500 16px,
+    transparent 16px
+  );
+}
+
+:global(.dark-theme) .ground {
+  background-color: #3d3024; // Darker soil for dark theme
+  
+  &::before {
+    background-color: #000000; // Black border (same in dark theme)
+  }
+  
+  &::after {
+    background-color: #4a7c3f; // Darker green for dark theme
+  }
+  
+  // Amber stripe below green bar (same position)
+  background-image: linear-gradient(to bottom, 
+    transparent 0,
+    transparent 13px,
+    #ffa500 13px,
+    #ffa500 16px,
+    transparent 16px
+  );
+}
+
+.bird {
+  position: absolute;
+  background-color: #ffd700; // Gold
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border: 2px solid #ffa500;
+  transition: transform 0.1s ease-out;
+  z-index: 10;
+  
+  // Bird eye
+  &::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background-color: #000;
+    border-radius: 50%;
+  }
+}
+
+.pipe {
+  position: absolute;
+  background-color: #4caf50; // Green
+  border: 2px solid #000000; // Black border
+  z-index: 5;
+}
+
+.pipeCap {
+  position: absolute;
+  background-color: #66bb6a; // Lighter green for cap
+  border: 2px solid #000000; // Black border
+  z-index: 6; // Above pipe body
+  border-radius: 2px 2px 0 0; // Rounded top corners
+}
+
+.score {
+  position: absolute;
+  top: 20px;
+  left: 50%; // Centered horizontally
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff; // White
+  text-shadow: 
+    2px 2px 0 #000000, // Black outline
+    -2px -2px 0 #000000,
+    2px -2px 0 #000000,
+    -2px 2px 0 #000000,
+    2px 0 0 #000000,
+    0 2px 0 #000000,
+    -2px 0 0 #000000,
+    0 -2px 0 #000000; // Complete black outline for pixel-art effect
+  z-index: 20;
+  font-family: monospace;
+}
+
+.startScreen,
+.gameOver {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 30;
+  color: #fff;
+}
+
+.startText,
+.gameOverText {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: monospace;
+}
+
+.gameOverScore {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: monospace;
+}
+
+.startHint,
+.gameOverHint {
+  font-size: 1rem;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-family: monospace;
+}
+

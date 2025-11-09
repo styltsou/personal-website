@@ -7,8 +7,8 @@ import type { ReactNode } from 'react';
 import {
   WikipediaIcon,
   CvIcon,
-  RecycleBinIcon,
   TerminalIcon,
+  FlappyBirdIcon,
   MusicPlayerIcon,
 } from './icon-components.tsx';
 
@@ -27,11 +27,6 @@ export const icons: IconConfig[] = [
     // windowId can be added later when we implement window opening and an actual window for it
   },
   {
-    id: 'recycle-bin',
-    label: 'Trash',
-    icon: RecycleBinIcon,
-  },
-  {
     id: 'terminal',
     label: 'Terminal',
     icon: TerminalIcon,
@@ -44,9 +39,16 @@ export const icons: IconConfig[] = [
     windowId: 'wikipedia',
   },
   {
+    id: 'flappy-bird',
+    label: 'Flappy Bird',
+    icon: FlappyBirdIcon,
+    windowId: 'flappy-bird',
+  },
+  {
     id: 'music-player',
     label: 'Music',
     icon: MusicPlayerIcon,
     windowId: 'music-player',
+  },
   },
 ];

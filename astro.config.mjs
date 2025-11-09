@@ -10,7 +10,13 @@ import compress from 'astro-compress';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  output: 'static',
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import'],
+        },
   adapter: vercel({}),
   server: {
     host: true, // Allow external connections
@@ -25,15 +31,6 @@ export default defineConfig({
         '@/utils': new URL('./src/utils', import.meta.url).pathname,
         '@/data': new URL('./src/data', import.meta.url).pathname,
         '@/styles': new URL('./src/styles', import.meta.url).pathname,
-      },
-    },
-    server: {
-      allowedHosts: [
-        'styltsou.loca.lt',
-        '.loca.lt', // Allow all localtunnel subdomains
-      ],
-      hmr: {
-        clientPort: 443, // Use HTTPS port for HMR when behind proxy
       },
     },
   },
