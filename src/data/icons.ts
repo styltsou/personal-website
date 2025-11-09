@@ -50,5 +50,4 @@ export const icons: IconConfig[] = [
     icon: MusicPlayerIcon,
     windowId: 'music-player',
   },
-  },
 ];
