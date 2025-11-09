@@ -82,7 +82,12 @@ export default function Desktop() {
   useEffect(() => {
     windowStates.forEach((ws) => {
       // Skip terminal, wikipedia, and music-player windows - they use custom components
-      if (ws.id === 'terminal' || ws.id === 'wikipedia' || ws.id === 'music-player') return;
+      if (
+        ws.id === 'terminal' ||
+        ws.id === 'wikipedia' ||
+        ws.id === 'music-player'
+      )
+        return;
 
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
@@ -154,7 +159,10 @@ export default function Desktop() {
             ) : windowState.id === 'music-player' ? (
               <MusicPlayer />
             ) : windowState.content ? (
-              <div className={styles.content} dangerouslySetInnerHTML={{ __html: windowState.content }} />
+              <div
+                className={styles.content}
+                dangerouslySetInnerHTML={{ __html: windowState.content }}
+              />
             ) : !isLoading(windowState.id) ? (
               <div className={styles.noContent}>
                 <p>No content available</p>

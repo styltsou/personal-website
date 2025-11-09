@@ -15,6 +15,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 ## ✅ Phase 1: Basic Player (Current Focus)
 
 ### Component Structure
+
 - ✅ **Component folder structure** (`src/components/music-player/`)
   - ✅ `index.tsx` - Main MusicPlayer component
   - ✅ `styles.module.scss` - Component styles
@@ -26,6 +27,7 @@ A retro-styled music player component that integrates seamlessly with the existi
   - ✅ `volume-control.tsx` - Volume slider component
 
 ### Hooks
+
 - ✅ **use-spotify.ts** - Mock data fetching hook
   - ✅ Returns 10 mock tracks
   - ✅ Loading state handling
@@ -41,6 +43,7 @@ A retro-styled music player component that integrates seamlessly with the existi
   - ✅ Cleanup on unmount
 
 ### Sub-Components
+
 - ✅ **TrackInfo** - Displays album art, track title, artist, album, and time
 - ✅ **ControlPanel** - Play, pause, stop, next, previous buttons
 - ✅ **PlaylistPanel** - Scrollable track list with current track highlighting
@@ -48,6 +51,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ **VolumeControl** - Volume slider with mute toggle
 
 ### Integration
+
 - ✅ **Window System Integration**
   - ✅ Added to `src/data/windows.ts` with config
   - ✅ Created `MusicPlayerIcon` in `src/data/icon-components.tsx`
@@ -55,6 +59,7 @@ A retro-styled music player component that integrates seamlessly with the existi
   - ✅ Updated `src/components/desktop/index.tsx` to render MusicPlayer
 
 ### Styling
+
 - ✅ Uses existing design system CSS variables (`--retro-*`)
 - ✅ Uses existing SCSS mixins (`retro-button`, `retro-3d-outset`, `retro-3d-inset`)
 - ✅ Matches existing component styling patterns
@@ -63,6 +68,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ Retro-styled sliders and controls
 
 ### Features
+
 - ✅ Fetch 10 tracks from mock data (ready for Spotify API)
 - ✅ Display track list in sidebar
 - ✅ Audio playback of 30-second previews
@@ -77,6 +83,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ Click track in playlist to play
 
 ### Code Quality
+
 - ✅ TypeScript strict mode
 - ✅ Proper TypeScript interfaces
 - ✅ No linter errors
@@ -134,6 +141,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 ## 📝 Notes
 
 ### Current Implementation
+
 - Uses mock data for tracks (10 classic rock tracks)
 - Ready for Spotify API integration when credentials are provided
 - All basic playback features working
@@ -141,6 +149,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - Styling matches existing retro aesthetic
 
 ### Known Limitations
+
 - Mock data only (no real Spotify API yet)
 - No visualizer yet
 - No audio effects yet
@@ -148,6 +157,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - No keyboard shortcuts yet
 
 ### Next Steps
+
 1. Test basic playback functionality
 2. Add Spotify API integration when credentials available
 3. Implement visualizer (Phase 2)
@@ -160,6 +170,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 ## 🐛 Issues & Fixes
 
 ### Fixed Issues
+
 - ✅ Fixed syntax error in `seek-bar.module.scss` (missing closing parenthesis)
 - ✅ Fixed audio cleanup in `use-audio-player.ts` (added null check)
 - ✅ Fixed playlist toggle layout (added container for hidden state)
@@ -169,6 +180,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 ## 📊 Progress Summary
 
 **Phase 1 (Basic Player)**: ✅ 100% Complete
+
 - All core features implemented
 - All sub-components built
 - Window system integration complete
@@ -179,5 +191,86 @@ A retro-styled music player component that integrates seamlessly with the existi
 
 ---
 
-*Last Updated: Phase 1 Implementation*
+## ✅ Automated Track Update System (Complete)
 
+### Track Update Script (`scripts/update-tracks.js`)
+
+- ✅ **Production-ready script** for automated track updates
+- ✅ **Sophisticated matching algorithm** for YouTube video selection
+  - Multi-tier track name matching (exact, normalized, word-by-word)
+  - Artist channel detection with strict matching
+  - Version detection (live, acoustic, alternative) with smart filtering
+  - Quality scoring system with configurable thresholds
+- ✅ **Robust error handling**
+  - Retry logic with exponential backoff (3 attempts)
+  - Request timeout handling (10 seconds)
+  - Input validation for all parameters
+  - Data preservation on errors (prevents data loss)
+- ✅ **YouTube integration**
+  - Intelligent video search with multiple query fallbacks
+  - Score-based video selection (prioritizes official content)
+  - Handles edge cases (missing videos, invalid IDs)
+- ✅ **Quality filtering**
+  - Minimum score threshold (configurable)
+  - Artist limit per track list
+  - Maximum tracks limit
+- ✅ **Comprehensive test suite** (`scripts/update-tracks.test.js`)
+  - Tests for matching algorithms
+  - Tests for validation functions
+  - Tests for edge cases
+- ✅ **GitHub Actions workflow** (`.github/workflows/update-tracks.yml`)
+  - Automated daily runs
+  - Auto-commits updated tracks.json
+  - Manual trigger support
+  - Secure secret management
+
+### Configuration
+
+All settings are centralized in `CONFIG` object:
+- `spotifyFetchLimit`: Number of tracks to fetch from Spotify (40)
+- `maxTracksPerArtist`: Maximum tracks per artist (2)
+- `maxTracksToSave`: Total tracks to save (12)
+- `minYouTubeScore`: Minimum quality score (1500)
+- `apiTimeout`: API request timeout (10s)
+- `maxRetries`: Retry attempts (3)
+- `retryDelay`: Delay between retries (1s)
+- `youtubeSearchDelay`: Rate limiting delay (1s)
+
+### Features
+
+- ✅ Fetches top tracks from Spotify API
+- ✅ Enriches tracks with YouTube video IDs
+- ✅ Filters by quality score
+- ✅ Limits tracks per artist
+- ✅ Saves to `src/content/tracks/tracks.json`
+- ✅ Preserves existing data on errors
+- ✅ Colored terminal output for debugging
+- ✅ Detailed logging of selection process
+
+---
+
+## 🔮 Future Enhancements
+
+### Music Player Features
+
+- [ ] **Dynamic accent color per song** (like Spotify)
+  - Extract dominant color from album art
+  - Apply as theme accent color
+  - Smooth transitions between tracks
+
+- [ ] **YouTube video availability check**
+  - Test for edge case where video is unavailable
+  - Handle "loading forever" scenario
+  - Fallback to next best match or skip track
+  - Periodic validation of saved video IDs
+
+### Track Update Script
+
+- [ ] Additional test coverage
+- [ ] Performance optimizations
+- [ ] Monitoring/logging improvements
+- [ ] Support for multiple music sources
+
+---
+
+_Last Updated: Automated Track Update System Complete_

@@ -26,6 +26,7 @@ function MusicPlayerContent() {
     setPlaylistVisible,
     handleTrackSelect,
     currentTrackIndex,
+    isBuffering,
   } = useMusicPlayer();
 
   if (loading) {
@@ -68,16 +69,24 @@ function MusicPlayerContent() {
           {/* Album art section - large and centered */}
           <div className={styles.albumArtSection}>
             <div className={styles.albumArtContainer}>
-              <img
-                src={currentTrack.albumArt}
-                alt={`${currentTrack.album} album cover`}
-                className={styles.albumArt}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src =
-                    'https://via.placeholder.com/400x400/7da3d1/ffffff?text=No+Image';
-                }}
-              />
+              <a
+                href={currentTrack.spotifyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${currentTrack.name} by ${currentTrack.artist} on Spotify`}
+                title={`Open on Spotify: ${currentTrack.name} by ${currentTrack.artist}`}
+              >
+                <img
+                  src={currentTrack.albumArt}
+                  alt={`${currentTrack.album} album cover`}
+                  className={styles.albumArt}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src =
+                      'https://via.placeholder.com/400x400/7da3d1/ffffff?text=No+Image';
+                  }}
+                />
+              </a>
             </div>
           </div>
 
@@ -101,6 +110,7 @@ function MusicPlayerContent() {
                 currentTime={currentTime}
                 duration={duration}
                 onSeek={seek}
+                isBuffering={isBuffering}
               />
             </div>
 

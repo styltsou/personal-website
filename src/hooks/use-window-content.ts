@@ -7,7 +7,7 @@ import { windows } from '../data/windows';
 
 export function useWindowContent() {
   const [loadingContent, setLoadingContent] = useState<Set<string>>(new Set());
-  
+
   // Use refs to track state without causing re-renders in callback
   const contentCacheRef = useRef<Map<string, string>>(new Map());
   const loadingRef = useRef<Set<string>>(new Set());
@@ -63,12 +63,9 @@ export function useWindowContent() {
     []
   );
 
-  const getContent = useCallback(
-    (windowId: string): string | undefined => {
-      return contentCacheRef.current.get(windowId);
-    },
-    []
-  );
+  const getContent = useCallback((windowId: string): string | undefined => {
+    return contentCacheRef.current.get(windowId);
+  }, []);
 
   const isLoading = useCallback(
     (windowId: string): boolean => {
@@ -83,4 +80,3 @@ export function useWindowContent() {
     isLoading,
   };
 }
-

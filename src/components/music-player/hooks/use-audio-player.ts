@@ -30,13 +30,20 @@ export function useAudioPlayer(
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isStopped, setIsStopped] = useState(true);
+  const [isBuffering, setIsBuffering] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(50); // 0-100
+  const previousTrackIndexRef = useRef<number>(-1);
+  const previousPlayingStateRef = useRef<boolean>(false);
 
   // Create audio element for current track
   useEffect(() => {
-    if (tracks.length === 0 || currentTrackIndex < 0 || currentTrackIndex >= tracks.length) {
+    if (
+      tracks.length === 0 ||
+      currentTrackIndex < 0 ||
+      currentTrackIndex >= tracks.length
+    ) {
       // Reset state if no valid track
       setIsPlaying(false);
       setIsPaused(false);
@@ -47,7 +54,30 @@ export function useAudioPlayer(
     }
 
     const track = tracks[currentTrackIndex];
-    
+
+    // Skip if no preview URL or if it's a YouTube track (handled by YouTube player)
+    if (!track.previewUrl || track.previewUrl.trim() === '') {
+      console.warn(`No preview URL for track: ${track.name}`);
+      setIsPlaying(false);
+      setIsPaused(false);
+      setIsStopped(true);
+      setIsBuffering(false);
+      setCurrentTime(0);
+      setDuration(track.duration / 1000);
+      return;
+    }
+
+    // Skip YouTube tracks - they're handled by the YouTube player
+    if (track.previewUrl.startsWith('youtube:')) {
+      setIsPlaying(false);
+      setIsPaused(false);
+      setIsStopped(true);
+      setIsBuffering(false);
+      setCurrentTime(0);
+      setDuration(track.duration / 1000);
+      return;
+    }
+
     // Clean up previous audio element
     if (audioRef.current) {
       const prevAudio = audioRef.current;
@@ -56,9 +86,32 @@ export function useAudioPlayer(
       prevAudio.load();
     }
 
+    // For non-YouTube tracks, use the preview URL directly
+    const audioUrl = track.previewUrl;
+
+    // Check if we should auto-play (if previous track was playing when we switched)
+    const trackChanged = previousTrackIndexRef.current !== currentTrackIndex;
+    const wasPlayingBeforeSwitch = previousPlayingStateRef.current;
+    const shouldAutoPlay = trackChanged && wasPlayingBeforeSwitch;
+
+    // Immediately reset progress and state when track changes
+    setCurrentTime(0);
+    setIsPlaying(false);
+    setIsPaused(false);
+    setIsStopped(true);
+    setIsBuffering(true); // Show loading state immediately
+    // Set duration from track metadata immediately so seek bar works
+    setDuration(track.duration / 1000);
+
+    // Update track index ref (but keep playing state ref until we know the new state)
+    previousTrackIndexRef.current = currentTrackIndex;
+
     // Create new audio element
-    const audio = new Audio(track.previewUrl);
+    const audio = new Audio(audioUrl);
     audioRef.current = audio;
+
+    // Set CORS mode for cross-origin requests
+    audio.crossOrigin = 'anonymous';
 
     // Set volume
     audio.volume = volume / 100;
@@ -68,8 +121,41 @@ export function useAudioPlayer(
       setCurrentTime(audio.currentTime);
     };
 
+    const handlePlay = () => {
+      setIsPlaying(true);
+      setIsPaused(false);
+      setIsStopped(false);
+      setIsBuffering(false);
+      previousPlayingStateRef.current = true;
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+      setIsPaused(true);
+      setIsStopped(false);
+      setIsBuffering(false);
+      previousPlayingStateRef.current = false;
+    };
+
+    const handleWaiting = () => {
+      // Audio is buffering
+      setIsBuffering(true);
+    };
+
+    const handleCanPlay = () => {
+      // Audio is ready to play
+      setIsBuffering(false);
+    };
+
     const handleLoadedMetadata = () => {
       setDuration(audio.duration || track.duration / 1000);
+      setIsBuffering(false); // Done loading
+      // Auto-play if we were supposed to
+      if (shouldAutoPlay) {
+        audio.play().catch((err) => {
+          console.error('Error auto-playing audio:', err);
+        });
+      }
     };
 
     const handleEnded = () => {
@@ -80,7 +166,8 @@ export function useAudioPlayer(
 
       // Auto-advance to next track
       if (onTrackEnd) {
-        const nextIndex = currentTrackIndex === tracks.length - 1 ? 0 : currentTrackIndex + 1;
+        const nextIndex =
+          currentTrackIndex === tracks.length - 1 ? 0 : currentTrackIndex + 1;
         onTrackEnd(nextIndex);
       }
     };
@@ -92,7 +179,22 @@ export function useAudioPlayer(
       console.error('Audio playback error:', e);
       // Try to get error details if available
       if (audio.error) {
-        console.error('Audio error code:', audio.error.code, 'message:', audio.error.message);
+        const errorMessages: { [key: number]: string } = {
+          1: 'MEDIA_ERR_ABORTED - The user aborted the audio',
+          2: 'MEDIA_ERR_NETWORK - A network error occurred',
+          3: 'MEDIA_ERR_DECODE - The audio could not be decoded',
+          4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - The audio source is not supported',
+        };
+        const errorMsg =
+          errorMessages[audio.error.code] || `Error code: ${audio.error.code}`;
+        console.error(`Audio error: ${errorMsg}`, audio.error.message);
+
+        // If it's a CORS or network error, provide helpful message
+        if (audio.error.code === 2 || audio.error.code === 4) {
+          console.warn(
+            'This might be a CORS issue. YouTube stream URLs may not be playable directly in the browser.'
+          );
+        }
       }
     };
 
@@ -100,6 +202,10 @@ export function useAudioPlayer(
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('canplay', handleCanPlay);
 
     // Load the track
     audio.load();
@@ -111,6 +217,10 @@ export function useAudioPlayer(
         audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
         audio.removeEventListener('ended', handleEnded);
         audio.removeEventListener('error', handleError);
+        audio.removeEventListener('play', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('waiting', handleWaiting);
+        audio.removeEventListener('canplay', handleCanPlay);
         audio.pause();
         audio.src = '';
         audio.load();
@@ -128,16 +238,19 @@ export function useAudioPlayer(
 
   const play = useCallback(() => {
     if (audioRef.current) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-        setIsPaused(false);
-        setIsStopped(false);
-      }).catch((err) => {
-        console.error('Error playing audio:', err);
-        setIsPlaying(false);
-        setIsPaused(false);
-        setIsStopped(true);
-      });
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          setIsPaused(false);
+          setIsStopped(false);
+        })
+        .catch((err) => {
+          console.error('Error playing audio:', err);
+          setIsPlaying(false);
+          setIsPaused(false);
+          setIsStopped(true);
+        });
     }
   }, []);
 
@@ -189,6 +302,7 @@ export function useAudioPlayer(
       isPlaying,
       isPaused,
       isStopped,
+      isBuffering,
       currentTime,
       duration,
       volume,
@@ -201,4 +315,3 @@ export function useAudioPlayer(
     setVolume,
   };
 }
-

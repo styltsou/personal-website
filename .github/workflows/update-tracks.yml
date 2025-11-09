@@ -2,29 +2,19 @@ name: Update Tracks
 
 on:
   schedule:
-    # Run daily at midnight UTC
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Allow manual triggering
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
 
 jobs:
   update-tracks:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      
-      - name: Get default branch
-        id: default-branch
-        run: |
-          # For scheduled runs, use the default branch (usually main)
-          # For manual runs from a branch, we'll still commit to main
-          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-          echo "branch=${DEFAULT_BRANCH:-main}" >> $GITHUB_OUTPUT
-          echo "Default branch: ${DEFAULT_BRANCH:-main}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,29 +25,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Update tracks from Spotify
+      - name: Update tracks
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
-        run: node scripts/update-tracks.js
+        run: npm run update-tracks
 
       - name: Check for changes
-        id: git-check
+        id: verify-changed-files
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
+          if [ -n "$(git status --porcelain src/content/tracks/tracks.json)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push changes
-        if: steps.git-check.outputs.changes == 'true'
+      - name: Commit changes
+        if: steps.verify-changed-files.outputs.changed == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git checkout ${{ steps.default-branch.outputs.branch }}
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add src/content/tracks/tracks.json
-          git commit -m "chore: update tracks from Spotify API [skip ci]"
-          git push origin ${{ steps.default-branch.outputs.branch }}
-
+          git commit -m "chore: update tracks from Spotify [skip ci]"
+          git push

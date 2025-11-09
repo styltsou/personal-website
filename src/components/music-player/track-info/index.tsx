@@ -28,7 +28,8 @@ export default function TrackInfo({ track, audioState }: TrackInfoProps) {
           onError={(e) => {
             // Fallback to placeholder on error
             const target = e.target as HTMLImageElement;
-            target.src = 'https://via.placeholder.com/64x64/7da3d1/ffffff?text=No+Image';
+            target.src =
+              'https://via.placeholder.com/64x64/7da3d1/ffffff?text=No+Image';
           }}
         />
       </div>
@@ -37,10 +38,10 @@ export default function TrackInfo({ track, audioState }: TrackInfoProps) {
         <div className={styles.artist}>{track.artist}</div>
         <div className={styles.album}>{track.album}</div>
         <div className={styles.time}>
-          {formatTime(audioState.currentTime)} / {formatTime(audioState.duration)}
+          {formatTime(audioState.currentTime)} /{' '}
+          {formatTime(audioState.duration)}
         </div>
       </div>
     </div>
   );
 }
-

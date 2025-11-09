@@ -9,9 +9,7 @@ export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
 }
 
-export default function ResizeHandles({
-  onResizeStart,
-}: ResizeHandlesProps) {
+export default function ResizeHandles({ onResizeStart }: ResizeHandlesProps) {
   // Check if an icon is being dragged
   const draggingIconId = useIconStore((state) => state.draggingIconId);
   const isIconDragging = draggingIconId !== null;

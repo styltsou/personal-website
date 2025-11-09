@@ -199,7 +199,13 @@ export default function Window({
       )}
       <div
         ref={windowRef}
-        className={cn('retro-window', styles.window, isActive && 'active', isDragging && styles.dragging, isResizing && styles.resizing)}
+        className={cn(
+          'retro-window',
+          styles.window,
+          isActive && 'active',
+          isDragging && styles.dragging,
+          isResizing && styles.resizing
+        )}
         style={{
           left: `${displayPosition.x}px`,
           top: `${displayPosition.y}px`,
@@ -233,7 +239,13 @@ export default function Window({
         {isLoading && <LoadingProgressBar />}
 
         {/* Window Content */}
-        <div className={cn('retro-window-content', styles.content, hideOverflow && styles.noOverflow)}>
+        <div
+          className={cn(
+            'retro-window-content',
+            styles.content,
+            hideOverflow && styles.noOverflow
+          )}
+        >
           {children}
         </div>
 

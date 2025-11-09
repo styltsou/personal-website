@@ -8,7 +8,11 @@ import { useIconDrag } from '../../hooks/use-icon-drag';
 import { useIconStore } from '../../stores/icon-store';
 import { useWindowStore } from '../../stores/window-store';
 import { type IconConfig } from '../../data/icons';
-import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../../utils/icon-grid';
+import {
+  ICON_WIDTH,
+  ICON_HEIGHT,
+  ICON_IMAGE_SIZE,
+} from '../../utils/icon-grid';
 import type { GridPosition } from '../../utils/icon-grid';
 import { cn } from '../../utils/cn';
 

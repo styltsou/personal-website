@@ -20,6 +20,7 @@ You need **two credentials** from Spotify:
 ### 1.2 Create Your App
 
 Fill out the form:
+
 - **App Name**: `MusicPlayer Pro` (or any name you prefer)
 - **App Description**: `Music player component for personal website`
 - **Redirect URI**: `http://localhost:4321` (for local development)
@@ -30,6 +31,7 @@ Fill out the form:
 ### 1.3 Get Your Credentials
 
 After creating the app, you'll see:
+
 - **Client ID** - Copy this (it's a long string like `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6`)
 - **Client Secret** - Click **"View client secret"** and copy it (it's also a long string)
 
@@ -118,9 +120,9 @@ Once you have your credentials set up in `.env`, I can help you:
 4. Handle errors and edge cases
 
 Just provide me with:
+
 - Your Client ID
 - Your Client Secret (I'll help you add it to `.env` securely)
 - Your preferred playlist ID (optional)
 
 Or I can set up the code to use these environment variables, and you can add the actual values yourself!
-

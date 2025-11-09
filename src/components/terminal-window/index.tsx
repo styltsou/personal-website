@@ -135,8 +135,7 @@ export default function TerminalWindow() {
             {line.type === 'command' && (
               <span className={styles.prompt}>
                 <span className={styles.promptSymbol}>$</span>
-                <span className={styles.promptPath}>~</span>
-                {' '}
+                <span className={styles.promptPath}>~</span>{' '}
               </span>
             )}
             {line.content}
@@ -147,8 +146,7 @@ export default function TerminalWindow() {
         <form onSubmit={handleSubmit} className={styles.inputForm}>
           <span className={styles.prompt}>
             <span className={styles.promptSymbol}>$</span>
-            <span className={styles.promptPath}>~</span>
-            {' '}
+            <span className={styles.promptPath}>~</span>{' '}
           </span>
           <input
             ref={inputRef}

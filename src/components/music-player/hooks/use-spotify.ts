@@ -28,8 +28,7 @@ const MOCK_TRACKS: Track[] = [
     album: 'A Night at the Opera',
     albumArt:
       'https://via.placeholder.com/300x300/7da3d1/ffffff?text=Album+Art',
-    previewUrl:
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    previewUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
     duration: 30000,
   },
   {
@@ -39,8 +38,7 @@ const MOCK_TRACKS: Track[] = [
     album: 'Led Zeppelin IV',
     albumArt:
       'https://via.placeholder.com/300x300/7da3d1/ffffff?text=Album+Art',
-    previewUrl:
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    previewUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
     duration: 30000,
   },
 ];
@@ -79,7 +77,8 @@ export function useSpotify(): UseSpotifyReturn {
         setTracks(MOCK_TRACKS);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load tracks';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load tracks';
       console.error('Error fetching tracks:', errorMessage);
       setError(errorMessage);
       setTracks(MOCK_TRACKS);
@@ -98,4 +97,3 @@ export function useSpotify(): UseSpotifyReturn {
 
   return { tracks, loading, error, refresh };
 }
-

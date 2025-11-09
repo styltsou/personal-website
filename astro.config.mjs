@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import vercel from '@astrojs/vercel/serverless';
 import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
@@ -10,6 +11,7 @@ import compress from 'astro-compress';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  adapter: vercel({}),
   server: {
     host: true, // Allow external connections
   },

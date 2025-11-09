@@ -3,8 +3,17 @@
  * Provides all player state and actions to child components
  */
 
-import { createContext, useContext, useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type ReactNode,
+} from 'react';
 import { useAudioPlayer } from './hooks/use-audio-player';
+import { useYouTubePlayer } from './hooks/use-youtube-player';
 import type { Track } from './types';
 import tracksData from '../../content/tracks/tracks.json';
 
@@ -18,13 +27,14 @@ interface MusicPlayerContextValue {
   currentTrackIndex: number;
   setCurrentTrackIndex: (index: number) => void;
   currentTrack: Track | null;
-  
+
   // Audio state
   isPlaying: boolean;
   currentTime: number;
   duration: number;
   volume: number;
-  
+  isBuffering: boolean;
+
   // Actions
   play: () => void;
   pause: () => void;
@@ -32,15 +42,15 @@ interface MusicPlayerContextValue {
   setVolume: (volume: number) => void;
   next: () => void;
   previous: () => void;
-  
+
   // Loop
   loopMode: LoopMode;
   toggleLoop: () => void;
-  
+
   // Shuffle
   isShuffled: boolean;
   toggleShuffle: () => void;
-  
+
   // Playlist
   playlistVisible: boolean;
   setPlaylistVisible: (visible: boolean) => void;
@@ -66,7 +76,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const tracks: Track[] = tracksData.tracks || [];
   const loading = false; // No loading needed for static data
   const error: string | null = tracksData.error || null;
-  
+
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [playlistVisible, setPlaylistVisible] = useState(true);
   const [loopMode, setLoopMode] = useState<LoopMode>('none');
@@ -94,7 +104,10 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
       // Ensure current track is first in shuffle
       const currentIdx = shuffled.indexOf(currentTrackIndex);
       if (currentIdx > 0) {
-        [shuffled[0], shuffled[currentIdx]] = [shuffled[currentIdx], shuffled[0]];
+        [shuffled[0], shuffled[currentIdx]] = [
+          shuffled[currentIdx],
+          shuffled[0],
+        ];
       }
       setShuffledIndices(shuffled);
     } else if (!isShuffled) {
@@ -105,6 +118,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   const handleTrackEnd = useCallback(
     (newIndex: number) => {
       if (loopMode === 'song') {
+        // Loop the same song
         if (seekRef.current) {
           seekRef.current(0);
         }
@@ -114,11 +128,13 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
           }
         }, 200);
       } else if (loopMode === 'playlist') {
+        // Loop playlist - always advance (will loop back to start)
         // If shuffle is enabled, use shuffled order
         if (isShuffled && shuffledIndices.length > 0) {
           const currentShuffleIdx = shuffledIndices.indexOf(currentTrackIndex);
           if (currentShuffleIdx !== -1) {
-            const nextShuffleIdx = (currentShuffleIdx + 1) % shuffledIndices.length;
+            const nextShuffleIdx =
+              (currentShuffleIdx + 1) % shuffledIndices.length;
             const nextTrackIdx = shuffledIndices[nextShuffleIdx];
             setCurrentTrackIndex(nextTrackIdx);
             if (playRef.current) {
@@ -136,31 +152,84 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
             playRef.current?.();
           }, 200);
         }
+      } else {
+        // 'none' mode - advance to next track (but don't loop at end)
+        // If shuffle is enabled, use shuffled order
+        if (isShuffled && shuffledIndices.length > 0) {
+          const currentShuffleIdx = shuffledIndices.indexOf(currentTrackIndex);
+          if (currentShuffleIdx !== -1) {
+            const nextShuffleIdx = currentShuffleIdx + 1;
+            if (nextShuffleIdx < shuffledIndices.length) {
+              const nextTrackIdx = shuffledIndices[nextShuffleIdx];
+              setCurrentTrackIndex(nextTrackIdx);
+              if (playRef.current) {
+                setTimeout(() => {
+                  playRef.current?.();
+                }, 200);
+              }
+            }
+            // If at end, just stop (don't loop)
+            return;
+          }
+        }
+        // Normal advance - only if not at end
+        if (newIndex > currentTrackIndex) {
+          setCurrentTrackIndex(newIndex);
+          if (playRef.current) {
+            setTimeout(() => {
+              playRef.current?.();
+            }, 200);
+          }
+        }
+        // If at end, just stop (don't loop)
       }
-      // If loopMode is 'none', track just ends (no auto-advance)
     },
     [loopMode, isShuffled, shuffledIndices, currentTrackIndex]
   );
 
-  const audioPlayer = useAudioPlayer(tracks, currentTrackIndex, handleTrackEnd);
+  // Determine which player to use based on current track
+  const validTrackIndex = Math.max(
+    0,
+    Math.min(currentTrackIndex, tracks.length - 1)
+  );
+  const currentTrack = tracks[validTrackIndex] || tracks[0] || null;
+  const isYouTubeTrack =
+    currentTrack?.previewUrl?.startsWith('youtube:') || false;
+
+  // Use YouTube player for YouTube tracks, HTML5 audio for others
+  const youtubePlayer = useYouTubePlayer(
+    tracks,
+    currentTrackIndex,
+    isYouTubeTrack ? handleTrackEnd : undefined
+  );
+  const audioPlayer = useAudioPlayer(
+    tracks,
+    currentTrackIndex,
+    !isYouTubeTrack ? handleTrackEnd : undefined
+  );
+
+  // Select the active player based on track type
+  const activePlayer = isYouTubeTrack ? youtubePlayer : audioPlayer;
 
   useEffect(() => {
-    playRef.current = audioPlayer.play;
-    seekRef.current = audioPlayer.seek;
-  }, [audioPlayer.play, audioPlayer.seek]);
+    playRef.current = activePlayer.play;
+    seekRef.current = activePlayer.seek;
+  }, [activePlayer.play, activePlayer.seek]);
 
-  const handleTrackSelect = useCallback((index: number) => {
-    const wasPlaying = audioPlayer.state.isPlaying;
-    setCurrentTrackIndex(index);
-    if (audioPlayer.state.isPlaying || audioPlayer.state.isPaused) {
-      audioPlayer.seek(0);
-    }
-    if (wasPlaying) {
+  const handleTrackSelect = useCallback(
+    (index: number) => {
+      setCurrentTrackIndex(index);
+      
+      // Auto-play when user explicitly selects a track
+      // Wait a bit for the player to load the new track, then play
       setTimeout(() => {
-        audioPlayer.play();
-      }, 100);
-    }
-  }, [audioPlayer]);
+        if (playRef.current) {
+          playRef.current();
+        }
+      }, 300);
+    },
+    []
+  );
 
   const toggleLoop = useCallback(() => {
     setLoopMode((prev) => {
@@ -179,8 +248,11 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   }, [isShuffled]);
 
   const getNextIndex = useCallback(() => {
-    const validTrackIndex = Math.max(0, Math.min(currentTrackIndex, tracks.length - 1));
-    
+    const validTrackIndex = Math.max(
+      0,
+      Math.min(currentTrackIndex, tracks.length - 1)
+    );
+
     if (isShuffled && shuffledIndices.length > 0) {
       const currentShuffleIdx = shuffledIndices.indexOf(validTrackIndex);
       if (currentShuffleIdx !== -1) {
@@ -188,58 +260,60 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
         return shuffledIndices[nextShuffleIdx];
       }
     }
-    
-    if (loopMode === 'playlist') {
-      return validTrackIndex === tracks.length - 1 ? 0 : validTrackIndex + 1;
-    } else if (loopMode === 'none') {
-      // Don't advance past the last track
-      return Math.min(validTrackIndex + 1, tracks.length - 1);
-    }
-    // For 'song' mode, next doesn't make sense, but return current
-    return validTrackIndex;
-  }, [loopMode, isShuffled, shuffledIndices, currentTrackIndex, tracks.length]);
+
+    // Always allow looping when clicking next button (regardless of loop mode)
+    // Loop mode only affects auto-advance when track ends
+    return validTrackIndex === tracks.length - 1 ? 0 : validTrackIndex + 1;
+  }, [isShuffled, shuffledIndices, currentTrackIndex, tracks.length]);
 
   const getPreviousIndex = useCallback(() => {
-    const validTrackIndex = Math.max(0, Math.min(currentTrackIndex, tracks.length - 1));
-    
+    const validTrackIndex = Math.max(
+      0,
+      Math.min(currentTrackIndex, tracks.length - 1)
+    );
+
     if (isShuffled && shuffledIndices.length > 0) {
       const currentShuffleIdx = shuffledIndices.indexOf(validTrackIndex);
       if (currentShuffleIdx !== -1) {
-        const prevShuffleIdx = currentShuffleIdx === 0 ? shuffledIndices.length - 1 : currentShuffleIdx - 1;
+        const prevShuffleIdx =
+          currentShuffleIdx === 0
+            ? shuffledIndices.length - 1
+            : currentShuffleIdx - 1;
         return shuffledIndices[prevShuffleIdx];
       }
     }
-    
-    if (loopMode === 'playlist') {
-      return validTrackIndex === 0 ? tracks.length - 1 : validTrackIndex - 1;
-    } else if (loopMode === 'none') {
-      // Don't go before the first track
-      return Math.max(validTrackIndex - 1, 0);
-    }
-    // For 'song' mode, previous doesn't make sense, but return current
-    return validTrackIndex;
-  }, [loopMode, isShuffled, shuffledIndices, currentTrackIndex, tracks.length]);
+
+    // Always allow looping when clicking previous button (regardless of loop mode)
+    // Loop mode only affects auto-advance when track ends
+    return validTrackIndex === 0 ? tracks.length - 1 : validTrackIndex - 1;
+  }, [isShuffled, shuffledIndices, currentTrackIndex, tracks.length]);
 
   const next = useCallback(() => {
     const newIndex = getNextIndex();
     setCurrentTrackIndex(newIndex);
     setTimeout(() => {
-      audioPlayer.seek(0);
-      audioPlayer.play();
+      activePlayer.seek(0);
+      activePlayer.play();
     }, 100);
-  }, [getNextIndex, audioPlayer]);
+  }, [getNextIndex, activePlayer]);
 
   const previous = useCallback(() => {
     const newIndex = getPreviousIndex();
     setCurrentTrackIndex(newIndex);
     setTimeout(() => {
-      audioPlayer.seek(0);
-      audioPlayer.play();
+      activePlayer.seek(0);
+      activePlayer.play();
     }, 100);
-  }, [getPreviousIndex, audioPlayer]);
+  }, [getPreviousIndex, activePlayer]);
 
-  const validTrackIndex = Math.max(0, Math.min(currentTrackIndex, tracks.length - 1));
-  const currentTrack = tracks[validTrackIndex] || tracks[0] || null;
+  const isBufferingValue = activePlayer.state.isBuffering;
+  
+  // Debug: log buffering state
+  useEffect(() => {
+    if (isBufferingValue) {
+      console.log('Context: isBuffering = true, activePlayer:', activePlayer.state);
+    }
+  }, [isBufferingValue, activePlayer]);
 
   const value: MusicPlayerContextValue = {
     tracks,
@@ -248,14 +322,15 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     currentTrackIndex,
     setCurrentTrackIndex,
     currentTrack,
-    isPlaying: audioPlayer.state.isPlaying,
-    currentTime: audioPlayer.state.currentTime,
-    duration: audioPlayer.state.duration,
-    volume: audioPlayer.state.volume,
-    play: audioPlayer.play,
-    pause: audioPlayer.pause,
-    seek: audioPlayer.seek,
-    setVolume: audioPlayer.setVolume,
+    isPlaying: activePlayer.state.isPlaying,
+    currentTime: activePlayer.state.currentTime,
+    duration: activePlayer.state.duration,
+    volume: activePlayer.state.volume,
+    isBuffering: isBufferingValue,
+    play: activePlayer.play,
+    pause: activePlayer.pause,
+    seek: activePlayer.seek,
+    setVolume: activePlayer.setVolume,
     next,
     previous,
     loopMode,
@@ -273,4 +348,3 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     </MusicPlayerContext.Provider>
   );
 }
-

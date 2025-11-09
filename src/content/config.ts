@@ -11,6 +11,7 @@ const tracks = defineCollection({
         album: z.string(),
         albumArt: z.string(),
         previewUrl: z.string(),
+        spotifyUrl: z.string(), // Link to track on Spotify
         duration: z.number(), // Duration in milliseconds
       })
     ),

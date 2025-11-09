@@ -280,18 +280,8 @@ export const MusicPlayerIcon = (): React.ReactNode => (
       fill="none"
     />
     {/* Small circle at bottom */}
-    <circle
-      cx="28"
-      cy="42"
-      r="3"
-      fill="#7da3d1"
-    />
-    <circle
-      cx="32"
-      cy="42"
-      r="3"
-      fill="#7da3d1"
-    />
+    <circle cx="28" cy="42" r="3" fill="#7da3d1" />
+    <circle cx="32" cy="42" r="3" fill="#7da3d1" />
   </svg>
 );
 
@@ -393,7 +383,11 @@ export const NextIcon = (): React.ReactNode => (
   </svg>
 );
 
-export const LoopIcon = ({ mode }: { mode: 'none' | 'song' | 'playlist' }): React.ReactNode => (
+export const LoopIcon = ({
+  mode,
+}: {
+  mode: 'none' | 'song' | 'playlist';
+}): React.ReactNode => (
   <svg
     width="24"
     height="24"
@@ -415,28 +409,11 @@ export const LoopIcon = ({ mode }: { mode: 'none' | 'song' | 'playlist' }): Reac
       strokeWidth="2"
       strokeLinecap="round"
     />
-    {mode === 'song' && (
-      <circle
-        cx="12"
-        cy="12"
-        r="3"
-        fill="currentColor"
-      />
-    )}
+    {mode === 'song' && <circle cx="12" cy="12" r="3" fill="currentColor" />}
     {mode === 'playlist' && (
       <>
-        <circle
-          cx="9"
-          cy="12"
-          r="2"
-          fill="currentColor"
-        />
-        <circle
-          cx="15"
-          cy="12"
-          r="2"
-          fill="currentColor"
-        />
+        <circle cx="9" cy="12" r="2" fill="currentColor" />
+        <circle cx="15" cy="12" r="2" fill="currentColor" />
       </>
     )}
   </svg>

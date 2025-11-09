@@ -80,7 +80,7 @@ export function useWindowResize({
 
       // Get the current actual window position (from drag hook) if available
       const currentPos = getCurrentPosition ? getCurrentPosition() : position;
-      
+
       // Sync the position state with the actual current position to prevent abrupt jumps
       setPosition(currentPos);
 
@@ -164,9 +164,9 @@ export function useWindowResize({
     const handleMouseUp = () => {
       // For left/top edge resizes, position changes must be persisted to drag hook
       // Check if resize handle involves left or top edges (which change position)
-      const positionChanged = 
+      const positionChanged =
         resizeHandle?.includes('w') || resizeHandle?.includes('n');
-      
+
       // Save position change BEFORE ending resize state to ensure drag hook updates first
       // This prevents the window from jumping back when resize ends
       if (positionChanged && onPositionChange) {
@@ -213,4 +213,3 @@ export function useWindowResize({
     handleResizeStart,
   };
 }
-

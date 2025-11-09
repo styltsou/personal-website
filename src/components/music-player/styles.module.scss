@@ -88,6 +88,24 @@
   min-height: 200px;
   // Add background color so it's visible even if image doesn't load
   background-color: var(--retro-button-bg);
+  
+  // Make the link wrapper fill the container
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 }
 
 .albumArt {

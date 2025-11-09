@@ -6,19 +6,27 @@
 
 import { useIconStore } from '../../stores/icon-store';
 import { icons, type IconConfig } from '../../data/icons';
-import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../../utils/icon-grid';
+import {
+  ICON_WIDTH,
+  ICON_HEIGHT,
+  ICON_IMAGE_SIZE,
+} from '../../utils/icon-grid';
 import { cn } from '../../utils/cn';
 import styles from './styles.module.scss';
 
 export default function DraggingIcon() {
   const draggingIconId = useIconStore((state) => state.draggingIconId);
-  const draggingIconPosition = useIconStore((state) => state.draggingIconPosition);
+  const draggingIconPosition = useIconStore(
+    (state) => state.draggingIconPosition
+  );
 
   if (!draggingIconId || !draggingIconPosition) {
     return null;
   }
 
-  const iconConfig = icons.find((icon) => icon.id === draggingIconId) as IconConfig | undefined;
+  const iconConfig = icons.find((icon) => icon.id === draggingIconId) as
+    | IconConfig
+    | undefined;
   if (!iconConfig) {
     return null;
   }
@@ -49,7 +57,11 @@ export default function DraggingIcon() {
 
   return (
     <div
-      className={cn('desktop-icon', 'desktop-icon--dragging', styles.draggingIcon)}
+      className={cn(
+        'desktop-icon',
+        'desktop-icon--dragging',
+        styles.draggingIcon
+      )}
       style={{
         left: `${draggingIconPosition.x}px`,
         top: `${draggingIconPosition.y}px`,
@@ -62,4 +74,3 @@ export default function DraggingIcon() {
     </div>
   );
 }
-
