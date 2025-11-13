@@ -16,7 +16,7 @@
   flex-shrink: 0;
   width: 80px;
   height: 80px;
-  @include retro-3d-outset;
+  @include outset-3d;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -39,7 +39,7 @@
 .title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--retro-titlebar-orange);
+  color: var(--titlebar-orange);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -48,7 +48,7 @@
 
 .artist {
   font-size: 15px;
-  color: var(--retro-text-light);
+  color: var(--text-light);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -57,7 +57,7 @@
 
 .album {
   font-size: 13px;
-  color: var(--retro-text-light);
+  color: var(--text-light);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +67,7 @@
 .time {
   font-size: 14px;
   font-family: monospace;
-  color: var(--retro-titlebar-orange);
+  color: var(--titlebar-orange);
   margin-top: 0.5rem;
   font-weight: 600;
 }

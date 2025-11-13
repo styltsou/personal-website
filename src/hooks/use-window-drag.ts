@@ -85,7 +85,7 @@ export function useWindowDrag({
       const target = e.target as HTMLElement;
       if (
         target.closest('button') ||
-        target.closest('.retro-titlebar-controls')
+        target.closest('.titlebar-controls')
       ) {
         return;
       }

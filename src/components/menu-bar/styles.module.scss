@@ -10,3 +10,13 @@
   overflow: hidden;
 }
 
+.active {
+  background-color: var(--focus-blue);
+  box-shadow: none;
+}
+
+.hasState {
+  background-color: var(--button-active-bg);
+  box-shadow: inset 1px 1px 1px var(--shadow-soft);
+}
+

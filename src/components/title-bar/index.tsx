@@ -12,6 +12,7 @@ export interface TitleBarProps {
   title: string;
   isMaximized: boolean;
   position: { x: number; y: number };
+  isDragging?: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onMinimize?: () => void;
@@ -26,6 +27,7 @@ export default function TitleBar({
   title,
   isMaximized,
   position,
+  isDragging = false,
   onMouseDown,
   onKeyDown,
   onMinimize,
@@ -39,7 +41,7 @@ export default function TitleBar({
     const target = e.target as HTMLElement;
     if (
       target.closest('button') ||
-      target.closest('.retro-titlebar-controls')
+      target.closest('.titlebar-controls')
     ) {
       return;
     }
@@ -52,7 +54,7 @@ export default function TitleBar({
 
   return (
     <div
-      className={cn('retro-titlebar', styles.titleBar)}
+      className={cn('titlebar', styles.titleBar, isDragging && styles.dragging)}
       onMouseDown={onMouseDown}
       onDoubleClick={handleDoubleClick}
       onKeyDown={onKeyDown}
@@ -60,7 +62,7 @@ export default function TitleBar({
       role="button"
       aria-label={`${title} window title bar`}
     >
-      <span id={`window-title-${id}`} className="retro-titlebar-text">
+      <span id={`window-title-${id}`} className="titlebar-text">
         {title}
       </span>
       <WindowControls

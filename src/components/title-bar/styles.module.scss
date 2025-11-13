@@ -4,6 +4,10 @@
  */
 
 .titleBar {
-  cursor: move;
+  cursor: pointer;
+
+  &.dragging {
+    cursor: grabbing;
+  }
 }
 

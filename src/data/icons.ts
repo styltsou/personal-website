@@ -10,6 +10,7 @@ import {
   TerminalIcon,
   FlappyBirdIcon,
   MusicPlayerIcon,
+  PianoIcon,
 } from './icon-components.tsx';
 
 export interface IconConfig {
@@ -49,5 +50,11 @@ export const icons: IconConfig[] = [
     label: 'Music',
     icon: MusicPlayerIcon,
     windowId: 'music-player',
+  },
+  {
+    id: 'piano',
+    label: 'Piano',
+    icon: PianoIcon,
+    windowId: 'piano',
   },
 ];

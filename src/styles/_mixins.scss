@@ -2,12 +2,12 @@
  * Reusable SCSS Mixins
  */
 
-@mixin retro-button {
-  background-color: var(--retro-button-bg);
-  border-top: 1px solid var(--retro-button-border-light);
-  border-left: 1px solid var(--retro-button-border-light);
-  border-right: 1px solid var(--retro-button-border-dark);
-  border-bottom: 1px solid var(--retro-button-border-dark);
+@mixin button {
+  background-color: var(--button-bg);
+  border-top: 1px solid var(--button-border-light);
+  border-left: 1px solid var(--button-border-light);
+  border-right: 1px solid var(--button-border-dark);
+  border-bottom: 1px solid var(--button-border-dark);
   border-radius: 3px;
   padding: 6px 12px;
   font-size: 13px;
@@ -17,41 +17,41 @@
   transition: all 0.1s ease;
 
   &:hover {
-    background-color: var(--retro-button-active-bg);
+    background-color: var(--button-active-bg);
   }
 
   &:active,
   &.active {
-    background-color: var(--retro-button-active-bg);
-    border-top: 1px solid var(--retro-button-active-border-light);
-    border-left: 1px solid var(--retro-button-active-border-light);
-    border-right: 1px solid var(--retro-button-active-border-dark);
-    border-bottom: 1px solid var(--retro-button-active-border-dark);
-    box-shadow: inset 1px 1px 2px var(--retro-shadow-soft);
+    background-color: var(--button-active-bg);
+    border-top: 1px solid var(--button-active-border-light);
+    border-left: 1px solid var(--button-active-border-light);
+    border-right: 1px solid var(--button-active-border-dark);
+    border-bottom: 1px solid var(--button-active-border-dark);
+    box-shadow: inset 1px 1px 2px var(--shadow-soft);
   }
 }
 
-@mixin retro-window-border {
-  border-top: 2px solid var(--retro-window-border-light);
-  border-left: 2px solid var(--retro-window-border-light);
-  border-right: 2px solid var(--retro-window-border-dark);
-  border-bottom: 2px solid var(--retro-window-border-dark);
+@mixin window-border {
+  border-top: 2px solid var(--window-border-light);
+  border-left: 2px solid var(--window-border-light);
+  border-right: 2px solid var(--window-border-dark);
+  border-bottom: 2px solid var(--window-border-dark);
   border-radius: 4px;
 }
 
-@mixin retro-3d-inset {
-  border-top: 1px solid var(--retro-button-border-dark);
-  border-left: 1px solid var(--retro-button-border-dark);
-  border-right: 1px solid var(--retro-button-border-light);
-  border-bottom: 1px solid var(--retro-button-border-light);
-  box-shadow: inset 1px 1px 1px var(--retro-shadow-soft);
+@mixin inset-3d {
+  border-top: 1px solid var(--button-border-dark);
+  border-left: 1px solid var(--button-border-dark);
+  border-right: 1px solid var(--button-border-light);
+  border-bottom: 1px solid var(--button-border-light);
+  box-shadow: inset 1px 1px 1px var(--shadow-soft);
 }
 
-@mixin retro-3d-outset {
-  border-top: 1px solid var(--retro-button-border-light);
-  border-left: 1px solid var(--retro-button-border-light);
-  border-right: 1px solid var(--retro-button-border-dark);
-  border-bottom: 1px solid var(--retro-button-border-dark);
-  box-shadow: 1px 1px 2px var(--retro-shadow-soft);
+@mixin outset-3d {
+  border-top: 1px solid var(--button-border-light);
+  border-left: 1px solid var(--button-border-light);
+  border-right: 1px solid var(--button-border-dark);
+  border-bottom: 1px solid var(--button-border-dark);
+  box-shadow: 1px 1px 2px var(--shadow-soft);
 }
 

@@ -28,7 +28,7 @@
   // Ensure all buttons in mainControls have normal icon color
   .button {
     svg {
-      color: var(--retro-text);
+      color: var(--text);
     }
   }
 }
@@ -40,7 +40,7 @@
 }
 
 .button {
-  @include retro-button;
+  @include button;
   aspect-ratio: 1;
   min-width: 60px;
   height: 60px;
@@ -51,7 +51,7 @@
   justify-content: center;
   line-height: 1;
   transition: all 0.08s ease;
-  color: var(--retro-text);
+  color: var(--text);
   
   // Ensure SVG icons are properly sized and inherit color
   svg {
@@ -61,12 +61,12 @@
   }
   
   &:hover {
-    background-color: var(--retro-button-active-bg);
+    background-color: var(--button-active-bg);
     transform: scale(1.02);
   }
   
   &:active {
-    @include retro-3d-inset;
+    @include inset-3d;
     transform: scale(0.99);
   }
   
@@ -74,26 +74,26 @@
 
 // Loop button active state (when loop is enabled)
 .loopActive {
-  @include retro-3d-inset;
+  @include inset-3d;
   
   svg {
-    color: var(--retro-titlebar-orange);
+    color: var(--titlebar-orange);
   }
 }
 
 // Shuffle button active state (when shuffle is enabled)
 .shuffleActive {
-  @include retro-3d-inset;
+  @include inset-3d;
   
   svg {
-    color: var(--retro-titlebar-orange);
+    color: var(--titlebar-orange);
   }
 }
 
 // Shuffle button inactive state (when shuffle is off)
 .shuffleWrapper .button:not(.shuffleActive) {
   svg {
-    color: var(--retro-text-light);
+    color: var(--text-light);
     opacity: 0.5;
   }
 }
@@ -101,7 +101,7 @@
 // Loop button inactive state (when loop is off)
 .loopWrapper .button:not(.loopActive) {
   svg {
-    color: var(--retro-text-light);
+    color: var(--text-light);
     opacity: 0.5;
   }
 }

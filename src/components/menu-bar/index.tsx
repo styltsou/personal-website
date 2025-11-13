@@ -4,7 +4,6 @@
  */
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 
 import ThemeToggle from './theme-toggle';
 
@@ -13,92 +12,6 @@ import { useWindowStore } from '../../stores/window-store';
 import { formatDate, formatTime } from '../../utils/date-time';
 import { cn } from '../../utils/cn';
 import styles from './styles.module.scss';
-
-// Animation variants
-const buttonVariants = {
-  active: {
-    backgroundColor: 'var(--retro-focus-blue)',
-    boxShadow: 'none',
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-  hasState: {
-    backgroundColor: 'var(--retro-button-active-bg)',
-    boxShadow: 'inset 1px 1px 1px var(--retro-shadow-soft)',
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-  default: {
-    backgroundColor: 'var(--retro-button-bg)',
-    boxShadow: 'none',
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-};
-
-const closeIconVariants = {
-  initial: {
-    width: 0,
-    opacity: 0,
-    x: -10,
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-  animate: {
-    width: 12,
-    opacity: 0.7,
-    x: 0,
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-  exit: {
-    width: 0,
-    opacity: 0,
-    x: -10,
-    transition: {
-      duration: 0.03,
-      ease: 'easeOut' as const,
-    },
-  },
-};
-
-// Subtle animation variants for window buttons appearing/disappearing
-const windowButtonVariants = {
-  initial: {
-    opacity: 0,
-    x: -8,
-    transition: {
-      duration: 0.05,
-      ease: 'easeOut' as const,
-    },
-  },
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.05,
-      ease: 'easeOut' as const,
-    },
-  },
-  exit: {
-    opacity: 0,
-    x: -8,
-    transition: {
-      duration: 0.05,
-      ease: 'easeIn' as const,
-    },
-  },
-};
 
 export default function MenuBar() {
   const windowStates = useWindowStore((state) => state.windowStates);
@@ -127,18 +40,14 @@ export default function MenuBar() {
 
   const getButtonClasses = (state: ReturnType<typeof getWindowButtonState>) => {
     return cn(
-      'retro-menu-bar-button',
-      'retro-focus-ring',
-      state.isOpen && 'retro-menu-bar-button-open',
-      state.exists && state.isMinimized && 'retro-menu-bar-button-minimized',
-      state.isActive && 'retro-menu-bar-button-focused'
+      'menu-bar-button',
+      'focus-ring',
+      state.isOpen && 'menu-bar-button-open',
+      state.exists && state.isMinimized && 'menu-bar-button-minimized',
+      state.isActive && 'menu-bar-button-focused',
+      state.isActive && styles.active,
+      state.hasState && !state.isActive && styles.hasState
     );
-  };
-
-  const getButtonVariant = (state: ReturnType<typeof getWindowButtonState>) => {
-    if (state.isActive) return 'active';
-    if (state.hasState) return 'hasState';
-    return 'default';
   };
 
   const getAriaLabel = (
@@ -168,82 +77,49 @@ export default function MenuBar() {
   };
 
   return (
-    <div className="retro-menu-bar">
-      <div className="retro-menu-bar-left">
-        <span className="retro-menu-bar-logo">styltsou</span>
-        <AnimatePresence mode="popLayout">
-          {windows
-            .filter((window) => {
-              // Show pinned windows always, or unpinned windows only if they exist (are open)
-              return (
-                window.pinned === true ||
-                windowStates.some((ws) => ws.id === window.id)
-              );
-            })
-            .map((window) => {
-              const state = getWindowButtonState(window.id);
+    <div className="menu-bar">
+      <div className="menu-bar-left">
+        <span className="menu-bar-logo">styltsou</span>
+        {windows
+          .filter((window) => {
+            // Show pinned windows always, or unpinned windows only if they exist (are open)
+            return (
+              window.pinned === true ||
+              windowStates.some((ws) => ws.id === window.id)
+            );
+          })
+          .map((window) => {
+            const state = getWindowButtonState(window.id);
 
-              // TODO: Variants stuff looks weird, I need to understand them
-
-              return (
-                <motion.button
-                  key={window.id}
-                  type="button"
-                  className={cn(getButtonClasses(state), styles.button)}
-                  onClick={() => openWindow(window.id)}
-                  aria-label={getAriaLabel(window.title, state)}
-                  initial="initial"
-                  animate={['animate', getButtonVariant(state)]}
-                  exit="exit"
-                  variants={{
-                    // Enter/exit animations
-                    initial: windowButtonVariants.initial,
-                    animate: {
-                      ...windowButtonVariants.animate,
-                    },
-                    exit: windowButtonVariants.exit,
-                    // State-based background colors
-                    active: buttonVariants.active,
-                    hasState: buttonVariants.hasState,
-                    default: buttonVariants.default,
-                  }}
-                  layout="position"
-                  transition={{
-                    layout: {
-                      duration: 0.05,
-                      ease: 'easeOut',
-                    },
-                  }}
-                >
-                  <AnimatePresence mode="wait">
-                    {state.exists && (
-                      <motion.span
-                        key="close-icon"
-                        className="retro-menu-bar-button-close-icon"
-                        variants={closeIconVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        onClick={(e) => handleCloseClick(window.id, e)}
-                        onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Close ${window.title} window`}
-                      >
-                        ×
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                  <span>{window.title}</span>
-                </motion.button>
-              );
-            })}
-        </AnimatePresence>
+            return (
+              <button
+                key={window.id}
+                type="button"
+                className={cn(getButtonClasses(state), styles.button)}
+                onClick={() => openWindow(window.id)}
+                aria-label={getAriaLabel(window.title, state)}
+              >
+                {state.exists && (
+                  <span
+                    className="menu-bar-button-close-icon"
+                    onClick={(e) => handleCloseClick(window.id, e)}
+                    onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Close ${window.title} window`}
+                  >
+                    ×
+                  </span>
+                )}
+                <span>{window.title}</span>
+              </button>
+            );
+          })}
       </div>
-      <div className="retro-menu-bar-right">
-        <div className="retro-menu-bar-time">
-          <span className="retro-menu-bar-date">{formatDate(currentTime)}</span>
-          <span className="retro-menu-bar-clock">
+      <div className="menu-bar-right">
+        <div className="menu-bar-time">
+          <span className="menu-bar-date">{formatDate(currentTime)}</span>
+          <span className="menu-bar-clock">
             {formatTime(currentTime)}
           </span>
         </div>

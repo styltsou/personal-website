@@ -12,7 +12,7 @@
 }
 
 .muteButton {
-  @include retro-button;
+  @include button;
   min-width: 40px;
   height: 32px;
   font-size: 16px;
@@ -27,29 +27,29 @@
     width: 20px;
     height: 20px;
     display: block;
-    color: var(--retro-text);
+    color: var(--text);
   }
 }
 
 // Dark theme: icons should be light
 :global(.dark-theme) .muteButton svg {
-  color: var(--retro-text);
+  color: var(--text);
 }
 
 .muteButton:hover {
-  background-color: var(--retro-button-active-bg);
+  background-color: var(--button-active-bg);
 }
 
 .muteButton:active {
-  @include retro-3d-inset;
+  @include inset-3d;
 }
 
 .slider {
   flex: 1;
   max-width: 180px;
   height: 8px;
-  background-color: var(--retro-button-bg);
-  @include retro-3d-inset;
+  background-color: var(--button-bg);
+  @include inset-3d;
   border-radius: 4px;
   outline: none;
   -webkit-appearance: none;
@@ -61,22 +61,22 @@
     appearance: none;
     width: 18px;
     height: 18px;
-    background-color: var(--retro-titlebar-orange);
-    @include retro-3d-outset;
+    background-color: var(--titlebar-orange);
+    @include outset-3d;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: -5px;
-    border: 1px solid var(--retro-titlebar-orange);
+    border: 1px solid var(--titlebar-orange);
 
     &:hover {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(1.1);
     }
 
     &:active {
-      @include retro-3d-inset;
+      @include inset-3d;
       transform: scale(0.95);
     }
   }
@@ -84,21 +84,21 @@
   &::-moz-range-thumb {
     width: 18px;
     height: 18px;
-    background-color: var(--retro-titlebar-orange);
-    border: 1px solid var(--retro-titlebar-orange);
+    background-color: var(--titlebar-orange);
+    border: 1px solid var(--titlebar-orange);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
 
     &:hover {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(1.1);
     }
 
     &:active {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(0.95);
     }
   }
@@ -108,12 +108,12 @@
     height: 8px;
     background: linear-gradient(
       to right,
-      var(--retro-titlebar-orange) 0%,
-      var(--retro-titlebar-orange) var(--progress, 0%),
-      var(--retro-button-bg) var(--progress, 0%),
-      var(--retro-button-bg) 100%
+      var(--titlebar-orange) 0%,
+      var(--titlebar-orange) var(--progress, 0%),
+      var(--button-bg) var(--progress, 0%),
+      var(--button-bg) 100%
     );
-    @include retro-3d-inset;
+    @include inset-3d;
     border-radius: 4px;
   }
 
@@ -122,10 +122,10 @@
     height: 8px;
     background: linear-gradient(
       to right,
-      var(--retro-titlebar-orange) 0%,
-      var(--retro-titlebar-orange) var(--progress, 0%),
-      var(--retro-button-bg) var(--progress, 0%),
-      var(--retro-button-bg) 100%
+      var(--titlebar-orange) 0%,
+      var(--titlebar-orange) var(--progress, 0%),
+      var(--button-bg) var(--progress, 0%),
+      var(--button-bg) 100%
     );
     border-radius: 4px;
   }
@@ -134,7 +134,7 @@
 .volumeLabel {
   font-family: monospace;
   font-size: 13px;
-  color: var(--retro-titlebar-orange);
+  color: var(--titlebar-orange);
   min-width: 45px;
   text-align: center;
   font-weight: 600;

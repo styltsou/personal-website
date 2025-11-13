@@ -7,25 +7,25 @@
 @use './mixins' as *;
 
 /* Nostalgic Window Style - Softer 3D Effect with Rounded Corners */
-.retro-window {
+.window {
   position: fixed;
-  background-color: var(--retro-window-bg);
-  @include retro-window-border;
-  box-shadow: 1px 1px 2px var(--retro-shadow-soft);
+  background-color: var(--window-bg);
+  @include window-border;
+  box-shadow: 1px 1px 2px var(--shadow-soft);
 }
 
 /* Active/Focused Window - More Prominent Shadow */
-.retro-window.active {
+.window.active {
   box-shadow:
-    4px 4px 12px var(--retro-shadow),
-    0 0 0 1px var(--retro-shadow-soft);
+    4px 4px 12px var(--shadow),
+    0 0 0 1px var(--shadow-soft);
 }
 
 /* Nostalgic Title Bar */
-.retro-titlebar {
-  background-color: var(--retro-titlebar-default);
-  color: var(--retro-titlebar-text);
-  border-bottom: 1px solid var(--retro-window-border-dark);
+.titlebar {
+  background-color: var(--titlebar-default);
+  color: var(--titlebar-text);
+  border-bottom: 1px solid var(--window-border-dark);
   border-radius: 4px 4px 0 0;
   padding: 6px 8px;
   font-weight: 600;
@@ -35,11 +35,11 @@
   align-items: center;
   justify-content: space-between;
   min-height: 32px;
-  box-shadow: 0 1px 2px var(--retro-titlebar-shadow);
+  box-shadow: 0 1px 2px var(--titlebar-shadow);
   position: relative;
 }
 
-.retro-titlebar-text {
+.titlebar-text {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -49,7 +49,7 @@
   align-items: center;
 }
 
-.retro-titlebar-controls {
+.titlebar-controls {
   display: flex;
   align-items: center;
   gap: 3px;
@@ -58,47 +58,47 @@
 }
 
 /* Title Bar Color Variants */
-.retro-titlebar[data-color='yellow'] {
-  background-color: var(--retro-titlebar-yellow);
+.titlebar[data-color='yellow'] {
+  background-color: var(--titlebar-yellow);
 }
 
-.retro-titlebar[data-color='orange'] {
-  background-color: var(--retro-titlebar-orange);
+.titlebar[data-color='orange'] {
+  background-color: var(--titlebar-orange);
 }
 
-.retro-titlebar[data-color='teal'] {
-  background-color: var(--retro-titlebar-teal);
+.titlebar[data-color='teal'] {
+  background-color: var(--titlebar-teal);
 }
 
-.retro-titlebar[data-color='pink'] {
-  background-color: var(--retro-titlebar-pink);
+.titlebar[data-color='pink'] {
+  background-color: var(--titlebar-pink);
 }
 
-.retro-titlebar[data-color='blue'] {
-  background-color: var(--retro-titlebar-blue);
+.titlebar[data-color='blue'] {
+  background-color: var(--titlebar-blue);
 }
 
 /* Nostalgic Button Style - Softer 3D */
-.retro-button {
-  @include retro-button;
+.button {
+  @include button;
   min-width: 60px;
   text-align: center;
 }
 
 /* Nostalgic Button - Inset/Pressed Style */
-.retro-button-inset {
-  background-color: var(--retro-button-bg);
-  @include retro-3d-inset;
+.button-inset {
+  background-color: var(--button-bg);
+  @include inset-3d;
   border-radius: 3px;
 }
 
 /* Nostalgic Window Controls - Properly Aligned */
-.retro-window-control {
+.window-control {
   width: 22px;
   height: 22px;
   border: none;
-  background-color: var(--retro-button-bg);
-  @include retro-3d-outset;
+  background-color: var(--button-bg);
+  @include outset-3d;
   border-radius: 2px;
   cursor: pointer;
   padding: 0;
@@ -108,37 +108,37 @@
   justify-content: center;
   font-size: 13px;
   font-weight: bold;
-  color: var(--retro-text);
+  color: var(--text);
   flex-shrink: 0;
   line-height: 1;
   transition: all 0.1s ease;
 
   &:hover {
-    background-color: var(--retro-button-active-bg);
+    background-color: var(--button-active-bg);
   }
 
   &:active {
-    @include retro-3d-inset;
+    @include inset-3d;
   }
 }
 
 /* Nostalgic Desktop Background - Warm Beige */
-.retro-desktop {
-  background-color: var(--retro-bg);
+.desktop {
+  background-color: var(--bg);
   background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      var(--retro-desktop-pattern) 2px,
-      var(--retro-desktop-pattern) 4px
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 2px,
-      var(--retro-desktop-pattern) 2px,
-      var(--retro-desktop-pattern) 4px
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
     );
   min-height: 100vh;
   width: 100%;
@@ -146,41 +146,41 @@
 }
 
 /* Menu Bar - Full Width Top Bar */
-.retro-menu-bar {
+.menu-bar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   height: 32px;
-  background-color: var(--retro-button-bg);
-  border-bottom: 1px solid var(--retro-window-border-dark);
+  background-color: var(--button-bg);
+  border-bottom: 1px solid var(--window-border-dark);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
   z-index: 100; /* Always on top */
-  box-shadow: 0 1px 3px var(--retro-shadow-soft);
+  box-shadow: 0 1px 3px var(--shadow-soft);
 }
 
-.retro-menu-bar-left {
+.menu-bar-left {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.retro-menu-bar-logo {
+.menu-bar-logo {
   font-weight: 700;
   font-size: 13px;
-  color: var(--retro-text);
+  color: var(--text);
   margin-right: 8px;
   user-select: none;
   letter-spacing: 0.5px;
 }
 
-.retro-menu-bar-button {
-  @include retro-button;
+.menu-bar-button {
+  @include button;
   border-radius: 2px;
   padding: 0 8px;
   height: 22px;
@@ -190,32 +190,32 @@
   line-height: 1;
   vertical-align: middle;
   min-width: auto;
-  color: var(--retro-text);
+  color: var(--text);
 }
 
 /* Open window button - pressed/inverted style */
-.retro-menu-bar-button-open {
-  @include retro-3d-inset;
+.menu-bar-button-open {
+  @include inset-3d;
 }
 
 /* Minimized window button - pressed style but slightly dimmed */
-.retro-menu-bar-button-minimized {
-  @include retro-3d-inset;
+.menu-bar-button-minimized {
+  @include inset-3d;
   opacity: 0.85;
 }
 
 /* Focused/Active window button */
-.retro-menu-bar-button-focused {
+.menu-bar-button-focused {
   /* Color animation handled by motion */
 }
 
 /* Combine minimized + focused states */
-.retro-menu-bar-button-minimized.retro-menu-bar-button-focused {
+.menu-bar-button-minimized.menu-bar-button-focused {
   opacity: 1;
 }
 
 /* Window close icon on the left */
-.retro-menu-bar-button-close-icon {
+.menu-bar-button-close-icon {
   margin-right: 4px;
   font-size: 14px;
   line-height: 1;
@@ -232,41 +232,41 @@
   }
 
   &:focus {
-    outline: 2px solid var(--retro-titlebar-blue);
+    outline: 2px solid var(--titlebar-blue);
     outline-offset: 2px;
   }
 }
 
-.retro-menu-bar-right {
+.menu-bar-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.retro-menu-bar-time {
+.menu-bar-time {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--retro-text);
+  color: var(--text);
 }
 
-.retro-menu-bar-date {
-  color: var(--retro-text-light);
+.menu-bar-date {
+  color: var(--text-light);
   margin-right: 4px;
 }
 
-.retro-menu-bar-clock {
+.menu-bar-clock {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
-.retro-menu-bar-theme-toggle {
+.menu-bar-theme-toggle {
   width: 22px;
   height: 22px;
-  background-color: var(--retro-button-bg);
-  @include retro-3d-outset;
+  background-color: var(--button-bg);
+  @include outset-3d;
   border-radius: 2px;
   cursor: pointer;
   padding: 0;
@@ -275,17 +275,17 @@
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: var(--retro-text);
+  color: var(--text);
   transition: all 0.1s ease;
   flex-shrink: 0;
   line-height: 1;
 
   &:hover {
-    background-color: var(--retro-button-active-bg);
+    background-color: var(--button-active-bg);
   }
 
   &:active {
-    @include retro-3d-inset;
+    @include inset-3d;
   }
 }
 
@@ -328,23 +328,23 @@
   opacity: 0.7;
   transform: scale(1.05);
   cursor: grabbing;
-  background-color: var(--retro-focus-blue); /* Blue background while dragging */
-  border: 1px solid var(--retro-titlebar-blue); /* Blue border while dragging */
+  background-color: var(--focus-blue); /* Blue background while dragging */
+  border: 1px solid var(--titlebar-blue); /* Blue border while dragging */
   border-radius: 4px;
   box-shadow:
-    4px 4px 12px var(--retro-shadow),
-    0 0 0 1px var(--retro-shadow-soft);
+    4px 4px 12px var(--shadow),
+    0 0 0 1px var(--shadow-soft);
   z-index: 99; /* Above all windows (10-98) but below menu bar (100) */
 }
 
 /* Desktop Icon - Selected State */
 .desktop-icon--selected {
-  background-color: var(--retro-focus-blue);
-  border: 1px solid var(--retro-titlebar-blue);
+  background-color: var(--focus-blue);
+  border: 1px solid var(--titlebar-blue);
   border-radius: 4px;
   box-shadow:
-    2px 2px 8px var(--retro-shadow-soft),
-    0 0 0 1px var(--retro-titlebar-blue);
+    2px 2px 8px var(--shadow-soft),
+    0 0 0 1px var(--titlebar-blue);
 }
 
 /* Desktop Icon - Ghost State (original position while dragging) */
@@ -357,11 +357,11 @@
 /* Desktop Icon - Preview State (where icon will snap to) */
 .desktop-icon--preview {
   opacity: 1;
-  border: 1px dashed var(--retro-titlebar-default);
+  border: 1px dashed var(--titlebar-default);
   border-radius: 4px;
   background-color: color-mix(
     in srgb,
-    var(--retro-titlebar-default) 10%,
+    var(--titlebar-default) 10%,
     transparent
   );
   box-sizing: border-box;
@@ -402,7 +402,7 @@
   padding: 0 2px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--retro-text);
+  color: var(--text);
   text-align: center;
   text-shadow: none;
   overflow: visible;
@@ -418,31 +418,31 @@
 
 /* Dark theme adjustments for icon label */
 :root.dark-theme .desktop-icon-label {
-  color: var(--retro-text);
+  color: var(--text);
   text-shadow: none;
 }
 
 /* Nostalgic Input Fields */
-.retro-input {
+.input {
   background-color: #ffffff;
-  border-top: 1px solid var(--retro-window-border-dark);
-  border-left: 1px solid var(--retro-window-border-dark);
-  border-right: 1px solid var(--retro-window-border-light);
-  border-bottom: 1px solid var(--retro-window-border-light);
+  border-top: 1px solid var(--window-border-dark);
+  border-left: 1px solid var(--window-border-dark);
+  border-right: 1px solid var(--window-border-light);
+  border-bottom: 1px solid var(--window-border-light);
   border-radius: 3px;
   padding: 4px 6px;
   font-size: 11px;
 
   &:focus {
-    outline: 2px solid var(--retro-titlebar-default);
+    outline: 2px solid var(--titlebar-default);
     outline-offset: -1px;
   }
 }
 
 /* Window Content Area */
-.retro-window-content {
-  background-color: var(--retro-window-bg);
-  color: var(--retro-text);
+.window-content {
+  background-color: var(--window-bg);
+  color: var(--text);
   font-size: 14px;
   line-height: 1.6;
 
@@ -483,13 +483,13 @@
 }
 
 /* Focus Ring for Accessibility */
-.retro-focus-ring:focus-visible {
-  outline: 2px solid var(--retro-titlebar-default);
+.focus-ring:focus-visible {
+  outline: 2px solid var(--titlebar-default);
   outline-offset: 2px;
 }
 
 /* Resize Handles */
-.retro-resize-handle {
+.resize-handle {
   position: absolute;
   z-index: 10;
   background: transparent;
@@ -497,7 +497,7 @@
 }
 
 /* Corner handles - 8px × 8px */
-.retro-resize-handle-nw {
+.resize-handle-nw {
   top: 0;
   left: 0;
   width: 8px;
@@ -505,7 +505,7 @@
   cursor: nwse-resize;
 }
 
-.retro-resize-handle-ne {
+.resize-handle-ne {
   top: 0;
   right: 0;
   width: 8px;
@@ -513,7 +513,7 @@
   cursor: nesw-resize;
 }
 
-.retro-resize-handle-sw {
+.resize-handle-sw {
   bottom: 0;
   left: 0;
   width: 8px;
@@ -521,7 +521,7 @@
   cursor: nesw-resize;
 }
 
-.retro-resize-handle-se {
+.resize-handle-se {
   bottom: 0;
   right: 0;
   width: 8px;
@@ -530,7 +530,7 @@
 }
 
 /* Edge handles */
-.retro-resize-handle-n {
+.resize-handle-n {
   top: 0;
   left: 8px;
   right: 8px;
@@ -538,7 +538,7 @@
   cursor: ns-resize;
 }
 
-.retro-resize-handle-s {
+.resize-handle-s {
   bottom: 0;
   left: 8px;
   right: 8px;
@@ -546,7 +546,7 @@
   cursor: ns-resize;
 }
 
-.retro-resize-handle-w {
+.resize-handle-w {
   left: 0;
   top: 8px;
   bottom: 8px;
@@ -554,7 +554,7 @@
   cursor: ew-resize;
 }
 
-.retro-resize-handle-e {
+.resize-handle-e {
   right: 0;
   top: 8px;
   bottom: 8px;
@@ -564,10 +564,10 @@
 
 /* Icon dragging cursor management - handled in icon drag hook */
 body.icon-dragging {
-  .retro-window,
-  .retro-window *,
-  .retro-titlebar,
-  .retro-titlebar *,
+  .window,
+  .window *,
+  .titlebar,
+  .titlebar *,
   .cursor-move,
   .desktop-icon,
   .desktop-icon * {
@@ -575,10 +575,10 @@ body.icon-dragging {
   }
 
   &.icon-dragging-over-window {
-    .retro-window,
-    .retro-window *,
-    .retro-titlebar,
-    .retro-titlebar *,
+    .window,
+    .window *,
+    .titlebar,
+    .titlebar *,
     .cursor-move {
       cursor: not-allowed !important;
     }
@@ -592,21 +592,21 @@ body.icon-dragging {
   }
 }
 
-/* Retro Loading Progress Bar - Animated angled stripes */
-.retro-loading-progress-bar {
+/* Loading Progress Bar - Animated angled stripes */
+.loading-progress-bar {
   position: absolute;
   top: 32px; /* Below title bar (32px height) */
   left: 0;
   right: 0;
   width: 100%;
   height: 6px;
-  background-color: var(--retro-window-bg);
+  background-color: var(--window-bg);
   overflow: hidden;
-  border-bottom: 1px solid var(--retro-window-border-dark);
+  border-bottom: 1px solid var(--window-border-dark);
   z-index: 10; /* Above content but below title bar */
 }
 
-.retro-loading-progress-bar-stripes {
+.loading-progress-bar-stripes {
   position: absolute;
   top: 0;
   left: 0;
@@ -614,16 +614,16 @@ body.icon-dragging {
   height: 100%;
   background: repeating-linear-gradient(
     45deg,
-    var(--retro-titlebar-blue) 0px,
-    var(--retro-titlebar-blue) 10px,
-    var(--retro-focus-blue) 10px,
-    var(--retro-focus-blue) 20px
+    var(--titlebar-blue) 0px,
+    var(--titlebar-blue) 10px,
+    var(--focus-blue) 10px,
+    var(--focus-blue) 20px
   );
   background-size: 28px 28px;
-  animation: retro-loading-stripes 1s linear infinite;
+  animation: loading-stripes 1s linear infinite;
 }
 
-@keyframes retro-loading-stripes {
+@keyframes loading-stripes {
   0% {
     background-position: 0 0;
   }
@@ -633,18 +633,18 @@ body.icon-dragging {
 }
 
 /* Dark theme adjustments for loading progress bar */
-:root.dark-theme .retro-loading-progress-bar {
-  background-color: var(--retro-window-bg);
-  border-bottom-color: var(--retro-window-border-dark);
+:root.dark-theme .loading-progress-bar {
+  background-color: var(--window-bg);
+  border-bottom-color: var(--window-border-dark);
 }
 
-:root.dark-theme .retro-loading-progress-bar-stripes {
+:root.dark-theme .loading-progress-bar-stripes {
   background: repeating-linear-gradient(
     45deg,
-    var(--retro-titlebar-blue) 0px,
-    var(--retro-titlebar-blue) 10px,
-    var(--retro-focus-blue) 10px,
-    var(--retro-focus-blue) 20px
+    var(--titlebar-blue) 0px,
+    var(--titlebar-blue) 10px,
+    var(--focus-blue) 10px,
+    var(--focus-blue) 20px
   );
 }
 

@@ -27,7 +27,7 @@
       left: 0;
       width: 100%;
       height: 8px;
-      $accent-color: #f09c7c; // --retro-titlebar-orange value
+      $accent-color: #f09c7c; // --titlebar-orange value
       $light-color-1: lighten($accent-color, 20%);
       $light-color-2: lighten($accent-color, 30%);
       background: repeating-linear-gradient(-45deg,
@@ -51,7 +51,7 @@
 // Dark theme variant for loading stripes
 :global(.dark-theme) {
   .sliderWrapper.buffering .stripesOverlay {
-    $accent-color: #f09c7c; // --retro-titlebar-orange value
+    $accent-color: #f09c7c; // --titlebar-orange value
     $dark-color-1: darken($accent-color, 10%);
     $dark-color-2: darken($accent-color, 20%);
     background: repeating-linear-gradient(-45deg,
@@ -65,7 +65,7 @@
 .time {
   font-family: monospace;
   font-size: 13px;
-  color: var(--retro-titlebar-orange);
+  color: var(--titlebar-orange);
   flex-shrink: 0;
   min-width: 50px;
   text-align: center;
@@ -75,8 +75,8 @@
 .slider {
   width: 100%;
   height: 8px;
-  background-color: var(--retro-button-bg);
-  @include retro-3d-inset;
+  background-color: var(--button-bg);
+  @include inset-3d;
   border-radius: 4px;
   outline: none;
   -webkit-appearance: none;
@@ -98,23 +98,23 @@
     appearance: none;
     width: 18px;
     height: 18px;
-    background-color: var(--retro-titlebar-orange);
-    @include retro-3d-outset;
+    background-color: var(--titlebar-orange);
+    @include outset-3d;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: -5px;
-    border: 1px solid var(--retro-titlebar-orange);
+    border: 1px solid var(--titlebar-orange);
     position: relative;
 
     &:hover {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(1.1);
     }
 
     &:active {
-      @include retro-3d-inset;
+      @include inset-3d;
       transform: scale(0.95);
     }
   }
@@ -122,21 +122,21 @@
   &::-moz-range-thumb {
     width: 18px;
     height: 18px;
-    background-color: var(--retro-titlebar-orange);
-    border: 1px solid var(--retro-titlebar-orange);
+    background-color: var(--titlebar-orange);
+    border: 1px solid var(--titlebar-orange);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
 
     &:hover {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(1.1);
     }
 
     &:active {
-      background-color: var(--retro-titlebar-pink);
-      border-color: var(--retro-titlebar-pink);
+      background-color: var(--titlebar-pink);
+      border-color: var(--titlebar-pink);
       transform: scale(0.95);
     }
   }
@@ -145,11 +145,11 @@
     width: 100%;
     height: 8px;
     background: linear-gradient(to right,
-        var(--retro-titlebar-orange) 0%,
-        var(--retro-titlebar-orange) var(--progress, 0%),
-        var(--retro-button-bg) var(--progress, 0%),
-        var(--retro-button-bg) 100%);
-    @include retro-3d-inset;
+        var(--titlebar-orange) 0%,
+        var(--titlebar-orange) var(--progress, 0%),
+        var(--button-bg) var(--progress, 0%),
+        var(--button-bg) 100%);
+    @include inset-3d;
     border-radius: 4px;
     margin: 0;
     padding: 0;
@@ -159,26 +159,26 @@
     width: 100%;
     height: 8px;
     background: linear-gradient(to right,
-        var(--retro-titlebar-orange) 0%,
-        var(--retro-titlebar-orange) var(--progress, 0%),
-        var(--retro-button-bg) var(--progress, 0%),
-        var(--retro-button-bg) 100%);
+        var(--titlebar-orange) 0%,
+        var(--titlebar-orange) var(--progress, 0%),
+        var(--button-bg) var(--progress, 0%),
+        var(--button-bg) 100%);
     border-radius: 4px;
   }
 
   &.buffering {
     &::-webkit-slider-runnable-track {
       background: linear-gradient(to right,
-          var(--retro-titlebar-orange) 0%,
-          var(--retro-titlebar-orange) var(--progress, 0%),
+          var(--titlebar-orange) 0%,
+          var(--titlebar-orange) var(--progress, 0%),
           transparent var(--progress, 0%),
           transparent 100%);
     }
 
     &::-moz-range-track {
       background: linear-gradient(to right,
-          var(--retro-titlebar-orange) 0%,
-          var(--retro-titlebar-orange) var(--progress, 0%),
+          var(--titlebar-orange) 0%,
+          var(--titlebar-orange) var(--progress, 0%),
           transparent var(--progress, 0%),
           transparent 100%);
     }

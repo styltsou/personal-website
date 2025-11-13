@@ -36,6 +36,7 @@ export interface ClosedWindowState {
   id: string;
   position: WindowPosition;
   size: WindowSize;
+  isMaximized: boolean;
 }
 
 interface WindowStore {
@@ -88,11 +89,16 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       const maxZIndex = getMaxZIndex(state.windowStates);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
       set({
-        windowStates: state.windowStates.map((ws) => ({
-          ...ws,
-          zIndex: ws.id === windowId ? newZIndex : ws.zIndex,
-          isMinimized: ws.id === windowId ? false : ws.isMinimized,
-        })),
+        windowStates: state.windowStates.map((ws) => {
+          if (ws.id !== windowId) return ws;
+          // Restore the window: un-minimize and bring to front
+          return {
+            ...ws,
+            zIndex: newZIndex,
+            isMinimized: false,
+            // Keep snapSide unchanged - if window was snapped, it should remain snapped
+          };
+        }),
         activeWindowId: windowId,
         nextZIndex: state.nextZIndex + 1,
       });
@@ -103,11 +109,13 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     const closedState = state.closedWindows[windowId];
     let newWindowSize: WindowSize;
     let newWindowPosition: WindowPosition;
+    let newIsMaximized: boolean;
 
     if (closedState) {
       // Restore from closed window state
       newWindowSize = closedState.size;
       newWindowPosition = closedState.position;
+      newIsMaximized = closedState.isMaximized;
     } else {
       // First time opening - use default size/position
       const defaultSize = getDefaultWindowSize();
@@ -127,6 +135,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
         defaultSize.height
       );
       newWindowSize = defaultSize;
+      newIsMaximized = false;
     }
 
     // Calculate z-index for new window
@@ -141,7 +150,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       size: newWindowSize,
       zIndex: newWindowZIndex,
       isMinimized: false,
-      isMaximized: false,
+      isMaximized: newIsMaximized,
       snapSide: null,
     };
 
@@ -165,6 +174,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
         id: windowId,
         position: windowToClose.position,
         size: windowToClose.size,
+        isMaximized: windowToClose.isMaximized,
       };
 
       return {

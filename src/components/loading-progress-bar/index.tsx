@@ -6,8 +6,8 @@
 
 export default function LoadingProgressBar() {
   return (
-    <div className="retro-loading-progress-bar">
-      <div className="retro-loading-progress-bar-stripes"></div>
+    <div className="loading-progress-bar">
+      <div className="loading-progress-bar-stripes"></div>
     </div>
   );
 }

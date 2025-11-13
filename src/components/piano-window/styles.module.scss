@@ -1,0 +1,170 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--window-bg);
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.keyboardSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.instructions {
+  padding: 8px 16px;
+  background-color: var(--button-bg);
+  border-top: 1px solid var(--window-border-dark);
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.instructionText {
+  margin: 2px 0;
+  line-height: 1.4;
+}
+
+.demoBanner {
+  background-color: var(--titlebar-yellow);
+  border-bottom: 2px solid var(--window-border-dark);
+  padding: 8px 16px;
+}
+
+.demoBannerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.demoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-on-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.fullVersionLink {
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  background-color: var(--window-bg);
+  border: 1px solid var(--window-border-dark);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.minimalControls {
+  padding: 12px 16px;
+  background-color: var(--button-bg);
+  border-top: 1px solid var(--window-border-dark);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sliderContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider {
+  flex: 1;
+  height: 4px;
+  background: var(--window-bg);
+  border: 1px solid var(--window-border-dark);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--titlebar-blue);
+    border: 2px solid var(--window-border-dark);
+    border-radius: 2px;
+    cursor: pointer;
+    @include outset-3d;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--titlebar-blue);
+    border: 2px solid var(--window-border-dark);
+    border-radius: 2px;
+    cursor: pointer;
+    @include outset-3d;
+  }
+}
+
+.value {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 40px;
+  text-align: right;
+}
+
+.button {
+  @include button;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.stopButton {
+  background-color: var(--titlebar-orange);
+  color: var(--titlebar-text);
+}
+
+.link {
+  color: var(--titlebar-blue);
+  text-decoration: underline;
+
+  &:visited {
+    color: #7d3d7d; // Purple for visited links
+  }
+}
+

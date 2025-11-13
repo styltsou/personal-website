@@ -45,22 +45,22 @@ export default function ResizeHandles({
       {showCornerHandles && (
         <>
           <div
-            className="retro-resize-handle retro-resize-handle-nw"
+            className="resize-handle resize-handle-nw"
             onMouseDown={(e) => onResizeStart(e, 'nw')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-ne"
+            className="resize-handle resize-handle-ne"
             onMouseDown={(e) => onResizeStart(e, 'ne')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-sw"
+            className="resize-handle resize-handle-sw"
             onMouseDown={(e) => onResizeStart(e, 'sw')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-se"
+            className="resize-handle resize-handle-se"
             onMouseDown={(e) => onResizeStart(e, 'se')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
@@ -70,22 +70,22 @@ export default function ResizeHandles({
       {showEdgeHandles && (
         <>
           <div
-            className="retro-resize-handle retro-resize-handle-n"
+            className="resize-handle resize-handle-n"
             onMouseDown={(e) => onResizeStart(e, 'n')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-s"
+            className="resize-handle resize-handle-s"
             onMouseDown={(e) => onResizeStart(e, 's')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-w"
+            className="resize-handle resize-handle-w"
             onMouseDown={(e) => onResizeStart(e, 'w')}
             style={{ cursor: getCursor('ew-resize') }}
           />
           <div
-            className="retro-resize-handle retro-resize-handle-e"
+            className="resize-handle resize-handle-e"
             onMouseDown={(e) => onResizeStart(e, 'e')}
             style={{ cursor: getCursor('ew-resize') }}
           />

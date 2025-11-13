@@ -37,8 +37,8 @@ export interface WindowProps {
   isMaximized?: boolean;
   isActive?: boolean;
   isLoading?: boolean;
-  hideOverflow?: boolean; // If true, prevents window content scrollbars
-  resizeConstraint?: ResizeConstraint; // Resize behavior: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
+  hideOverflow?: boolean;
+  resizeConstraint?: ResizeConstraint;
 }
 
 export default function Window({
@@ -66,7 +66,6 @@ export default function Window({
 }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null);
 
-  // Use drag hook for window dragging
   const {
     position: dragPosition,
     isDragging,
@@ -85,7 +84,6 @@ export default function Window({
     onMaximize,
   });
 
-  // Use resize hook for window resizing
   // Pass initial position so resize can sync with drag position
   const {
     size,
@@ -108,18 +106,15 @@ export default function Window({
   // Otherwise use drag position
   const position = isResizing ? resizePosition : dragPosition;
 
-  // Update z-index directly in DOM when it changes
   useEffect(() => {
     if (windowRef.current) {
       windowRef.current.style.zIndex = String(zIndex);
     }
   }, [zIndex]);
 
-  // Handle focus on window click
   const deselectIcons = useIconStore((state) => state.deselectIcons);
 
   const handleWindowClick = () => {
-    // Deselect any selected icon when window is clicked
     deselectIcons();
     if (onFocus) {
       onFocus();
@@ -137,10 +132,7 @@ export default function Window({
     }
   };
 
-  // Hide window if minimized (no animation)
-  if (isMinimized) {
-    return null;
-  }
+  if (isMinimized) return null;
 
   // Calculate window size and position
   // If maximized, override display to maximized values (but keep actual position/size in store)
@@ -151,8 +143,15 @@ export default function Window({
 
   if (isMaximized) {
     // Override display with maximized size/position - actual position/size in store unchanged
-    windowWidth = window.innerWidth;
-    windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+    // Check if window is available (client-side only)
+    if (typeof window !== 'undefined') {
+      windowWidth = window.innerWidth;
+      windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+    } else {
+      // Fallback for SSR
+      windowWidth = size.width;
+      windowHeight = size.height;
+    }
     // During dragging, use the drag position; otherwise use maximized position
     if (isDragging) {
       // Keep maximized size but use drag position for smooth transition
@@ -203,7 +202,7 @@ export default function Window({
       <div
         ref={windowRef}
         className={cn(
-          'retro-window',
+          'window',
           styles.window,
           isActive && 'active',
           isDragging && styles.dragging,
@@ -229,6 +228,7 @@ export default function Window({
           title={title}
           isMaximized={isMaximized}
           position={position}
+          isDragging={isDragging}
           onMouseDown={handleMouseDown}
           onKeyDown={handleTitleBarKeyDown}
           onMinimize={onMinimize}
@@ -237,23 +237,25 @@ export default function Window({
           onFocus={onFocus}
           onPositionChange={onPositionChange}
         />
-
         {/* Loading Progress Bar - shown at top when loading */}
         {isLoading && <LoadingProgressBar />}
-
         {/* Window Content */}
         <div
           className={cn(
-            'retro-window-content',
+            'window-content',
             styles.content,
             hideOverflow && styles.noOverflow
           )}
         >
           {children}
         </div>
-
         {/* Resize Handles - only show when not maximized */}
-        {!isMaximized && <ResizeHandles onResizeStart={handleResizeStart} constraint={resizeConstraint} />}
+        {!isMaximized && (
+          <ResizeHandles
+            onResizeStart={handleResizeStart}
+            constraint={resizeConstraint}
+          />
+        )}
       </div>
     </>
   );

@@ -75,7 +75,7 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="retro-menu-bar-theme-toggle retro-focus-ring"
+      className="menu-bar-theme-toggle focus-ring"
       onClick={toggleTheme}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
     >

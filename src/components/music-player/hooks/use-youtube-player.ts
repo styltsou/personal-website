@@ -92,6 +92,7 @@ export function useYouTubePlayer(
   const previousTrackIndexRef = useRef<number>(-1);
   const isInitialLoadRef = useRef<boolean>(true);
   const seekingTimeRef = useRef<number | null>(null); // Track seek target to prevent jump-back
+  const clearBufferingTimeoutRef = useRef<number | null>(null); // Timeout to clear buffering on initial load
   const tracksRef = useRef(tracks);
   const currentTrackIndexRef = useRef(currentTrackIndex);
   const volumeRef = useRef(volume);
@@ -143,17 +144,15 @@ export function useYouTubePlayer(
 
     const container = document.createElement('div');
     container.id = 'youtube-player-container';
-    // Make visible for development
+    // Hidden YouTube player container
     container.style.position = 'fixed';
-    container.style.top = '10px';
-    container.style.right = '10px';
+    container.style.top = '-9999px';
+    container.style.left = '-9999px';
     container.style.width = '320px';
     container.style.height = '240px';
-    container.style.opacity = '1';
-    container.style.pointerEvents = 'auto';
-    container.style.zIndex = '9999';
-    container.style.border = '2px solid red';
-    container.style.backgroundColor = '#000';
+    container.style.opacity = '0';
+    container.style.pointerEvents = 'none';
+    container.style.visibility = 'hidden';
     document.body.appendChild(container);
     containerRef.current = container;
 
@@ -167,6 +166,10 @@ export function useYouTubePlayer(
   // Initialize player when API is ready (only once)
   useEffect(() => {
     if (!apiReady || !containerRef.current || playerRef.current) return;
+
+    // Reset initial load flag when creating a new player instance
+    // This ensures proper handling on page refresh
+    isInitialLoadRef.current = true;
 
     // Create iframe element
     const iframeId = 'youtube-player';
@@ -233,6 +236,37 @@ export function useYouTubePlayer(
                 setIsBuffering(true);
                 // Load video but don't auto-play - user must click play
                 event.target.loadVideoById(videoId);
+                
+                // Add a fallback timeout to clear buffering if state changes don't fire properly
+                // This ensures buffering clears even if CUED state doesn't fire
+                // Clear any existing timeout first
+                if (clearBufferingTimeoutRef.current) {
+                  clearTimeout(clearBufferingTimeoutRef.current);
+                }
+                clearBufferingTimeoutRef.current = window.setTimeout(() => {
+                  if (playerRef.current && isInitialLoadRef.current) {
+                    try {
+                      const playerState = playerRef.current.getPlayerState();
+                      const YTState = window.YT.PlayerState;
+                      // If video is cued or paused, clear buffering
+                      if (playerState === YTState.CUED || playerState === YTState.PAUSED) {
+                        setIsBuffering(false);
+                        setIsPlaying(false);
+                        setIsPaused(true);
+                        setIsStopped(false);
+                        // Ensure it's paused
+                        if (playerState === YTState.CUED) {
+                          playerRef.current.pauseVideo();
+                        }
+                        isInitialLoadRef.current = false;
+                      }
+                    } catch {
+                      // Ignore errors
+                    }
+                  }
+                  clearBufferingTimeoutRef.current = null;
+                }, 2000); // 2 second fallback
+                
                 // Ensure it's paused after loading
                 setTimeout(() => {
                   if (playerRef.current) {
@@ -306,7 +340,7 @@ export function useYouTubePlayer(
               setIsPlaying(false);
               setIsPaused(true);
               setIsStopped(false);
-              setIsBuffering(false);
+              setIsBuffering(false); // Always clear buffering when paused
               // Clear seeking ref when paused (seek completed)
               if (seekingTimeRef.current !== null) {
                 seekingTimeRef.current = null;
@@ -346,6 +380,12 @@ export function useYouTubePlayer(
               // Video is loaded and ready
               if (playerRef.current) {
                 try {
+                  // Clear any fallback timeout since state change fired
+                  if (clearBufferingTimeoutRef.current) {
+                    clearTimeout(clearBufferingTimeoutRef.current);
+                    clearBufferingTimeoutRef.current = null;
+                  }
+                  
                   const duration = playerRef.current.getDuration();
                   if (duration && duration > 0) {
                     setDuration(duration);
@@ -354,16 +394,23 @@ export function useYouTubePlayer(
                   playerRef.current.setPlaybackQuality('small');
                   // Ensure video is paused on initial load (don't auto-play)
                   if (isInitialLoadRef.current) {
+                    // Pause the video - this will trigger a PAUSED state change
                     playerRef.current.pauseVideo();
+                    // Immediately clear buffering and set paused state
+                    // The PAUSED state handler will also clear buffering, but we do it here too
                     setIsBuffering(false);
                     setIsPlaying(false);
                     setIsPaused(true);
                     setIsStopped(false);
                     // Mark initial load as complete
                     isInitialLoadRef.current = false;
+                  } else {
+                    // If not initial load, clear buffering if we're paused/stopped
+                    // This handles cases like page refresh or seeking while paused
+                    if (!isPlaying) {
+                      setIsBuffering(false);
+                    }
                   }
-                  // Keep buffering state - it will be cleared when PLAYING state is reached
-                  // This ensures the loading indicator stays visible until playback actually starts
                 } catch {
                   // Ignore errors
                 }
@@ -513,9 +560,40 @@ export function useYouTubePlayer(
       seekingTimeRef.current = time;
       setCurrentTime(time);
       setIsBuffering(true); // Show buffering when seeking
+      
+      // Check current player state before seeking
+      let wasPaused = false;
+      try {
+        const currentState = playerRef.current.getPlayerState();
+        const YTState = window.YT.PlayerState;
+        wasPaused = currentState === YTState.PAUSED || currentState === YTState.CUED;
+      } catch {
+        // If we can't check state, assume we might be paused
+        wasPaused = !isPlaying;
+      }
+      
       playerRef.current.seekTo(time, true);
+      
+      // Clear buffering after a short delay if we were paused
+      // This handles the case where seeking while paused doesn't trigger a state change
+      if (wasPaused) {
+        setTimeout(() => {
+          if (playerRef.current) {
+            try {
+              const playerState = playerRef.current.getPlayerState();
+              const YTState = window.YT.PlayerState;
+              // If we're still paused or cued after seeking, clear buffering
+              if (playerState === YTState.PAUSED || playerState === YTState.CUED) {
+                setIsBuffering(false);
+              }
+            } catch {
+              // Ignore errors, buffering will clear on next state change
+            }
+          }
+        }, 500);
+      }
     }
-  }, []);
+  }, [isPlaying]);
 
   const setVolume = useCallback((newVolume: number) => {
     const clampedVolume = Math.max(0, Math.min(100, newVolume));

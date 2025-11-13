@@ -11,7 +11,12 @@ import SeekBar from './seek-bar';
 import VolumeControl from './volume-control';
 import styles from './styles.module.scss';
 
-function MusicPlayerContent() {
+// Re-export MusicPlayerProvider and useMusicPlayer so they can be imported from this module
+export { MusicPlayerProvider, useMusicPlayer } from './context';
+
+// Export MusicPlayerContent separately so it can be used without the provider
+// This allows the provider to stay mounted at Desktop level while UI is conditionally rendered
+export function MusicPlayerContent() {
   const {
     tracks,
     loading,
@@ -148,6 +153,7 @@ function MusicPlayerContent() {
   );
 }
 
+// Default export includes provider (for backwards compatibility)
 export default function MusicPlayer() {
   return (
     <MusicPlayerProvider>

@@ -20,7 +20,7 @@ export default function WindowControls({
 }: WindowControlsProps) {
   return (
     <div
-      className="retro-titlebar-controls"
+      className="titlebar-controls"
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
@@ -28,7 +28,7 @@ export default function WindowControls({
       {onMinimize && (
         <button
           type="button"
-          className="retro-window-control retro-focus-ring"
+          className="window-control focus-ring"
           onClick={(e) => {
             e.stopPropagation();
             onMinimize();
@@ -42,7 +42,7 @@ export default function WindowControls({
       {onMaximize && (
         <button
           type="button"
-          className="retro-window-control retro-focus-ring"
+          className="window-control focus-ring"
           onClick={(e) => {
             e.stopPropagation();
             onMaximize();
@@ -56,7 +56,7 @@ export default function WindowControls({
       {onClose && (
         <button
           type="button"
-          className="retro-window-control retro-focus-ring"
+          className="window-control focus-ring"
           onClick={(e) => {
             e.stopPropagation();
             onClose();

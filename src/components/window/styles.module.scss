@@ -21,10 +21,10 @@
 .snapPreview {
   position: fixed;
   pointer-events: none;
-  border: 1px dashed var(--retro-titlebar-default);
+  border: 1px dashed var(--titlebar-default);
   background-color: color-mix(
     in srgb,
-    var(--retro-titlebar-default) 10%,
+    var(--titlebar-default) 10%,
     transparent
   );
   box-sizing: border-box;

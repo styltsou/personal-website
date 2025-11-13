@@ -27,4 +27,11 @@ export const windows: WindowConfig[] = [
     path: '',
     pinned: false,
   },
+  {
+    id: 'piano',
+    title: 'Virtual Piano',
+    path: '',
+    pinned: false,
+    resizeConstraint: 'disabled',
+  },
 ];
