@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 import ThemeToggle from './theme-toggle';
 
-import { windows } from '../../data/windows';
+import { apps } from '@/data/apps';
 import { useWindowStore } from '../../stores/window-store';
 import { formatDate, formatTime } from '../../utils/date-time';
 import { cn } from '../../utils/cn';
@@ -80,7 +80,7 @@ export default function MenuBar() {
     <div className="menu-bar">
       <div className="menu-bar-left">
         <span className="menu-bar-logo">styltsou</span>
-        {windows
+        {apps
           .filter((window) => {
             // Show pinned windows always, or unpinned windows only if they exist (are open)
             return (

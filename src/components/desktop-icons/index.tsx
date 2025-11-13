@@ -3,14 +3,51 @@
  * Manages icon grid layout and renders all desktop icons
  */
 
-import { useEffect, useRef, useCallback } from 'react';
-import { icons } from '../../data/icons';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { apps } from '@/data/apps';
 import DesktopIcon from '../desktop-icon';
-import { useIconStore } from '../../stores/icon-store';
-import { useWindowStore } from '../../stores/window-store';
-import { calculateGridDimensions, gridToPixel } from '../../utils/icon-grid';
-import { BASE_Z_INDEX } from '../../utils/window-utils';
-import type { GridPosition } from '../../utils/icon-grid';
+import { useIconStore } from '@/stores/icon-store';
+import { useWindowStore } from '@/stores/window-store';
+import { calculateGridDimensions, gridToPixel } from '@/utils/icon-grid';
+import { BASE_Z_INDEX } from '@/utils/window-utils';
+import type { GridPosition } from '@/utils/icon-grid';
+import type { ComponentType } from 'react';
+
+/**
+ * Icon configuration type
+ * Represents a desktop icon that can be displayed and opened
+ */
+export interface IconConfig {
+  id: string;
+  label: string;
+  icon: string | ComponentType; // Icon component (React component) or image path
+  windowId?: string; // Optional window ID to open on double-click
+}
+
+/**
+ * Generate icons array from apps config
+ * Only includes apps that have desktopIcon configured
+ */
+export function getDesktopIcons(): IconConfig[] {
+  // Only compute on client side to avoid SSR issues
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  try {
+    return apps
+      .filter((app) => app.desktopIcon)
+      .map((app) => ({
+        id: app.id,
+        label: app.desktopIcon!.label ?? app.title, // Use app title as fallback
+        icon: app.desktopIcon!.icon,
+        windowId: app.id,
+      }));
+  } catch (error) {
+    console.warn('Failed to load desktop icons:', error);
+    return [];
+  }
+}
 
 export default function DesktopIcons() {
   const iconStates = useIconStore((state) => state.iconStates);
@@ -20,6 +57,9 @@ export default function DesktopIcons() {
   const openWindow = useWindowStore((state) => state.openWindow);
   const unfocusWindow = useWindowStore((state) => state.unfocusWindow);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Generate icons from apps config
+  const icons = useMemo(() => getDesktopIcons(), []);
 
   // Initialize icon positions with default positions if not present
   // Run after persistence has loaded (when iconStates changes)
@@ -46,7 +86,7 @@ export default function DesktopIcons() {
         });
       }
     });
-  }, [iconStates, updateIconPosition]); // Run when iconStates or updateIconPosition changes
+  }, [icons, iconStates, updateIconPosition]); // Run when icons, iconStates or updateIconPosition changes
 
   // Handle click outside to deselect icons and unfocus windows
   const handleContainerClick = useCallback(

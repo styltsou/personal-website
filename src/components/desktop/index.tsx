@@ -9,15 +9,7 @@ import Window from '../window';
 import MenuBar from '../menu-bar';
 import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../dragging-icon';
-import TerminalWindow from '../terminal-window';
-import WikipediaWindow from '../wikipedia-window';
-import FlappyBirdWindow from '../flappy-bird-window';
-import PianoWindow from '../piano-window';
-import {
-  MusicPlayerProvider,
-  MusicPlayerContent,
-  useMusicPlayer,
-} from '../music-player';
+import { MusicPlayerProvider, useMusicPlayer } from '../music-player';
 import { useWindowStore } from '../../stores/window-store';
 import { useWindowContent } from '../../hooks/use-window-content';
 import { useWindowPersistence } from '../../hooks/use-window-persistence';
@@ -84,18 +76,11 @@ export default function Desktop() {
   useWindowPersistence();
   useIconPersistence();
 
-  // Load content for newly opened windows (skip terminal, wikipedia, and music-player as they have custom components)
+  // Load content for newly opened windows (skip windows with custom components - those with empty path)
   useEffect(() => {
     windowStates.forEach((ws) => {
-      // Skip terminal, wikipedia, flappy-bird, music-player, and piano windows - they use custom components
-      if (
-        ws.id === 'terminal' ||
-        ws.id === 'wikipedia' ||
-        ws.id === 'flappy-bird' ||
-        ws.id === 'music-player' ||
-        ws.id === 'piano'
-      )
-        return;
+      // Skip windows with custom components (no path means they use custom React components)
+      if (!ws.config.path) return;
 
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
@@ -105,7 +90,7 @@ export default function Desktop() {
         });
       }
     });
-  }, [windowStates, loadWindowContent, isLoading]);
+  }, [windowStates, loadWindowContent, isLoading, windowActions]);
 
   // Update URL when active window changes
   useEffect(() => {
@@ -159,6 +144,8 @@ export default function Desktop() {
               key={windowState.id}
               id={windowState.id}
               title={windowState.config.title}
+              windowState={windowState}
+              isLoading={isLoading}
               initialPosition={windowState.position}
               initialSize={windowState.size}
               snapSide={windowState.snapSide}
@@ -180,38 +167,9 @@ export default function Desktop() {
                 windowActions.snapWindow(windowState.id, snapSide)
               }
               onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
-              isLoading={
-                windowState.id !== 'terminal' &&
-                windowState.id !== 'wikipedia' &&
-                windowState.id !== 'flappy-bird' &&
-                windowState.id !== 'music-player' &&
-                windowState.id !== 'piano' &&
-                isLoading(windowState.id)
-              }
               hideOverflow={windowState.id === 'wikipedia'}
               resizeConstraint={windowState.config.resizeConstraint}
-            >
-              {windowState.id === 'terminal' ? (
-                <TerminalWindow />
-              ) : windowState.id === 'wikipedia' ? (
-                <WikipediaWindow />
-              ) : windowState.id === 'flappy-bird' ? (
-                <FlappyBirdWindow />
-              ) : windowState.id === 'music-player' ? (
-                <MusicPlayerContent />
-              ) : windowState.id === 'piano' ? (
-                <PianoWindow />
-              ) : windowState.content ? (
-                <div
-                  className={styles.content}
-                  dangerouslySetInnerHTML={{ __html: windowState.content }}
-                />
-              ) : !isLoading(windowState.id) ? (
-                <div className={styles.noContent}>
-                  <p>No content available</p>
-                </div>
-              ) : null}
-            </Window>
+            />
           ))}
       </div>
     </MusicPlayerProvider>

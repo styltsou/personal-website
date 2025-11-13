@@ -206,7 +206,8 @@ function drawOverlay(
   state: GameState,
   width: number,
   height: number,
-  colors: typeof COLORS.light
+  colors: typeof COLORS.light,
+  highScore: number
 ) {
   ctx.fillStyle = colors.overlay;
   ctx.fillRect(0, 0, width, height);
@@ -227,12 +228,13 @@ function drawOverlay(
     // Game Over text
     ctx.fillStyle = titleColor;
     ctx.font = `bold ${titleSize}px monospace`;
-    ctx.fillText('Game Over!', width / 2, height / 2 - 50);
+    ctx.fillText('Game Over!', width / 2, height / 2 - 70);
     ctx.fillStyle = colors.text;
     ctx.font = `bold ${scoreSize}px monospace`;
-    ctx.fillText(`Score: ${state.score}`, width / 2, height / 2);
+    ctx.fillText(`Score: ${state.score}`, width / 2, height / 2 - 20);
+    ctx.fillText(`High Score: ${highScore}`, width / 2, height / 2 + 15);
     ctx.font = `${instructionSize}px monospace`;
-    ctx.fillText('Press SPACE to restart', width / 2, height / 2 + 35);
+    ctx.fillText('Press SPACE to restart', width / 2, height / 2 + 55);
   } else {
     // Start screen - increased spacing between title and instruction
     ctx.fillStyle = titleColor;
@@ -252,7 +254,8 @@ export function draw(
   width: number,
   height: number,
   state: GameState,
-  isDarkTheme: boolean
+  isDarkTheme: boolean,
+  highScore: number = 0
 ) {
   const colors = isDarkTheme ? COLORS.dark : COLORS.light;
 
@@ -275,7 +278,7 @@ export function draw(
 
   // Draw overlay screens if needed
   if (state.gameOver || (!state.started && !state.gameOver)) {
-    drawOverlay(ctx, state, width, height, colors);
+    drawOverlay(ctx, state, width, height, colors, highScore);
   }
 }
 

@@ -4,8 +4,10 @@
  * Canvas-based implementation for optimal performance
  */
 
+export { FlappyBirdIcon } from './icon';
+
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { cn } from '../../utils/cn';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 import type { GameState } from './types';
 import { JUMP_STRENGTH } from './constants';
@@ -13,6 +15,8 @@ import { generateInitialPipes, updateGameState } from './game-logic';
 import { draw } from './drawing';
 import { useDarkTheme } from './hooks/useDarkTheme';
 import { useGameSize } from './hooks/useGameSize';
+
+const HIGH_SCORE_KEY = 'flappy-bird-high-score';
 
 export default function FlappyBirdWindow() {
   const [gameState, setGameState] = useState<GameState>({
@@ -24,6 +28,8 @@ export default function FlappyBirdWindow() {
     started: false,
   });
 
+  const [highScore, setHighScore] = useState<number>(0);
+
   const isDarkTheme = useDarkTheme();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -32,6 +38,45 @@ export default function FlappyBirdWindow() {
   const gameLoopRef = useRef<number | undefined>(undefined);
   const gameStateRef = useRef<GameState>(gameState);
   const gameSizeRef = useRef(gameSize);
+  const highScoreRef = useRef<number>(0);
+
+  // Load high score from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const savedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
+      if (savedHighScore !== null) {
+        const parsed = parseInt(savedHighScore, 10);
+        if (!isNaN(parsed)) {
+          setHighScore(parsed);
+          highScoreRef.current = parsed;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load high score from localStorage:', error);
+    }
+  }, []);
+
+  // Update high score when game ends
+  useEffect(() => {
+    if (gameState.gameOver && gameState.score > highScoreRef.current) {
+      const newHighScore = gameState.score;
+      setHighScore(newHighScore);
+      highScoreRef.current = newHighScore;
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(HIGH_SCORE_KEY, newHighScore.toString());
+        }
+      } catch (error) {
+        console.error('Failed to save high score to localStorage:', error);
+      }
+    }
+  }, [gameState.gameOver, gameState.score]);
+
+  // Keep highScoreRef in sync with highScore state
+  useEffect(() => {
+    highScoreRef.current = highScore;
+  }, [highScore]);
 
   // Keep refs in sync with state
   useEffect(() => {
@@ -97,7 +142,9 @@ export default function FlappyBirdWindow() {
       setGameState(newState);
 
       // Draw directly without waiting for React state update
-      draw(ctx, currentSize.width, currentSize.height, newState, isDarkTheme);
+      // Use ref to get latest high score (avoids stale closures)
+      const currentHighScore = newState.score > highScoreRef.current ? newState.score : highScoreRef.current;
+      draw(ctx, currentSize.width, currentSize.height, newState, isDarkTheme, currentHighScore);
 
       if (!newState.gameOver) {
         gameLoopRef.current = requestAnimationFrame(gameLoop);
@@ -121,8 +168,12 @@ export default function FlappyBirdWindow() {
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
-    draw(ctx, gameSize.width, gameSize.height, gameState, isDarkTheme);
-  }, [gameState, gameSize, isDarkTheme]);
+    // Show the maximum of current score and high score on game over screen
+    const displayHighScore = gameState.gameOver 
+      ? Math.max(gameState.score, highScore) 
+      : highScore;
+    draw(ctx, gameSize.width, gameSize.height, gameState, isDarkTheme, displayHighScore);
+  }, [gameState, gameSize, isDarkTheme, highScore]);
 
   // Handle jump/spacebar
   const handleJump = useCallback(() => {

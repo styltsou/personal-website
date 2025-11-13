@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 import { PIANO_KEY_ORDER, DEFAULT_OCTAVES, MIN_OCTAVE, MAX_OCTAVE } from '../constants';
-import { cn } from '../../../utils/cn';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 interface PianoKeyboardProps {

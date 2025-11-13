@@ -5,7 +5,7 @@
 
 import { useIconStore } from '../../stores/icon-store';
 
-import type { ResizeConstraint } from '../../data/windows';
+import type { ResizeConstraint } from '@/data/apps';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;

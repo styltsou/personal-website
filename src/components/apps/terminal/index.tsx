@@ -3,10 +3,12 @@
  * Terminal with command input and execution structure
  */
 
+export { TerminalIcon } from './icon';
+
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { cn } from '../../utils/cn';
-import { useWindowStore } from '../../stores/window-store';
-import { icons } from '../../data/icons';
+import { cn } from '@/utils/cn';
+import { useWindowStore } from '@/stores/window-store';
+import { getDesktopIcons } from '@/components/desktop-icons';
 import styles from './styles.module.scss';
 
 interface TerminalLine {
@@ -248,6 +250,7 @@ export default function TerminalWindow() {
         let lsContent = '';
         if (currentDirectory === '~/desktop' || currentDirectory === 'desktop') {
           // List desktop icons
+          const icons = getDesktopIcons();
           const desktopItems = icons.map((icon) => icon.label).join('  ');
           lsContent = desktopItems || 'No items found';
         } else if (currentDirectory === '~') {

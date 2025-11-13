@@ -4,8 +4,8 @@
  * This ensures it appears above windows despite stacking context issues
  */
 
-import { useIconStore } from '../../stores/icon-store';
-import { icons, type IconConfig } from '../../data/icons';
+import { useIconStore } from '@/stores/icon-store';
+import { getDesktopIcons, type IconConfig } from '../desktop-icons';
 import {
   ICON_WIDTH,
   ICON_HEIGHT,
@@ -24,6 +24,7 @@ export default function DraggingIcon() {
     return null;
   }
 
+  const icons = getDesktopIcons();
   const iconConfig = icons.find((icon) => icon.id === draggingIconId) as
     | IconConfig
     | undefined;

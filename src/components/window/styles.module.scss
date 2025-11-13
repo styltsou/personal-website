@@ -43,3 +43,21 @@
   overflow: hidden; // Prevent window content scrollbars when content handles its own scrolling
 }
 
+.htmlContent {
+  padding: 1.5rem; // Add padding for HTML content windows
+  height: 100%;
+  overflow: auto;
+}
+
+.noContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary, #666);
+}
+
+.noContent p {
+  margin: 0;
+}
+

@@ -3,7 +3,7 @@
  * Volume, octave, sustain, MIDI device selector, and other controls
  */
 
-import { cn } from '../../../utils/cn';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 interface ControlsPanelProps {

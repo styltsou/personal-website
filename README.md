@@ -11,14 +11,24 @@ The project follows modern React conventions with kebab-case naming for all file
 ├── public/
 ├── src
 │   ├── components/        # React components (kebab-case naming)
-│   │   ├── desktop.tsx
-│   │   ├── window.tsx
-│   │   ├── title-bar.tsx
-│   │   ├── window-controls.tsx
-│   │   ├── resize-handles.tsx
-│   │   └── menu-bar/
-│   │       ├── index.tsx
-│   │       └── theme-toggle.tsx
+│   │   ├── apps/         # Virtual app components
+│   │   │   ├── terminal/
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── icon.tsx
+│   │   │   │   └── styles.module.scss
+│   │   │   ├── piano/
+│   │   │   ├── flappy-bird/
+│   │   │   ├── wikipedia/
+│   │   │   └── cv/
+│   │   ├── desktop/
+│   │   ├── desktop-icons/
+│   │   ├── desktop-icon/
+│   │   ├── window/
+│   │   ├── title-bar/
+│   │   ├── window-controls/
+│   │   ├── resize-handles/
+│   │   ├── menu-bar/
+│   │   └── music-player/
 │   ├── stores/           # Zustand stores (kebab-case naming)
 │   │   └── window-store.ts
 │   ├── hooks/            # Custom React hooks (kebab-case naming)
@@ -32,7 +42,7 @@ The project follows modern React conventions with kebab-case naming for all file
 │   │   ├── viewport-constraints.ts
 │   │   └── date-time.ts
 │   ├── data/             # Static data (kebab-case naming)
-│   │   └── windows.ts
+│   │   └── apps.ts       # Single source of truth for app configuration
 │   ├── styles/           # SCSS files (CSS Modules)
 │   │   ├── index.scss
 │   │   ├── _variables.scss
@@ -56,10 +66,11 @@ The project follows modern React conventions with kebab-case naming for all file
 All files use **kebab-case** naming convention:
 
 - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`
+- Apps: `apps/terminal/`, `apps/piano/` (each app has its own folder with `index.tsx` and `icon.tsx`)
 - Hooks: `use-window-drag.ts`, `use-url-sync.ts`
 - Utils: `window-utils.ts`, `viewport-constraints.ts`
 - Stores: `window-store.ts`
-- Data: `windows.ts`
+- Data: `apps.ts` (single configuration file for all apps)
 
 See `.cursor/rules/11-naming-conventions.mdc` for complete naming guidelines.
 

@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
-import { windows } from '../data/windows';
+import { apps } from '@/data/apps';
 import { useWindowStore } from '../stores/window-store';
 
 export function useURLSync() {
@@ -18,7 +18,7 @@ export function useURLSync() {
 
   // Find window by path
   const findWindowByPath = useCallback((path: string) => {
-    return windows.find((w) => w.path === path);
+    return apps.find((w) => w.path === path);
   }, []);
 
   // Check URL on initial mount and open window if needed
@@ -64,8 +64,8 @@ export function useURLSync() {
   // Update URL when window changes
   const updateURL = useCallback((windowId: string | null) => {
     if (windowId) {
-      const config = windows.find((w) => w.id === windowId);
-      if (config) {
+      const config = apps.find((w) => w.id === windowId);
+      if (config && config.path) {
         history.pushState({ windowId }, '', config.path);
       }
     } else {

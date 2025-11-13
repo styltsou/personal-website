@@ -3,7 +3,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import { windows } from '../data/windows';
+import { apps } from '@/data/apps';
 
 export function useWindowContent() {
   const [loadingContent, setLoadingContent] = useState<Set<string>>(new Set());
@@ -14,8 +14,8 @@ export function useWindowContent() {
 
   const loadWindowContent = useCallback(
     async (windowId: string): Promise<string | null> => {
-      const config = windows.find((w) => w.id === windowId);
-      if (!config) return null;
+      const config = apps.find((w) => w.id === windowId);
+      if (!config || !config.path) return null;
 
       // Check cache first
       const cached = contentCacheRef.current.get(windowId);

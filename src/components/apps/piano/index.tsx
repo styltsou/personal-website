@@ -3,12 +3,14 @@
  * Minimal demo version with link to full standalone app
  */
 
+export { PianoIcon } from './icon';
+
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { usePianoAudio } from './hooks/use-piano-audio';
 import { useKeyboardInput } from './hooks/use-keyboard-input';
-import { useWindowStore } from '../../stores/window-store';
+import { useWindowStore } from '@/stores/window-store';
 import PianoKeyboard from './piano-keyboard';
-import { cn } from '../../utils/cn';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 // TODO: Update this URL when you deploy the full version

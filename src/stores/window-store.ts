@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { windows, type WindowConfig } from '../data/windows';
+import { apps, type AppConfig } from '../data/apps';
 import {
   calculateCenteredPosition,
   calculateCascadedPosition,
@@ -21,7 +21,7 @@ export type SnapSide = 'left' | 'right' | 'top' | null;
 
 export interface WindowState {
   id: string;
-  config: WindowConfig;
+  config: AppConfig;
   position: WindowPosition;
   size: WindowSize;
   zIndex: number;
@@ -78,7 +78,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   // Open a window
   openWindow: (windowId: string) => {
     const state = get();
-    const config = windows.find((w) => w.id === windowId);
+    const config = apps.find((w) => w.id === windowId);
     if (!config) return;
 
     // Check if window is already open
@@ -236,7 +236,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
 
   // Focus a window (bring to front)
   focusWindow: (windowId: string) => {
-    const config = windows.find((w) => w.id === windowId);
+    const config = apps.find((w) => w.id === windowId);
     if (!config) return;
 
     set((state) => {

@@ -7,7 +7,7 @@ import { useCallback, useRef } from 'react';
 import { useIconDrag } from '../../hooks/use-icon-drag';
 import { useIconStore } from '../../stores/icon-store';
 import { useWindowStore } from '../../stores/window-store';
-import { type IconConfig } from '../../data/icons';
+import { type IconConfig } from '../desktop-icons';
 import {
   ICON_WIDTH,
   ICON_HEIGHT,

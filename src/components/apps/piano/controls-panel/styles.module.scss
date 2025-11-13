@@ -1,0 +1,174 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.controlsPanel {
+  padding: 12px 16px;
+  background-color: var(--button-bg);
+  border-top: 1px solid var(--window-border-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controlsRow {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sliderContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider {
+  flex: 1;
+  height: 4px;
+  background: var(--window-bg);
+  border: 1px solid var(--window-border-dark);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--titlebar-blue);
+    border: 2px solid var(--window-border-dark);
+    border-radius: 2px;
+    cursor: pointer;
+    @include outset-3d;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--titlebar-blue);
+    border: 2px solid var(--window-border-dark);
+    border-radius: 2px;
+    cursor: pointer;
+    @include outset-3d;
+  }
+}
+
+.value {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 40px;
+  text-align: right;
+}
+
+.octaveControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.octaveButton {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.octaveValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 24px;
+  text-align: center;
+}
+
+.button {
+  @include button;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.toggleButton {
+  min-width: 60px;
+
+  &.active {
+    background-color: var(--titlebar-blue);
+    color: var(--titlebar-text);
+  }
+}
+
+.select {
+  @include button;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--window-bg);
+  border: 2px solid var(--window-border-dark);
+  color: var(--text);
+
+  &:focus {
+    outline: none;
+    border-color: var(--titlebar-blue);
+  }
+}
+
+.midiControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.midiButton {
+  min-width: 80px;
+}
+
+.midiStatus {
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.midiUnsupported {
+  font-size: 10px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.stopButton {
+  background-color: var(--titlebar-orange);
+  color: var(--titlebar-text);
+  margin-top: 20px; // Align with other controls
+}
+

@@ -14,6 +14,9 @@ import styles from './styles.module.scss';
 // Re-export MusicPlayerProvider and useMusicPlayer so they can be imported from this module
 export { MusicPlayerProvider, useMusicPlayer } from './context';
 
+// Export icon so it can be imported from the same place as the component
+export { MusicPlayerIcon } from './icon';
+
 // Export MusicPlayerContent separately so it can be used without the provider
 // This allows the provider to stay mounted at Desktop level while UI is conditionally rendered
 export function MusicPlayerContent() {

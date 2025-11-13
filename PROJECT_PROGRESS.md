@@ -21,7 +21,10 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ Set up ESLint and Prettier configuration for Astro, React, and TypeScript
 - ✅ Created SCSS structure with CSS Modules (\_variables.scss, \_mixins.scss, \_base.scss, index.scss)
 - ✅ Created BaseLayout.astro with SEO meta tags, SCSS import, and View Transitions
-- ✅ Created windows.ts data file with window configurations (about, projects, contact)
+- ✅ Created apps.ts data file with app configurations (single source of truth)
+  - Unified configuration for all apps (content-based and custom components)
+  - Optional `path` field for content-based apps (omitted for custom component apps)
+  - Icons co-located with their respective app components
 - ✅ Created static pages: about.astro, projects.astro, contact.astro with SEO-friendly content
 
 ### Core Window Manager Implementation
@@ -117,10 +120,10 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Animated close icons with Framer Motion
   - Smooth transitions and hover states
 - ✅ **Window Pinning**:
-  - Static pinning configuration via `pinned` attribute in window config
-  - Pinned windows always visible in menu bar
-  - Unpinned windows only shown when open
-  - Terminal window configured as unpinned (only appears when open)
+  - Static pinning configuration via `pinned` attribute in app config
+  - Pinned apps always visible in menu bar
+  - Unpinned apps only shown when open
+  - Custom component apps configured as unpinned (only appear when open)
 - ✅ **Theme Toggle**:
   - Dark/light theme switching
   - Persistent theme preference (localStorage)
@@ -155,7 +158,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
   - Iframe scrollbar visible and functional
   - No content clipping or double scrollbars
 
-#### Terminal Window Component (`terminal-window/index.tsx`)
+#### Terminal App Component (`apps/terminal/index.tsx`)
 - ✅ **Functional Terminal**: 
   - Real input field with keyboard support
   - Command execution structure with extensible switch statement
@@ -309,10 +312,30 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **URL Synchronization**:
   - Initial mount detection to prevent unintended window opening
   - Browser back/forward navigation support
-  - URL path matching to window configs
+  - URL path matching to app configs
   - Prevents auto-opening windows when closing the last one
 
 ### Code Quality & Architecture
+
+#### App Configuration System
+
+- ✅ **Unified App Configuration** (`apps.ts`):
+  - Single source of truth for all app configurations
+  - `AppConfig` interface with optional `path` field
+  - Content-based apps: specify `path` (e.g., '/about', '/projects')
+  - Custom component apps: omit `path`, specify `component`
+  - Icons co-located with their app components (each app exports its icon)
+  - Clean imports: both component and icon imported from same path
+- ✅ **App Organization**:
+  - All virtual apps in `components/apps/` folder
+  - Each app in its own folder with `index.tsx` and `icon.tsx`
+  - Icons exported from app's `index.tsx` for cleaner imports
+  - Better maintainability: app code and icon together
+- ✅ **Icon Management**:
+  - Icon generation logic moved to `DesktopIcons` component
+  - Icons generated from apps config (only apps with `desktopIcon` configured)
+  - `IconConfig` interface and `getDesktopIcons()` function exported from DesktopIcons
+  - No separate icon registry needed
 
 #### Refactoring Improvements
 
@@ -515,17 +538,25 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 ```
 src/
 ├── components/        # React components (kebab-case naming)
-│   ├── desktop.tsx
-│   ├── desktop-icon.tsx
-│   ├── desktop-icons.tsx
-│   ├── dragging-icon.tsx
-│   ├── window.tsx
-│   ├── title-bar.tsx
-│   ├── window-controls.tsx
-│   ├── resize-handles.tsx
-│   └── menu-bar/      # Menu bar component and subcomponents
-│       ├── index.tsx
-│       └── theme-toggle.tsx
+│   ├── apps/         # Virtual app components (each app in its own folder)
+│   │   ├── terminal/
+│   │   │   ├── index.tsx    # App component
+│   │   │   ├── icon.tsx      # App icon (exported from index.tsx)
+│   │   │   └── styles.module.scss
+│   │   ├── piano/
+│   │   ├── flappy-bird/
+│   │   ├── wikipedia/
+│   │   └── cv/
+│   ├── desktop/
+│   ├── desktop-icons/  # Icon container (generates icons from apps config)
+│   ├── desktop-icon/
+│   ├── dragging-icon/
+│   ├── window/
+│   ├── title-bar/
+│   ├── window-controls/
+│   ├── resize-handles/
+│   ├── menu-bar/
+│   └── music-player/
 ├── stores/           # Zustand stores (kebab-case naming)
 │   ├── window-store.ts
 │   └── icon-store.ts
@@ -539,16 +570,21 @@ src/
 │   └── use-icon-persistence.ts
 ├── utils/            # Pure utility functions (kebab-case naming)
 │   ├── window-utils.ts
-│   └── icon-grid.ts
+│   ├── icon-grid.ts
 │   ├── viewport-constraints.ts
 │   └── date-time.ts
 ├── data/             # Static data (kebab-case naming)
-│   ├── windows.ts
-│   ├── icons.ts
-│   └── icon-components.tsx
-├── styles/           # CSS files
-│   └── retro.css
-└── pages/             # Astro pages (static content)
+│   └── apps.ts       # Single source of truth for app configuration
+│                      # - AppConfig interface
+│                      # - All apps (content-based and custom components)
+│                      # - Optional path field (only for content-based apps)
+│                      # - Icons imported from their respective app folders
+├── styles/           # SCSS files (CSS Modules)
+│   ├── index.scss
+│   ├── _variables.scss
+│   ├── _mixins.scss
+│   └── _base.scss
+└── pages/            # Astro pages (static content)
 ```
 
 ---

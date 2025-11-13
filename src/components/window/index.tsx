@@ -4,13 +4,14 @@
  * Uses custom hooks for drag and resize functionality
  */
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
+import React from 'react';
 import { MENU_BAR_HEIGHT, getSnappedPreview } from '../../utils/window-utils';
 import { useWindowDrag } from '../../hooks/use-window-drag';
 import { useWindowResize } from '../../hooks/use-window-resize';
 import { useIconStore } from '../../stores/icon-store';
-import type { SnapSide } from '../../stores/window-store';
-import type { ResizeConstraint } from '../../data/windows';
+import type { SnapSide, WindowState } from '../../stores/window-store';
+import type { ResizeConstraint } from '@/data/apps';
 import { cn } from '../../utils/cn';
 import TitleBar from '../title-bar';
 import ResizeHandles from '../resize-handles';
@@ -20,7 +21,8 @@ import styles from './styles.module.scss';
 export interface WindowProps {
   id: string;
   title: string;
-  children: ReactNode;
+  windowState: WindowState;
+  isLoading: (windowId: string) => boolean;
   initialPosition?: { x: number; y: number };
   initialSize?: { width: number; height: number };
   snapSide?: SnapSide;
@@ -36,7 +38,6 @@ export interface WindowProps {
   isMinimized?: boolean;
   isMaximized?: boolean;
   isActive?: boolean;
-  isLoading?: boolean;
   hideOverflow?: boolean;
   resizeConstraint?: ResizeConstraint;
 }
@@ -44,7 +45,8 @@ export interface WindowProps {
 export default function Window({
   id,
   title,
-  children,
+  windowState,
+  isLoading,
   initialPosition = { x: 100, y: 100 },
   initialSize = { width: 900, height: 700 },
   snapSide = null,
@@ -60,10 +62,11 @@ export default function Window({
   isMinimized = false,
   isMaximized = false,
   isActive = false,
-  isLoading = false,
   hideOverflow = false,
   resizeConstraint = 'none',
 }: WindowProps) {
+  // Determine if window is loading (only for content-based windows)
+  const isWindowLoading = windowState.config.path && isLoading(windowState.id);
   const windowRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -238,7 +241,7 @@ export default function Window({
           onPositionChange={onPositionChange}
         />
         {/* Loading Progress Bar - shown at top when loading */}
-        {isLoading && <LoadingProgressBar />}
+        {isWindowLoading && <LoadingProgressBar />}
         {/* Window Content */}
         <div
           className={cn(
@@ -247,7 +250,33 @@ export default function Window({
             hideOverflow && styles.noOverflow
           )}
         >
-          {children}
+          {(() => {
+            // Try to get custom component from config first
+            if (windowState.config.component) {
+              return React.createElement(windowState.config.component);
+            }
+
+            // Fall back to content-based rendering
+            if (windowState.content) {
+              return (
+                <div
+                  className={styles.htmlContent}
+                  dangerouslySetInnerHTML={{ __html: windowState.content }}
+                />
+              );
+            }
+
+            // Show no content message if not loading
+            if (!isLoading(windowState.id)) {
+              return (
+                <div className={styles.noContent}>
+                  <p>No content available</p>
+                </div>
+              );
+            }
+
+            return null;
+          })()}
         </div>
         {/* Resize Handles - only show when not maximized */}
         {!isMaximized && (
