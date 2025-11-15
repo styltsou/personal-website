@@ -52,6 +52,10 @@ export function useWindowContent() {
       setLoadingContent((prev) => new Set(prev).add(windowId));
 
       try {
+        // TESTING: Add delay to test loading indicator
+        // Remove this delay after testing
+        await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 second delay
+
         // Fallback: fetch from prerendered page if not embedded
         const response = await fetch(config.path);
         if (response.ok) {

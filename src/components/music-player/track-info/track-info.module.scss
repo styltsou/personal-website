@@ -39,7 +39,7 @@
 .title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--titlebar-orange);
+  color: var(--accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +67,7 @@
 .time {
   font-size: 14px;
   font-family: monospace;
-  color: var(--titlebar-orange);
+  color: var(--accent);
   margin-top: 0.5rem;
   font-weight: 600;
 }

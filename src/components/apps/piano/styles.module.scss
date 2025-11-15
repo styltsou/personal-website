@@ -40,7 +40,7 @@
 }
 
 .demoBanner {
-  background-color: var(--titlebar-yellow);
+  background-color: #f9d78c; /* Pastel yellow */
   border-bottom: 2px solid var(--window-border-dark);
   padding: 8px 16px;
 }
@@ -155,7 +155,7 @@
 }
 
 .stopButton {
-  background-color: var(--titlebar-orange);
+  background-color: var(--accent);
   color: var(--titlebar-text);
 }
 

@@ -28,7 +28,7 @@
       left: 0;
       width: 100%;
       height: 8px;
-      $accent-color: #f09c7c; // --titlebar-orange value
+      $accent-color: #f09c7c; // --accent value (orange)
       $light-color-1: color.adjust($accent-color, $lightness: 20%);
       $light-color-2: color.adjust($accent-color, $lightness: 30%);
       background: repeating-linear-gradient(-45deg,
@@ -52,7 +52,7 @@
 // Dark theme variant for loading stripes
 :global(.dark-theme) {
   .sliderWrapper.buffering .stripesOverlay {
-    $accent-color: #f09c7c; // --titlebar-orange value
+    $accent-color: #f09c7c; // --accent value (orange)
     $dark-color-1: color.adjust($accent-color, $lightness: -10%);
     $dark-color-2: color.adjust($accent-color, $lightness: -20%);
     background: repeating-linear-gradient(-45deg,
@@ -66,7 +66,7 @@
 .time {
   font-family: monospace;
   font-size: 13px;
-  color: var(--titlebar-orange);
+  color: var(--accent);
   flex-shrink: 0;
   min-width: 50px;
   text-align: center;
@@ -99,18 +99,19 @@
     appearance: none;
     width: 18px;
     height: 18px;
-    background-color: var(--titlebar-orange);
+    background-color: var(--accent);
     @include outset-3d;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: -5px;
-    border: 1px solid var(--titlebar-orange);
+    border: 1px solid var(--accent);
     position: relative;
 
     &:hover {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(1.1);
     }
 
@@ -123,21 +124,23 @@
   &::-moz-range-thumb {
     width: 18px;
     height: 18px;
-    background-color: var(--titlebar-orange);
-    border: 1px solid var(--titlebar-orange);
+    background-color: var(--accent);
+    border: 1px solid var(--accent);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
 
     &:hover {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(1.1);
     }
 
     &:active {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(0.95);
     }
   }
@@ -146,8 +149,8 @@
     width: 100%;
     height: 8px;
     background: linear-gradient(to right,
-        var(--titlebar-orange) 0%,
-        var(--titlebar-orange) var(--progress, 0%),
+        var(--accent) 0%,
+        var(--accent) var(--progress, 0%),
         var(--button-bg) var(--progress, 0%),
         var(--button-bg) 100%);
     @include inset-3d;
@@ -160,8 +163,8 @@
     width: 100%;
     height: 8px;
     background: linear-gradient(to right,
-        var(--titlebar-orange) 0%,
-        var(--titlebar-orange) var(--progress, 0%),
+        var(--accent) 0%,
+        var(--accent) var(--progress, 0%),
         var(--button-bg) var(--progress, 0%),
         var(--button-bg) 100%);
     border-radius: 4px;
@@ -170,16 +173,16 @@
   &.buffering {
     &::-webkit-slider-runnable-track {
       background: linear-gradient(to right,
-          var(--titlebar-orange) 0%,
-          var(--titlebar-orange) var(--progress, 0%),
+          var(--accent) 0%,
+          var(--accent) var(--progress, 0%),
           transparent var(--progress, 0%),
           transparent 100%);
     }
 
     &::-moz-range-track {
       background: linear-gradient(to right,
-          var(--titlebar-orange) 0%,
-          var(--titlebar-orange) var(--progress, 0%),
+          var(--accent) 0%,
+          var(--accent) var(--progress, 0%),
           transparent var(--progress, 0%),
           transparent 100%);
     }

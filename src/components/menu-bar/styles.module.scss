@@ -13,6 +13,12 @@
 .active {
   background-color: var(--accent) !important;
   box-shadow: none;
+  color: #2a2a2a !important; // Dark text for good contrast on accent background in both themes
+
+  // Ensure close icon is also dark
+  :global(.menu-bar-button-close-icon) {
+    color: #2a2a2a !important;
+  }
 
   // Keep accent color on hover, just dim it slightly
   // Use !important to override the button mixin's hover state

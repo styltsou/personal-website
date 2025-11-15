@@ -3,6 +3,7 @@
  * These are used across multiple components and kept as global classes
  */
 
+@use 'sass:color';
 @use './variables' as *;
 @use './mixins' as *;
 
@@ -10,8 +11,9 @@
 .window {
   position: fixed;
   background-color: var(--window-bg);
-  @include window-border;
   box-shadow: 1px 1px 2px var(--shadow-soft);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
 }
 
 /* Active/Focused Window - More Prominent Shadow */
@@ -24,8 +26,7 @@
 /* Nostalgic Title Bar */
 .titlebar {
   background-color: var(--titlebar-default);
-  color: var(--titlebar-text);
-  border-bottom: 1px solid var(--window-border-dark);
+  color: #2a2a2a; /* Dark text for good contrast on accent background in both themes */
   border-radius: 4px 4px 0 0;
   padding: 6px 8px;
   font-weight: 600;
@@ -58,22 +59,7 @@
 }
 
 /* Title Bar Color Variants */
-.titlebar[data-color='yellow'] {
-  background-color: var(--titlebar-yellow);
-}
-
-.titlebar[data-color='orange'] {
-  background-color: var(--titlebar-orange);
-}
-
-.titlebar[data-color='teal'] {
-  background-color: var(--titlebar-teal);
-}
-
-.titlebar[data-color='pink'] {
-  background-color: var(--titlebar-pink);
-}
-
+/* All titlebar colors now use --accent (orange) */
 .titlebar[data-color='blue'] {
   background-color: var(--accent);
 }
@@ -592,16 +578,14 @@ body.icon-dragging {
 
 /* Loading Progress Bar - Animated angled stripes */
 .loading-progress-bar {
-  position: absolute;
-  top: 32px; /* Below title bar (32px height) */
-  left: 0;
-  right: 0;
+  position: relative;
   width: 100%;
-  height: 6px;
+  height: 10px;
   background-color: var(--window-bg);
   overflow: hidden;
   border-bottom: 1px solid var(--window-border-dark);
   z-index: 10; /* Above content but below title bar */
+  flex-shrink: 0;
 }
 
 .loading-progress-bar-stripes {
@@ -610,12 +594,19 @@ body.icon-dragging {
   left: 0;
   width: 100%;
   height: 100%;
+  // Use same pattern as music player but with opposite angle
+  $accent-color: #f09c7c; // --accent value (orange)
+  $darker-color: color.adjust(
+    $accent-color,
+    $lightness: -15%,
+    $saturation: -20%
+  );
   background: repeating-linear-gradient(
     45deg,
-    var(--accent) 0px,
-    var(--accent) 10px,
-    var(--accent) 10px,
-    var(--accent) 20px
+    $accent-color 0px,
+    $accent-color 10px,
+    $darker-color 10px,
+    $darker-color 20px
   );
   background-size: 28px 28px;
   animation: loading-stripes 1s linear infinite;
@@ -626,7 +617,16 @@ body.icon-dragging {
     background-position: 0 0;
   }
   100% {
-    background-position: 28px 0;
+    background-position: 28px 0; /* Default size for music player seek bar */
+  }
+}
+
+@keyframes loading-stripes-small {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 24px 0; /* For window loading progress bar */
   }
 }
 
@@ -637,11 +637,17 @@ body.icon-dragging {
 }
 
 :root.dark-theme .loading-progress-bar-stripes {
+  $accent-color: #f09c7c; // --accent value (orange)
+  $darker-color: color.adjust(
+    $accent-color,
+    $lightness: -25%,
+    $saturation: -20%
+  );
   background: repeating-linear-gradient(
     45deg,
-    var(--accent) 0px,
-    var(--accent) 10px,
-    var(--accent) 10px,
-    var(--accent) 20px
+    $accent-color 0px,
+    $accent-color 10px,
+    $darker-color 10px,
+    $darker-color 20px
   );
 }

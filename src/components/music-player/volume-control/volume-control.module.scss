@@ -61,17 +61,18 @@
     appearance: none;
     width: 18px;
     height: 18px;
-    background-color: var(--titlebar-orange);
+    background-color: var(--accent);
     @include outset-3d;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
     margin-top: -5px;
-    border: 1px solid var(--titlebar-orange);
+    border: 1px solid var(--accent);
 
     &:hover {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(1.1);
     }
 
@@ -84,21 +85,23 @@
   &::-moz-range-thumb {
     width: 18px;
     height: 18px;
-    background-color: var(--titlebar-orange);
-    border: 1px solid var(--titlebar-orange);
+    background-color: var(--accent);
+    border: 1px solid var(--accent);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.15s ease;
 
     &:hover {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(1.1);
     }
 
     &:active {
-      background-color: var(--titlebar-pink);
-      border-color: var(--titlebar-pink);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      opacity: 0.9;
       transform: scale(0.95);
     }
   }
@@ -108,8 +111,8 @@
     height: 8px;
     background: linear-gradient(
       to right,
-      var(--titlebar-orange) 0%,
-      var(--titlebar-orange) var(--progress, 0%),
+      var(--accent) 0%,
+      var(--accent) var(--progress, 0%),
       var(--button-bg) var(--progress, 0%),
       var(--button-bg) 100%
     );
@@ -122,8 +125,8 @@
     height: 8px;
     background: linear-gradient(
       to right,
-      var(--titlebar-orange) 0%,
-      var(--titlebar-orange) var(--progress, 0%),
+      var(--accent) 0%,
+      var(--accent) var(--progress, 0%),
       var(--button-bg) var(--progress, 0%),
       var(--button-bg) 100%
     );
@@ -134,7 +137,7 @@
 .volumeLabel {
   font-family: monospace;
   font-size: 13px;
-  color: var(--titlebar-orange);
+  color: var(--accent);
   min-width: 45px;
   text-align: center;
   font-weight: 600;
