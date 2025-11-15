@@ -21,7 +21,7 @@ export const PianoIcon = (): ReactNode => (
       height="44"
       rx="4"
       fill="#e5e3d9"
-      stroke="#7da3d1"
+      stroke="#ffffff"
       strokeWidth="2"
     />
     {/* Piano body */}

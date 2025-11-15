@@ -75,7 +75,7 @@
 }
 
 .titlebar[data-color='blue'] {
-  background-color: var(--titlebar-blue);
+  background-color: var(--accent);
 }
 
 /* Nostalgic Button Style - Softer 3D */
@@ -232,7 +232,7 @@
   }
 
   &:focus {
-    outline: 2px solid var(--titlebar-blue);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 }
@@ -315,7 +315,10 @@
   padding: 8px 8px 4px 8px; /* Padding for icon and label */
   width: 100px; /* Matches grid cell width exactly */
   height: 100px; /* Matches grid cell height exactly */
-  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
 
   &:hover {
@@ -325,11 +328,10 @@
 
 /* Desktop Icon - Dragging State */
 .desktop-icon--dragging {
-  opacity: 0.7;
   transform: scale(1.05);
   cursor: grabbing;
-  background-color: var(--focus-blue); /* Blue background while dragging */
-  border: 1px solid var(--titlebar-blue); /* Blue border while dragging */
+  @include accent-background(55%);
+  border: 1px solid var(--accent);
   border-radius: 4px;
   box-shadow:
     4px 4px 12px var(--shadow),
@@ -339,12 +341,12 @@
 
 /* Desktop Icon - Selected State */
 .desktop-icon--selected {
-  background-color: var(--focus-blue);
-  border: 1px solid var(--titlebar-blue);
+  @include accent-background(30%);
+  border: 1px solid var(--accent);
   border-radius: 4px;
   box-shadow:
-    2px 2px 8px var(--shadow-soft),
-    0 0 0 1px var(--titlebar-blue);
+    4px 4px 12px var(--shadow),
+    0 0 0 1px var(--shadow-soft);
 }
 
 /* Desktop Icon - Ghost State (original position while dragging) */
@@ -359,11 +361,7 @@
   opacity: 1;
   border: 1px dashed var(--titlebar-default);
   border-radius: 4px;
-  background-color: color-mix(
-    in srgb,
-    var(--titlebar-default) 10%,
-    transparent
-  );
+  @include accent-background(30%, var(--titlebar-default));
   box-sizing: border-box;
   pointer-events: none;
   z-index: 1; /* Below windows, on desktop surface */
@@ -614,10 +612,10 @@ body.icon-dragging {
   height: 100%;
   background: repeating-linear-gradient(
     45deg,
-    var(--titlebar-blue) 0px,
-    var(--titlebar-blue) 10px,
-    var(--focus-blue) 10px,
-    var(--focus-blue) 20px
+    var(--accent) 0px,
+    var(--accent) 10px,
+    var(--accent) 10px,
+    var(--accent) 20px
   );
   background-size: 28px 28px;
   animation: loading-stripes 1s linear infinite;
@@ -641,10 +639,9 @@ body.icon-dragging {
 :root.dark-theme .loading-progress-bar-stripes {
   background: repeating-linear-gradient(
     45deg,
-    var(--titlebar-blue) 0px,
-    var(--titlebar-blue) 10px,
-    var(--focus-blue) 10px,
-    var(--focus-blue) 20px
+    var(--accent) 0px,
+    var(--accent) 10px,
+    var(--accent) 10px,
+    var(--accent) 20px
   );
 }
-

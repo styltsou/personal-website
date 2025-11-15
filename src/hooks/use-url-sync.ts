@@ -5,13 +5,13 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import { apps } from '@/data/apps';
-import { useWindowStore } from '../stores/window-store';
+import { useStore } from '../store';
 
 export function useURLSync() {
   // Properly select from store with individual selectors
-  const windowStates = useWindowStore((state) => state.windowStates);
-  const openWindow = useWindowStore((state) => state.openWindow);
-  const closeAllWindows = useWindowStore((state) => state.closeAllWindows);
+  const windowStates = useStore((state) => state.windowStates);
+  const openWindow = useStore((state) => state.openWindow);
+  const closeAllWindows = useStore((state) => state.closeAllWindows);
 
   // Track if this is the initial mount to only auto-open on first load
   const isInitialMount = useRef(true);

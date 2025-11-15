@@ -1,0 +1,228 @@
+# API Design & Consistency
+
+## Component API Consistency
+
+### Props Interface
+
+**Always define explicit props interfaces:**
+
+```typescript
+// Good: Clear, typed interface
+interface WindowProps {
+  id: string;
+  title: string;
+  windowState: WindowState;
+  onClose?: () => void;
+  onMinimize?: () => void;
+}
+
+// Bad: Inline types or any
+function Window(props: any) { ... }
+```
+
+### Prop Naming Conventions
+
+1. **Event handlers**: Use `on` prefix (`onClose`, `onMinimize`, `onFocus`)
+2. **Boolean props**: Use `is` or `has` prefix (`isActive`, `isMinimized`, `hasContent`)
+3. **Configuration**: Use descriptive names (`windowState`, `iconConfig`)
+4. **Callbacks**: Use descriptive names (`onPositionChange`, `onSizeChange`)
+
+### Optional vs Required Props
+
+- **Required**: Essential for component to function
+- **Optional**: Have sensible defaults or component works without them
+- **Default values**: Use default parameters for optional props
+
+```typescript
+// Good: Clear required vs optional
+interface WindowProps {
+  id: string;                    // Required
+  title: string;                  // Required
+  onClose?: () => void;           // Optional
+  initialPosition?: Position;     // Optional with default
+}
+
+function Window({ 
+  id, 
+  title, 
+  onClose, 
+  initialPosition = { x: 100, y: 100 } 
+}: WindowProps) { ... }
+```
+
+## Function API Consistency
+
+### Function Naming
+
+- **Actions**: Use verbs (`openWindow`, `closeWindow`, `updatePosition`)
+- **Getters**: Use nouns or `get` prefix (`getWindowState`, `calculatePosition`)
+- **Validators**: Use `is` or `has` prefix (`isValid`, `hasContent`)
+- **Transformers**: Use descriptive verbs (`transformPosition`, `normalizeText`)
+
+### Function Parameters
+
+1. **Order matters**: Most important/required first
+2. **Group related**: Put related parameters together
+3. **Use objects**: For 3+ parameters, use an object
+4. **Type everything**: No implicit `any`
+
+```typescript
+// Good: Object for multiple parameters
+function updateWindowPosition(
+  windowId: string,
+  position: { x: number; y: number }
+) { ... }
+
+// Bad: Too many positional parameters
+function updateWindowPosition(
+  windowId: string,
+  x: number,
+  y: number,
+  constrain: boolean,
+  animate: boolean
+) { ... }
+```
+
+## Store API Consistency
+
+### Action Naming
+
+- Use clear, action-oriented names
+- Be consistent with verb forms (all present tense)
+- Group related actions together
+
+```typescript
+// Good: Consistent naming
+openWindow(id: string)
+closeWindow(id: string)
+minimizeWindow(id: string)
+maximizeWindow(id: string)
+
+// Bad: Inconsistent
+openWindow(id: string)
+close(id: string)           // Missing "Window"
+minimizingWindow(id: string) // Wrong tense
+```
+
+### Selector Naming
+
+- Use descriptive names that indicate what they return
+- Be consistent with naming patterns
+
+```typescript
+// Good: Clear what it returns
+useWindowStates()      // Returns array
+useActiveWindowId()    // Returns ID
+useWindowActions()     // Returns actions object
+
+// Bad: Unclear
+useWindows()           // What does it return?
+useWindow()            // Single window or all?
+```
+
+## Hook API Consistency
+
+### Hook Naming
+
+- Always start with `use`
+- Use descriptive names
+- Indicate what the hook does
+
+```typescript
+// Good: Clear purpose
+useWindowDrag()
+useWindowResize()
+useWindowContent()
+useIconPersistence()
+
+// Bad: Unclear
+useDrag()              // What drags?
+useResize()            // What resizes?
+useContent()           // What content?
+```
+
+### Hook Return Values
+
+- Return objects for multiple values
+- Use consistent property names
+- Document return types
+
+```typescript
+// Good: Consistent return structure
+function useWindowDrag() {
+  return {
+    position: dragPosition,
+    isDragging,
+    handleMouseDown,
+  };
+}
+
+// Bad: Inconsistent
+function useWindowDrag() {
+  return [position, isDragging, handleMouseDown]; // Array is less clear
+}
+```
+
+## Utility Function Consistency
+
+### Pure Functions
+
+- Prefer pure functions (no side effects)
+- Same input = same output
+- Easy to test and reason about
+
+### Function Organization
+
+- Group related functions in same file
+- Export related functions together
+- Use consistent parameter patterns
+
+```typescript
+// Good: Related functions together
+export function calculateGridDimensions() { ... }
+export function snapToGrid(x: number, y: number) { ... }
+export function gridToPixel(gridX: number, gridY: number) { ... }
+```
+
+## Type Definitions
+
+### Interface vs Type
+
+- Use `interface` for object shapes (can be extended)
+- Use `type` for unions, intersections, or computed types
+- Be consistent within a file
+
+```typescript
+// Good: Interface for object shape
+// Types are defined in src/types/window.ts
+import type { WindowState } from '@/types/window';
+
+interface WindowState {
+  id: string;
+  position: Position;
+}
+
+// Good: Type for union
+// Types are defined in src/types/window.ts
+import type { ResizeConstraint } from '@/types/window';
+
+type ResizeConstraint = 'none' | 'diagonal' | 'disabled';
+```
+
+### Type Naming
+
+- Use PascalCase
+- Be descriptive
+- Use suffixes when helpful (`Props`, `State`, `Config`)
+
+## Consistency Checklist
+
+When creating new APIs:
+
+- [ ] Follow existing naming conventions
+- [ ] Use consistent parameter patterns
+- [ ] Document with TypeScript types
+- [ ] Match patterns used elsewhere in codebase
+- [ ] Consider how it will be used
+- [ ] Keep it simple and predictable
+

@@ -29,17 +29,16 @@
   --text-inverse: #ffffff;
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
-  /* Title Bar Colors - Pastel Palette */
+  /* Title Bar Colors - Component-specific colors (music player, piano, etc.) */
   --titlebar-yellow: #f9d78c;
   --titlebar-orange: #f09c7c;
   --titlebar-teal: #8cd7d7;
   --titlebar-pink: #f0b0b0;
-  --titlebar-blue: #7da3d1;
-  --titlebar-default: #7da3d1; /* Default to blue */
+  /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
+  --accent: #7da3d1;
+  --titlebar-default: var(--accent); /* Default titlebar uses accent color */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.1);
-  /* Subtle accent colors for focused states */
-  --focus-blue: #b5cfe8; /* Lighter, more subtle blue */
 
   /* Shadows - Softer */
   --shadow: rgba(0, 0, 0, 0.2);
@@ -72,20 +71,18 @@
   --text-inverse: #000000;
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds (pink, yellow, etc.) */
 
-  /* Title Bar Colors - Brighter versions for dark mode */
+  /* Title Bar Colors - Component-specific colors (music player, piano, etc.) */
   --titlebar-yellow: #f9d78c;
   --titlebar-orange: #f09c7c;
   --titlebar-teal: #8cd7d7;
   --titlebar-pink: #f0b0b0;
-  --titlebar-blue: #7da3d1;
-  --titlebar-default: #7da3d1;
+  /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
+  --accent: #7da3d1;
+  --titlebar-default: var(--accent); /* Default titlebar uses accent color */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.5);
-  /* Subtle accent colors for focused states */
-  --focus-blue: #2a3540; /* Subtle blue tint for dark theme */
 
   /* Shadows - Darker */
   --shadow: rgba(0, 0, 0, 0.7);
   --shadow-soft: rgba(0, 0, 0, 0.5);
 }
-

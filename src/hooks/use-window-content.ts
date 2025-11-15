@@ -1,9 +1,17 @@
 /**
  * Hook for loading window content from static pages
+ * Prioritizes embedded content (for SEO) then falls back to fetching
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { apps } from '@/data/apps';
+
+// Type for embedded content data
+declare global {
+  interface Window {
+    __CONTENT_DATA__?: Record<string, string>;
+  }
+}
 
 export function useWindowContent() {
   const [loadingContent, setLoadingContent] = useState<Set<string>>(new Set());
@@ -12,12 +20,23 @@ export function useWindowContent() {
   const contentCacheRef = useRef<Map<string, string>>(new Map());
   const loadingRef = useRef<Set<string>>(new Set());
 
+  // Load embedded content on mount (from initial HTML for SEO)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.__CONTENT_DATA__) {
+      Object.entries(window.__CONTENT_DATA__).forEach(([windowId, content]) => {
+        if (content) {
+          contentCacheRef.current.set(windowId, content);
+        }
+      });
+    }
+  }, []);
+
   const loadWindowContent = useCallback(
     async (windowId: string): Promise<string | null> => {
       const config = apps.find((w) => w.id === windowId);
-      if (!config || !config.path) return null;
+      if (!config || !config.path) return null; // Only handle path-based apps
 
-      // Check cache first
+      // Check cache first (includes embedded content)
       const cached = contentCacheRef.current.get(windowId);
       if (cached) {
         return cached;
@@ -33,6 +52,7 @@ export function useWindowContent() {
       setLoadingContent((prev) => new Set(prev).add(windowId));
 
       try {
+        // Fallback: fetch from prerendered page if not embedded
         const response = await fetch(config.path);
         if (response.ok) {
           const html = await response.text();

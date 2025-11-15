@@ -117,7 +117,7 @@
     appearance: none;
     width: 14px;
     height: 14px;
-    background: var(--titlebar-blue);
+    background: var(--accent);
     border: 2px solid var(--window-border-dark);
     border-radius: 2px;
     cursor: pointer;
@@ -127,7 +127,7 @@
   &::-moz-range-thumb {
     width: 14px;
     height: 14px;
-    background: var(--titlebar-blue);
+    background: var(--accent);
     border: 2px solid var(--window-border-dark);
     border-radius: 2px;
     cursor: pointer;
@@ -160,7 +160,7 @@
 }
 
 .link {
-  color: var(--titlebar-blue);
+  color: var(--accent);
   text-decoration: underline;
 
   &:visited {

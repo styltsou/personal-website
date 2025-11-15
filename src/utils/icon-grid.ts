@@ -4,29 +4,17 @@
  */
 
 import { MENU_BAR_HEIGHT } from './window-utils';
+import type {
+  GridDimensions,
+  PixelPosition,
+  GridPosition,
+} from '../types/icon';
 
 export const GRID_CELL_SIZE = 100; // Grid cell size in pixels (matches icon container size exactly)
 export const GRID_PADDING = 20; // Padding from edges in pixels
 export const ICON_WIDTH = 100; // Icon container width in pixels (matches grid cell width)
 export const ICON_HEIGHT = 100; // Icon container height in pixels (matches grid cell height)
 export const ICON_IMAGE_SIZE = 64; // Icon image size in pixels (64x64 for the actual icon image)
-
-export interface GridDimensions {
-  columns: number;
-  rows: number;
-  startX: number;
-  startY: number;
-}
-
-export interface PixelPosition {
-  x: number;
-  y: number;
-}
-
-export interface GridPosition {
-  gridX: number;
-  gridY: number;
-}
 
 /**
  * Calculate grid dimensions based on viewport size

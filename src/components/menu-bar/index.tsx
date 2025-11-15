@@ -8,16 +8,16 @@ import { useState, useEffect } from 'react';
 import ThemeToggle from './theme-toggle';
 
 import { apps } from '@/data/apps';
-import { useWindowStore } from '../../stores/window-store';
+import { useStore } from '../../store';
 import { formatDate, formatTime } from '../../utils/date-time';
 import { cn } from '../../utils/cn';
 import styles from './styles.module.scss';
 
 export default function MenuBar() {
-  const windowStates = useWindowStore((state) => state.windowStates);
-  const activeWindowId = useWindowStore((state) => state.activeWindowId);
-  const openWindow = useWindowStore((state) => state.openWindow);
-  const closeWindow = useWindowStore((state) => state.closeWindow);
+  const windowStates = useStore((state) => state.windowStates);
+  const activeWindowId = useStore((state) => state.activeWindowId);
+  const openWindow = useStore((state) => state.openWindow);
+  const closeWindow = useStore((state) => state.closeWindow);
 
   const [currentTime, setCurrentTime] = useState(new Date());
 

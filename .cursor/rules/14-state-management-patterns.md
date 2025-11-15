@@ -1,0 +1,98 @@
+# State Management Patterns
+
+## When to Use Zustand Store vs Local State
+
+### Use Zustand Store When:
+
+1. **Global state**: State needed by multiple components across the app
+   - Examples: Window states, icon positions, theme preference
+   
+2. **Persistent state**: State that should survive page reloads
+   - Examples: Window positions, icon positions, user preferences
+   
+3. **Complex state logic**: State with complex interactions or derived values
+   - Examples: Window z-index management, grid collision detection
+   
+4. **Frequent updates**: State that changes often and needs efficient updates
+   - Examples: Window dragging, icon dragging
+
+### Use Local State (useState) When:
+
+1. **Component-specific**: State only used within a single component
+   - Examples: Form inputs, UI toggles, temporary selections
+   
+2. **Temporary state**: State that doesn't need to persist
+   - Examples: Loading states, hover states, temporary UI state
+   
+3. **Derived state**: State that can be computed from props
+   - Examples: Filtered lists, sorted data, computed values
+   
+4. **Simple state**: State with no complex logic or interactions
+   - Examples: Modal open/close, dropdown open/close
+
+## Store Design Principles
+
+1. **Single responsibility**: Each store manages one domain (windows, icons)
+2. **Normalized state**: Avoid nested structures, use IDs and lookups
+3. **Immutable updates**: Always return new objects/arrays
+4. **Action-based**: All state changes go through actions
+5. **Selective subscriptions**: Use individual selectors, not entire store
+
+## Custom Hooks Pattern
+
+Create custom hooks when:
+- Logic is reused across components
+- Logic is complex and benefits from separation
+- Logic involves multiple state updates or side effects
+
+**Examples:**
+- `useWindowDrag` - Window dragging logic
+- `useWindowResize` - Window resizing logic
+- `useWindowContent` - Content loading logic
+
+## State Update Patterns
+
+### Simple Updates
+```typescript
+// Good: Direct update
+set({ activeWindowId: windowId });
+
+// Bad: Unnecessary function
+set((state) => ({ ...state, activeWindowId: windowId }));
+```
+
+### Complex Updates
+```typescript
+// Good: Transform existing state
+set((state) => ({
+  windowStates: state.windowStates.map(ws =>
+    ws.id === windowId ? { ...ws, isMinimized: true } : ws
+  )
+}));
+```
+
+### Batch Updates
+```typescript
+// Good: Single update
+set((state) => ({
+  windowStates: [...state.windowStates, newWindow],
+  activeWindowId: newWindow.id,
+  nextZIndex: state.nextZIndex + 1
+}));
+```
+
+## Performance Considerations
+
+1. **Selective subscriptions**: Only subscribe to needed state
+   ```typescript
+   // Good
+   const windowStates = useWindowStore((state) => state.windowStates);
+   
+   // Bad: Subscribes to everything
+   const store = useWindowStore();
+   ```
+
+2. **Memoize derived values**: Use `useMemo` for computed values
+3. **Stable action references**: Actions don't change, safe for dependencies
+4. **Avoid unnecessary re-renders**: Use React.memo when appropriate
+

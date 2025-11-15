@@ -11,8 +11,15 @@
 }
 
 .active {
-  background-color: var(--focus-blue);
+  background-color: var(--accent) !important;
   box-shadow: none;
+
+  // Keep accent color on hover, just dim it slightly
+  // Use !important to override the button mixin's hover state
+  &:hover {
+    background-color: var(--accent) !important;
+    opacity: 0.85;
+  }
 }
 
 .hasState {

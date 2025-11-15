@@ -1,0 +1,95 @@
+/**
+ * Loading Screen Styles
+ * Retro 80s/90s computer boot screen aesthetic
+ */
+
+.loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: 'Courier New', 'Courier', monospace;
+  color: var(--accent, #7da3d1); // Use accent color
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 4rem;
+  font-weight: bold;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+}
+
+.logoText {
+  font-family: 'Courier New', 'Courier', monospace;
+}
+
+.cursor {
+  font-size: 4rem;
+  animation: blink 1s step-end infinite;
+  color: var(--accent, #7da3d1);
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+// Dark theme support - background matches desktop via CSS variables
+:global(.dark-theme) {
+  .loadingScreen {
+    // Background automatically matches via --bg and --desktop-pattern variables
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .logo {
+    font-size: 2.5rem;
+  }
+
+  .cursor {
+    font-size: 2.5rem;
+  }
+}
+

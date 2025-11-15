@@ -16,8 +16,7 @@ import {
   type PixelPosition,
   type GridPosition,
 } from '../utils/icon-grid';
-import { useIconStore } from '../stores/icon-store';
-import { useWindowStore } from '../stores/window-store';
+import { useStore } from '../store';
 import { getSnappedPreview, MENU_BAR_HEIGHT } from '../utils/window-utils';
 
 export interface UseIconDragOptions {
@@ -45,9 +44,9 @@ export function useIconDrag({
   const hasStartedDragRef = useRef(false); // Track if we've crossed the threshold
 
   // Get all icon states from store for collision detection
-  const iconStates = useIconStore((state) => state.iconStates);
-  const setDraggingIcon = useIconStore((state) => state.setDraggingIcon);
-  const windowStates = useWindowStore((state) => state.windowStates);
+  const iconStates = useStore((state) => state.iconStates);
+  const setDraggingIcon = useStore((state) => state.setDraggingIcon);
+  const windowStates = useStore((state) => state.windowStates);
 
   // Helper function to check if icon position overlaps with another icon
   const isPositionOverIcon = useCallback(

@@ -5,15 +5,13 @@
 
 import { useCallback, useRef } from 'react';
 import { useIconDrag } from '../../hooks/use-icon-drag';
-import { useIconStore } from '../../stores/icon-store';
-import { useWindowStore } from '../../stores/window-store';
-import { type IconConfig } from '../desktop-icons';
+import { useStore } from '../../store';
+import type { IconConfig, GridPosition } from '../../types/icon';
 import {
   ICON_WIDTH,
   ICON_HEIGHT,
   ICON_IMAGE_SIZE,
 } from '../../utils/icon-grid';
-import type { GridPosition } from '../../utils/icon-grid';
 import { cn } from '../../utils/cn';
 
 export interface DesktopIconProps {
@@ -27,10 +25,10 @@ export default function DesktopIcon({
   gridPosition,
   onDoubleClick,
 }: DesktopIconProps) {
-  const selectedIconId = useIconStore((state) => state.selectedIconId);
-  const selectIcon = useIconStore((state) => state.selectIcon);
-  const updateIconPosition = useIconStore((state) => state.updateIconPosition);
-  const unfocusWindow = useWindowStore((state) => state.unfocusWindow);
+  const selectedIconId = useStore((state) => state.selectedIconId);
+  const selectIcon = useStore((state) => state.selectIcon);
+  const updateIconPosition = useStore((state) => state.updateIconPosition);
+  const unfocusWindow = useStore((state) => state.unfocusWindow);
   const doubleClickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSelected = selectedIconId === iconConfig.id;

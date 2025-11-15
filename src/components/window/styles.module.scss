@@ -22,11 +22,7 @@
   position: fixed;
   pointer-events: none;
   border: 1px dashed var(--titlebar-default);
-  background-color: color-mix(
-    in srgb,
-    var(--titlebar-default) 10%,
-    transparent
-  );
+  @include accent-background(30%, var(--titlebar-default));
   box-sizing: border-box;
 }
 

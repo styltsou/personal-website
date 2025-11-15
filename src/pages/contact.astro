@@ -1,24 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactContent from '../components/content/contact-content.astro';
+
+// Mark as prerendered for static generation and SEO
+export const prerender = true;
+
+const site = Astro.site?.href || 'https://styltsou.com';
+const canonicalURL = new URL('/contact', site);
 ---
 
 <BaseLayout
   title="contact - styltsou"
   description="Get in touch with me through email, social media, or other channels. I'd love to hear from you!"
 >
-  <main class="mx-auto max-w-4xl p-6">
-    <h1 class="mb-4 text-3xl font-bold">Contact</h1>
-    <div class="prose prose-lg">
-      <p>Feel free to reach out to me through any of the following channels:</p>
-      <ul class="mt-4 list-inside list-disc space-y-2">
-        <li>Email: your.email@example.com</li>
-        <li>GitHub: github.com/yourusername</li>
-        <li>LinkedIn: linkedin.com/in/yourprofile</li>
-      </ul>
-      <p class="mt-6">
-        You can also use the contact form or other interactive elements once the
-        window manager is fully implemented.
-      </p>
-    </div>
-  </main>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Contact - styltsou",
+    "description": "Get in touch with me through email, social media, or other channels. I'd love to hear from you!",
+    "url": canonicalURL.toString(),
+    "inLanguage": "en"
+  })} />
+  <ContactContent />
 </BaseLayout>

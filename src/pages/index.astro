@@ -1,6 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Desktop from '../components/desktop';
+import { getContentApps } from '../utils/get-content-data';
+import AboutContent from '../components/content/about-content.astro';
+import ProjectsContent from '../components/content/projects-content.astro';
+import ContactContent from '../components/content/contact-content.astro';
+import { render } from 'astro/runtime/server/index.js';
+
+// Extract content from shared content components at build time for SEO and performance
+const contentApps = getContentApps();
+const contentData: Record<string, string> = {};
+
+// Render each content component and extract main content
+const contentComponents: Record<string, any> = {
+  about: AboutContent,
+  projects: ProjectsContent,
+  contact: ContactContent,
+};
+
+for (const app of contentApps) {
+  try {
+    const Component = contentComponents[app.id];
+    if (Component) {
+      const result = await render(Component);
+      const html = result.html || '';
+      // Extract main content using regex (faster than DOMParser on server)
+      const mainMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+      if (mainMatch) {
+        contentData[app.id] = mainMatch[1].trim();
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to extract content for ${app.id}:`, error);
+  }
+}
 
 // Static content is available for SEO even before JS loads
 ---
@@ -9,8 +42,15 @@ import Desktop from '../components/desktop';
   title="styltsou - home"
   description="Personal portfolio website featuring an 80s-inspired desktop OS interface. Explore my work, projects, and get in touch."
 >
-  <!-- Desktop component as React island - loads on client -->
-  <Desktop client:load />
+  <!-- Embed content data for instant access (SEO-friendly) -->
+  <script define:inline>
+    // Embed content data in initial HTML for instant access and SEO
+    // Only includes content from path-based apps (about, projects, contact)
+    window.__CONTENT_DATA__ = JSON.stringify(contentData);
+  </script>
+
+  <!-- Desktop component as React island - loads when idle for better performance -->
+  <Desktop client:idle />
 
   <!-- Fallback static content for progressive enhancement -->
   <noscript>

@@ -124,8 +124,8 @@
     - Elevated shadow for depth
     - Border radius 4px
   - `.desktop-icon--selected` - Selected state:
-    - Blue background (`var(--retro-focus-blue)`)
-    - Thin border (1px solid) matching titlebar blue
+    - Accent background (`var(--accent)`)
+    - Thin border (1px solid) matching accent color
     - Subtle shadow
   - `.desktop-icon--ghost` - Ghost state at original position (opacity 0.3, z-index 1)
   - `.desktop-icon--preview` - Preview outline at destination:
@@ -196,8 +196,8 @@ interface PersistedIconState {
 
 - **Default**: Normal opacity, normal shadow, subtle hover scale (1.02)
 - **Selected**:
-  - Blue background (`var(--retro-focus-blue)`)
-  - Thin border (1px solid `var(--retro-titlebar-blue)`)
+  - Accent background (`var(--accent)`)
+  - Thin border (1px solid `var(--accent)`)
   - Border radius 4px
   - Subtle shadow
 - **Dragging**:

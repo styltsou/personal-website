@@ -1,0 +1,66 @@
+# Testing
+
+## Testing Philosophy
+
+- Write tests for critical business logic, utilities, and complex algorithms
+- Focus on testing behavior, not implementation details
+- Prefer integration tests over unit tests for components
+- Test edge cases and error conditions
+
+## When to Write Tests
+
+**ALWAYS write tests for:**
+1. **Utility functions**: Pure functions, calculations, transformations
+2. **Complex algorithms**: Grid calculations, collision detection, state management logic
+3. **Critical paths**: Window management, state persistence, content loading
+4. **Bug fixes**: Write a test that reproduces the bug, then fix it
+
+**Consider tests for:**
+- Custom hooks with complex logic
+- State management actions
+- Data transformations
+- API integrations
+
+**Skip tests for:**
+- Simple presentational components
+- Trivial getters/setters
+- Third-party library wrappers
+
+## Test Structure
+
+- Use Jest for testing (already configured)
+- Place test files next to source: `*.test.js` or `*.test.ts`
+- Use descriptive test names: `describe('function name', () => { it('should do X when Y', ...) })`
+- Follow AAA pattern: Arrange, Act, Assert
+- Keep tests isolated and independent
+
+## Test Coverage
+
+- Aim for meaningful coverage, not 100%
+- Focus on critical paths and edge cases
+- Run tests before committing: `npm test`
+- Fix failing tests immediately
+
+## Example Test Pattern
+
+```typescript
+describe('calculateGridDimensions', () => {
+  it('should calculate correct grid dimensions for viewport', () => {
+    // Arrange
+    const viewportWidth = 1920;
+    const viewportHeight = 1080;
+    
+    // Act
+    const dimensions = calculateGridDimensions();
+    
+    // Assert
+    expect(dimensions.columns).toBeGreaterThan(0);
+    expect(dimensions.rows).toBeGreaterThan(0);
+  });
+  
+  it('should handle edge cases', () => {
+    // Test edge cases
+  });
+});
+```
+

@@ -20,61 +20,37 @@ export const TerminalIcon = (): ReactNode => (
       width="52"
       height="44"
       rx="4"
-      fill="#e5e3d9"
-      stroke="#7da3d1"
+      fill="none"
+      stroke="#1a1a1a"
       strokeWidth="2"
     />
     {/* Screen */}
     <rect
-      x="12"
-      y="18"
-      width="40"
-      height="28"
-      fill="#1a1a1a"
+      x="7"
+      y="11"
+      width="50"
+      height="42"
+      fill="#000000"
       rx="2"
     />
-    {/* Terminal text lines */}
+    {/* Terminal chevron right prompt */}
+    <path
+      d="M 12 18 L 16 22 L 12 26"
+      stroke="#00ff00"
+      strokeWidth="1.5"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    {/* Underscore after chevron */}
     <line
-      x1="16"
-      y1="24"
+      x1="20"
+      y1="26"
       x2="28"
-      y2="24"
+      y2="26"
       stroke="#00ff00"
       strokeWidth="1.5"
       strokeLinecap="round"
-    />
-    <line
-      x1="16"
-      y1="30"
-      x2="32"
-      y2="30"
-      stroke="#00ff00"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <line
-      x1="16"
-      y1="36"
-      x2="24"
-      y2="36"
-      stroke="#00ff00"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    {/* Cursor */}
-    <rect
-      x="24"
-      y="35"
-      width="2"
-      height="3"
-      fill="#00ff00"
-    />
-    {/* Terminal prompt symbol */}
-    <circle
-      cx="18"
-      cy="24"
-      r="1.5"
-      fill="#00ff00"
     />
   </svg>
 );

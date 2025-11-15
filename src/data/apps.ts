@@ -3,7 +3,7 @@
  * Defines available apps with their metadata
  */
 
-import { type ComponentType } from 'react';
+import type { AppConfig } from '../types/app';
 
 import CvWindow, { CvIcon } from '../components/apps/cv';
 import TerminalWindow, { TerminalIcon } from '../components/apps/terminal';
@@ -16,22 +16,6 @@ import {
   MusicPlayerContent,
   MusicPlayerIcon,
 } from '../components/music-player';
-
-export type ResizeConstraint = 'diagonal' | 'none' | 'disabled';
-
-export interface AppConfig {
-  id: string;
-  title: string;
-  path?: string; // Optional path for content-based apps (e.g., '/about'). Omit for custom component apps
-  icon?: string;
-  pinned?: boolean;
-  resizeConstraint?: ResizeConstraint; // Resize behavior: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
-  component?: ComponentType; // Optional custom React component for this app
-  desktopIcon?: {
-    label?: string; // Optional label, defaults to app title if not provided
-    icon: string | ComponentType; // Icon component (React component) or image path
-  }; // If provided, this app will appear as a desktop icon
-}
 
 export const apps: AppConfig[] = [
   { id: 'about', title: 'About Me', path: '/about', pinned: true },

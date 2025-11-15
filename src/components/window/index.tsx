@@ -9,9 +9,8 @@ import React from 'react';
 import { MENU_BAR_HEIGHT, getSnappedPreview } from '../../utils/window-utils';
 import { useWindowDrag } from '../../hooks/use-window-drag';
 import { useWindowResize } from '../../hooks/use-window-resize';
-import { useIconStore } from '../../stores/icon-store';
-import type { SnapSide, WindowState } from '../../stores/window-store';
-import type { ResizeConstraint } from '@/data/apps';
+import { useStore } from '../../store';
+import type { ResizeConstraint } from '../../types/window';
 import { cn } from '../../utils/cn';
 import TitleBar from '../title-bar';
 import ResizeHandles from '../resize-handles';
@@ -20,51 +19,44 @@ import styles from './styles.module.scss';
 
 export interface WindowProps {
   id: string;
-  title: string;
-  windowState: WindowState;
   isLoading: (windowId: string) => boolean;
-  initialPosition?: { x: number; y: number };
-  initialSize?: { width: number; height: number };
-  snapSide?: SnapSide;
-  onClose?: () => void;
-  onMinimize?: () => void;
-  onMaximize?: () => void;
-  onFocus?: () => void;
-  onPositionChange?: (position: { x: number; y: number }) => void;
-  onSizeChange?: (size: { width: number; height: number }) => void;
-  onSnap?: (snapSide: SnapSide) => void;
-  onUnsnap?: () => void;
-  zIndex: number;
-  isMinimized?: boolean;
-  isMaximized?: boolean;
-  isActive?: boolean;
-  hideOverflow?: boolean;
-  resizeConstraint?: ResizeConstraint;
 }
 
-export default function Window({
-  id,
-  title,
-  windowState,
-  isLoading,
-  initialPosition = { x: 100, y: 100 },
-  initialSize = { width: 900, height: 700 },
-  snapSide = null,
-  onClose,
-  onMinimize,
-  onMaximize,
-  onFocus,
-  onPositionChange,
-  onSizeChange,
-  onSnap,
-  onUnsnap,
-  zIndex,
-  isMinimized = false,
-  isMaximized = false,
-  isActive = false,
-  hideOverflow = false,
-  resizeConstraint = 'none',
-}: WindowProps) {
+export default function Window({ id, isLoading }: WindowProps) {
+  // Get window state and actions from store
+  const windowState = useStore((state) =>
+    state.windowStates.find((ws) => ws.id === id)
+  );
+  const activeWindowId = useStore((state) => state.activeWindowId);
+
+  // Get actions from store
+  const closeWindow = useStore((state) => state.closeWindow);
+  const minimizeWindow = useStore((state) => state.minimizeWindow);
+  const maximizeWindow = useStore((state) => state.maximizeWindow);
+  const focusWindow = useStore((state) => state.focusWindow);
+  const updateWindowPosition = useStore((state) => state.updateWindowPosition);
+  const updateWindowSize = useStore((state) => state.updateWindowSize);
+  const snapWindow = useStore((state) => state.snapWindow);
+  const unsnapWindow = useStore((state) => state.unsnapWindow);
+
+  // Early return if window state not found
+  if (!windowState) return null;
+
+  // Extract values from windowState
+  const {
+    position: initialPosition,
+    size: initialSize,
+    snapSide,
+    zIndex,
+    isMinimized,
+    isMaximized,
+    config,
+  } = windowState;
+
+  const title = config.title;
+  const isActive = activeWindowId === id;
+  const hideOverflow = id === 'wikipedia';
+  const resizeConstraint: ResizeConstraint = config.resizeConstraint || 'none';
   // Determine if window is loading (only for content-based windows)
   const isWindowLoading = windowState.config.path && isLoading(windowState.id);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -79,12 +71,12 @@ export default function Window({
     initialSize,
     isMaximized,
     snapSide,
-    onFocus,
-    onPositionChange,
-    onSizeChange,
-    onSnap,
-    onUnsnap,
-    onMaximize,
+    onFocus: () => focusWindow(id),
+    onPositionChange: (position) => updateWindowPosition(id, position),
+    onSizeChange: (size) => updateWindowSize(id, size),
+    onSnap: (snapSide) => snapWindow(id, snapSide),
+    onUnsnap: () => unsnapWindow(id),
+    onMaximize: () => maximizeWindow(id),
   });
 
   // Pass initial position so resize can sync with drag position
@@ -97,12 +89,12 @@ export default function Window({
     initialSize,
     initialPosition,
     isMaximized,
-    onFocus,
-    onSizeChange,
+    onFocus: () => focusWindow(id),
+    onSizeChange: (size) => updateWindowSize(id, size),
     // Pass function to get current drag position so resize can sync with it
     getCurrentPosition: () => dragPosition,
     // Pass onPositionChange so resize can update drag position when left/top edges are used
-    onPositionChange,
+    onPositionChange: (position) => updateWindowPosition(id, position),
   });
 
   // Use resize position when resizing (it may update position for left/top edges)
@@ -115,23 +107,21 @@ export default function Window({
     }
   }, [zIndex]);
 
-  const deselectIcons = useIconStore((state) => state.deselectIcons);
+  const deselectIcons = useStore((state) => state.deselectIcons);
 
   const handleWindowClick = () => {
     deselectIcons();
-    if (onFocus) {
-      onFocus();
-    }
+    focusWindow(id);
   };
 
   // Handle keyboard accessibility for title bar
   const handleTitleBarKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onFocus?.();
+      focusWindow(id);
     }
-    if (e.key === 'Escape' && onClose) {
-      onClose();
+    if (e.key === 'Escape') {
+      closeWindow(id);
     }
   };
 
@@ -230,15 +220,12 @@ export default function Window({
           id={id}
           title={title}
           isMaximized={isMaximized}
-          position={position}
           isDragging={isDragging}
           onMouseDown={handleMouseDown}
           onKeyDown={handleTitleBarKeyDown}
-          onMinimize={onMinimize}
-          onMaximize={onMaximize}
-          onClose={onClose}
-          onFocus={onFocus}
-          onPositionChange={onPositionChange}
+          onMinimize={() => minimizeWindow(id)}
+          onMaximize={() => maximizeWindow(id)}
+          onClose={() => closeWindow(id)}
         />
         {/* Loading Progress Bar - shown at top when loading */}
         {isWindowLoading && <LoadingProgressBar />}

@@ -4,13 +4,14 @@
  * Handles window management, URL synchronization, and sessionStorage persistence
  */
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Window from '../window';
 import MenuBar from '../menu-bar';
 import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../dragging-icon';
+import LoadingScreen from '../loading-screen';
 import { MusicPlayerProvider, useMusicPlayer } from '../music-player';
-import { useWindowStore } from '../../stores/window-store';
+import { useStore } from '../../store';
 import { useWindowContent } from '../../hooks/use-window-content';
 import { useWindowPersistence } from '../../hooks/use-window-persistence';
 import { useIconPersistence } from '../../hooks/use-icon-persistence';
@@ -22,52 +23,13 @@ export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
 
   // Zustand store - clean and simple!
-  const windowStates = useWindowStore((state) => state.windowStates);
-  const activeWindowId = useWindowStore((state) => state.activeWindowId);
+  const windowStates = useStore((state) => state.windowStates);
+  const hasLoadedFromPersistence = useStore(
+    (state) => state.hasLoadedFromPersistence
+  );
 
-  // Select individual actions from store (functions are stable)
-  const openWindow = useWindowStore((state) => state.openWindow);
-  const closeWindow = useWindowStore((state) => state.closeWindow);
-  const minimizeWindow = useWindowStore((state) => state.minimizeWindow);
-  const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
-  const focusWindow = useWindowStore((state) => state.focusWindow);
-  const updateWindowPosition = useWindowStore(
-    (state) => state.updateWindowPosition
-  );
-  const updateWindowSize = useWindowStore((state) => state.updateWindowSize);
-  const updateWindowContent = useWindowStore(
-    (state) => state.updateWindowContent
-  );
-  const snapWindow = useWindowStore((state) => state.snapWindow);
-  const unsnapWindow = useWindowStore((state) => state.unsnapWindow);
-
-  // Memoize window actions object to prevent unnecessary re-renders
-  const windowActions = useMemo(
-    () => ({
-      openWindow,
-      closeWindow,
-      minimizeWindow,
-      maximizeWindow,
-      focusWindow,
-      updateWindowPosition,
-      updateWindowSize,
-      updateWindowContent,
-      snapWindow,
-      unsnapWindow,
-    }),
-    [
-      openWindow,
-      closeWindow,
-      minimizeWindow,
-      maximizeWindow,
-      focusWindow,
-      updateWindowPosition,
-      updateWindowSize,
-      updateWindowContent,
-      snapWindow,
-      unsnapWindow,
-    ]
-  );
+  // Only need updateWindowContent for content loading
+  const updateWindowContent = useStore((state) => state.updateWindowContent);
 
   // Handle URL synchronization
   const { updateURL } = useURLSync();
@@ -85,21 +47,22 @@ export default function Desktop() {
       if (!ws.content && !isLoading(ws.id)) {
         loadWindowContent(ws.id).then((content) => {
           if (content) {
-            windowActions.updateWindowContent(ws.id, content);
+            updateWindowContent(ws.id, content);
           }
         });
       }
     });
-  }, [windowStates, loadWindowContent, isLoading, windowActions]);
+  }, [windowStates, loadWindowContent, isLoading, updateWindowContent]);
 
   // Update URL when active window changes
+  const activeWindowId = useStore((state) => state.activeWindowId);
   useEffect(() => {
     updateURL(activeWindowId);
   }, [activeWindowId, updateURL]);
 
   // Component to handle music player window close
   function MusicPlayerWindowWatcher() {
-    const windowStates = useWindowStore((state) => state.windowStates);
+    const windowStates = useStore((state) => state.windowStates);
     const { pause, isPlaying } = useMusicPlayer();
     const previousWindowExistsRef = useRef<boolean | null>(null);
 
@@ -132,7 +95,14 @@ export default function Desktop() {
   return (
     <MusicPlayerProvider>
       <MusicPlayerWindowWatcher />
-      <div className={cn('desktop', styles.desktop)}>
+      <LoadingScreen />
+      <div
+        className={cn(
+          'desktop',
+          styles.desktop,
+          hasLoadedFromPersistence && styles.loaded
+        )}
+      >
         <MenuBar />
         <DesktopIcons />
         <DraggingIcon />
@@ -143,32 +113,7 @@ export default function Desktop() {
             <Window
               key={windowState.id}
               id={windowState.id}
-              title={windowState.config.title}
-              windowState={windowState}
               isLoading={isLoading}
-              initialPosition={windowState.position}
-              initialSize={windowState.size}
-              snapSide={windowState.snapSide}
-              zIndex={windowState.zIndex}
-              isMinimized={windowState.isMinimized}
-              isMaximized={windowState.isMaximized}
-              isActive={activeWindowId === windowState.id}
-              onClose={() => windowActions.closeWindow(windowState.id)}
-              onMinimize={() => windowActions.minimizeWindow(windowState.id)}
-              onMaximize={() => windowActions.maximizeWindow(windowState.id)}
-              onFocus={() => windowActions.focusWindow(windowState.id)}
-              onPositionChange={(position) =>
-                windowActions.updateWindowPosition(windowState.id, position)
-              }
-              onSizeChange={(size) =>
-                windowActions.updateWindowSize(windowState.id, size)
-              }
-              onSnap={(snapSide) =>
-                windowActions.snapWindow(windowState.id, snapSide)
-              }
-              onUnsnap={() => windowActions.unsnapWindow(windowState.id)}
-              hideOverflow={windowState.id === 'wikipedia'}
-              resizeConstraint={windowState.config.resizeConstraint}
             />
           ))}
       </div>

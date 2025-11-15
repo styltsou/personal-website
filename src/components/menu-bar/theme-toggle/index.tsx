@@ -21,30 +21,11 @@ export default function ThemeToggle() {
     localStorage.setItem(THEME_STORAGE_KEY, newIsDark ? 'dark' : 'light');
   };
 
-  // Initialize theme from localStorage or system preference
+  // Sync with pre-initialized theme (theme is already set by blocking script in head)
   useEffect(() => {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    let shouldBeDark = false;
-
-    if (savedTheme === 'dark' || savedTheme === 'light') {
-      // Use saved preference
-      shouldBeDark = savedTheme === 'dark';
-    } else {
-      // No saved preference, use system preference
-      const prefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-      shouldBeDark = prefersDark;
-    }
-
-    setIsDark(shouldBeDark);
-    // Apply theme class
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark-theme');
-    } else {
-      document.documentElement.classList.remove('dark-theme');
-    }
+    // Read current theme state from DOM (already set by blocking script)
+    const isCurrentlyDark = document.documentElement.classList.contains('dark-theme');
+    setIsDark(isCurrentlyDark);
 
     // Listen for system preference changes (only if no manual preference is saved)
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

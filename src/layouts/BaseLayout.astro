@@ -56,6 +56,34 @@ const canonicalURL = new URL(
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL.toString()} />
 
+    <!-- Initialize theme before React renders to prevent flash -->
+    <script define:inline>
+      (function () {
+        const THEME_STORAGE_KEY = 'retro-theme-preference';
+        
+        // Check localStorage first
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        let shouldBeDark = false;
+
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+          // Use saved preference
+          shouldBeDark = savedTheme === 'dark';
+        } else {
+          // No saved preference, use system preference
+          if (typeof window !== 'undefined' && window.matchMedia) {
+            shouldBeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+        }
+
+        // Apply theme class immediately (before React renders)
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark-theme');
+        } else {
+          document.documentElement.classList.remove('dark-theme');
+        }
+      })();
+    </script>
+
     <!-- View Transitions API -->
     <script>
       import('astro:transitions/client');

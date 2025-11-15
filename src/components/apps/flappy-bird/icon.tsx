@@ -20,24 +20,24 @@ export const FlappyBirdIcon = (): ReactNode => (
       width="52"
       height="44"
       rx="4"
-      fill="#e5e3d9"
-      stroke="#7da3d1"
+      fill="none"
+      stroke="none"
       strokeWidth="2"
     />
     {/* Sky background */}
     <rect
-      x="12"
-      y="16"
-      width="40"
-      height="20"
+      x="7"
+      y="11"
+      width="50"
+      height="30"
       fill="#87CEEB"
       rx="2"
     />
     {/* Ground */}
     <rect
-      x="12"
-      y="36"
-      width="40"
+      x="7"
+      y="41"
+      width="50"
       height="12"
       fill="#8B7355"
       rx="2"
@@ -46,8 +46,8 @@ export const FlappyBirdIcon = (): ReactNode => (
     <ellipse
       cx="24"
       cy="28"
-      rx="6"
-      ry="4"
+      rx="5.5"
+      ry="5.5"
       fill="#FFD700"
       stroke="#FF8C00"
       strokeWidth="1.5"
@@ -62,7 +62,7 @@ export const FlappyBirdIcon = (): ReactNode => (
     {/* Pipe (top) */}
     <rect
       x="38"
-      y="16"
+      y="11"
       width="8"
       height="8"
       fill="#228B22"
@@ -73,9 +73,9 @@ export const FlappyBirdIcon = (): ReactNode => (
     {/* Pipe (bottom) */}
     <rect
       x="38"
-      y="32"
+      y="40"
       width="8"
-      height="16"
+      height="13"
       fill="#228B22"
       stroke="#006400"
       strokeWidth="1"

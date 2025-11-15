@@ -1,26 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectsContent from '../components/content/projects-content.astro';
+
+// Mark as prerendered for static generation and SEO
+export const prerender = true;
+
+const site = Astro.site?.href || 'https://styltsou.com';
+const canonicalURL = new URL('/projects', site);
 ---
 
 <BaseLayout
   title="projects - styltsou"
   description="Explore my featured projects, web applications, and creative work. See what I've built and the technologies I use."
 >
-  <main class="mx-auto max-w-4xl p-6">
-    <h1 class="mb-4 text-3xl font-bold">Projects</h1>
-    <div class="prose prose-lg">
-      <p>
-        This page showcases my projects and work. Each project would be listed
-        here with descriptions, technologies used, and links.
-      </p>
-      <section class="mt-8">
-        <h2 class="mb-4 text-2xl font-semibold">Featured Projects</h2>
-        <ul class="list-inside list-disc space-y-2">
-          <li>Project One - Description here</li>
-          <li>Project Two - Description here</li>
-          <li>Project Three - Description here</li>
-        </ul>
-      </section>
-    </div>
-  </main>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Projects - styltsou",
+    "description": "Explore my featured projects, web applications, and creative work. See what I've built and the technologies I use.",
+    "url": canonicalURL.toString(),
+    "inLanguage": "en"
+  })} />
+  <ProjectsContent />
 </BaseLayout>

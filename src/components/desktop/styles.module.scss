@@ -7,6 +7,12 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+
+  &.loaded {
+    opacity: 1;
+  }
 }
 
 .noContent {

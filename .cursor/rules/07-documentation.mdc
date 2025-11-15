@@ -1,14 +1,70 @@
 # Documentation
 
-For every new feature or system:
+## System Documentation
 
-- Create a `docs/` entry explaining purpose, usage, and internal API.
-- Include code comments for non-trivial logic.
-- Maintain a progress tracker:
-  - File: `PROJECT_PROGRESS.md`
-  - Sections:
-    - ✅ Completed Tasks
-    - 🚧 In Progress
-    - 🧭 Next Steps
-    - 🐞 Issues / TODOs
-- Update this file after each session or milestone.
+System documentation is located in `.cursor/docs/system/` and explains how the system works. This documentation is critical for:
+- Cursor AI to understand architecture and avoid breaking changes
+- Developers to understand the codebase
+- Maintenance and debugging
+
+### When to Update Documentation
+
+**ALWAYS update system documentation when:**
+1. **Architecture changes**: If you modify how a system works (e.g., window management, state management, grid system)
+2. **New systems added**: When adding new major features or systems
+3. **Breaking changes**: When changing APIs, data structures, or behavior
+4. **Integration changes**: When systems interact differently
+
+**Update the relevant file:**
+- `01-project-structure.md` - When adding/removing directories or major files
+- `02-window-management.md` - When changing window behavior, lifecycle, or state
+- `03-desktop-grid.md` - When changing grid system, icon positioning, or collision detection
+- `04-app-configuration.md` - When changing app registration or configuration system
+- `05-content-loading.md` - When changing content loading, caching, or parsing
+- `06-state-management.md` - When changing state management, persistence, or synchronization
+
+### When to Create New Documentation
+
+Create a new system documentation file when:
+1. **New major system**: A new system that doesn't fit existing categories
+2. **Complex feature**: A feature that needs detailed explanation
+3. **Integration guide**: How multiple systems work together
+
+**Naming convention**: `07-[system-name].md` (increment number)
+
+### Documentation Standards
+
+1. **Focus on concepts**: Explain the "why" and "how", not just "what"
+2. **Minimal code**: Include code only when necessary to illustrate concepts
+3. **Clear structure**: Use headings, lists, and examples
+4. **Keep updated**: Documentation should reflect current implementation
+5. **Cross-reference**: Link to related documentation when relevant
+
+### Code Comments
+
+- Include code comments for non-trivial logic
+- Explain "why" not just "what" in comments
+- Document complex algorithms or calculations
+- Add JSDoc comments for public APIs
+
+## Progress Documentation
+
+Maintain progress tracking in `.cursor/docs/progress/`:
+- Component-specific progress files (e.g., `PIANO_PROGRESS.md`)
+- Update after completing features or milestones
+- Track completed tasks, in progress work, and next steps
+
+## Technical Documentation
+
+Technical deep-dives and fixes go in `.cursor/docs/technical/`:
+- Bug fixes and their solutions
+- Performance optimizations
+- Architectural decisions
+- Troubleshooting guides
+
+## Setup Documentation
+
+Setup and integration guides go in `.cursor/docs/setup/`:
+- External API setup
+- Development environment setup
+- Integration instructions

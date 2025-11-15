@@ -6,23 +6,10 @@
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { apps } from '@/data/apps';
 import DesktopIcon from '../desktop-icon';
-import { useIconStore } from '@/stores/icon-store';
-import { useWindowStore } from '@/stores/window-store';
+import { useStore } from '@/store';
 import { calculateGridDimensions, gridToPixel } from '@/utils/icon-grid';
 import { BASE_Z_INDEX } from '@/utils/window-utils';
-import type { GridPosition } from '@/utils/icon-grid';
-import type { ComponentType } from 'react';
-
-/**
- * Icon configuration type
- * Represents a desktop icon that can be displayed and opened
- */
-export interface IconConfig {
-  id: string;
-  label: string;
-  icon: string | ComponentType; // Icon component (React component) or image path
-  windowId?: string; // Optional window ID to open on double-click
-}
+import type { GridPosition, IconConfig } from '@/types/icon';
 
 /**
  * Generate icons array from apps config
@@ -50,12 +37,12 @@ export function getDesktopIcons(): IconConfig[] {
 }
 
 export default function DesktopIcons() {
-  const iconStates = useIconStore((state) => state.iconStates);
-  const selectedIconId = useIconStore((state) => state.selectedIconId);
-  const deselectIcons = useIconStore((state) => state.deselectIcons);
-  const updateIconPosition = useIconStore((state) => state.updateIconPosition);
-  const openWindow = useWindowStore((state) => state.openWindow);
-  const unfocusWindow = useWindowStore((state) => state.unfocusWindow);
+  const iconStates = useStore((state) => state.iconStates);
+  const selectedIconId = useStore((state) => state.selectedIconId);
+  const deselectIcons = useStore((state) => state.deselectIcons);
+  const updateIconPosition = useStore((state) => state.updateIconPosition);
+  const openWindow = useStore((state) => state.openWindow);
+  const unfocusWindow = useStore((state) => state.unfocusWindow);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Generate icons from apps config

@@ -7,7 +7,7 @@ export { TerminalIcon } from './icon';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/utils/cn';
-import { useWindowStore } from '@/stores/window-store';
+import { useStore } from '@/store';
 import { getDesktopIcons } from '@/components/desktop-icons';
 import styles from './styles.module.scss';
 
@@ -99,7 +99,7 @@ export default function TerminalWindow() {
   const [hostname, setHostname] = useState<string>('website');
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
-  const closeWindow = useWindowStore((state) => state.closeWindow);
+  const closeWindow = useStore((state) => state.closeWindow);
 
   // Hardcoded username
   const username = USERNAME;

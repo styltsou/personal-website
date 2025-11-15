@@ -1,10 +1,8 @@
 /**
- * Zustand store for window state management
- * Provides a clean, DX-friendly API for managing windows
+ * Window Slice Implementation
  */
 
-import { create } from 'zustand';
-import { apps, type AppConfig } from '../data/apps';
+import { apps } from '../../data/apps';
 import {
   calculateCenteredPosition,
   calculateCascadedPosition,
@@ -13,67 +11,36 @@ import {
   getDefaultWindowSize,
   constrainWindowSize,
   BASE_Z_INDEX,
-  type WindowPosition,
-  type WindowSize,
-} from '../utils/window-utils';
+} from '../../utils/window-utils';
+import type { WindowState, ClosedWindowState, WindowPosition, WindowSize, SnapSide } from '../../types/window';
+import type { WindowSlice } from './types';
+import type { Store } from '../index';
 
-export type SnapSide = 'left' | 'right' | 'top' | null;
-
-export interface WindowState {
-  id: string;
-  config: AppConfig;
-  position: WindowPosition;
-  size: WindowSize;
-  zIndex: number;
-  isMinimized: boolean;
-  isMaximized: boolean;
-  snapSide: SnapSide;
-  content?: string;
+// Check if we should initialize from persistence synchronously (only on client)
+let initialHasLoadedFromPersistence = false;
+if (typeof window !== 'undefined') {
+  try {
+    const saved = sessionStorage.getItem('desktop-windows');
+    if (saved) {
+      // If there's saved state, we'll load it async, so start as false
+      initialHasLoadedFromPersistence = false;
+    } else {
+      // No saved state, mark as loaded immediately
+      initialHasLoadedFromPersistence = true;
+    }
+  } catch {
+    // On error, mark as loaded to prevent infinite loading
+    initialHasLoadedFromPersistence = true;
+  }
 }
 
-// Store closed window state (without content and transient state)
-export interface ClosedWindowState {
-  id: string;
-  position: WindowPosition;
-  size: WindowSize;
-  isMaximized: boolean;
-}
-
-interface WindowStore {
-  // State
-  windowStates: WindowState[];
-  closedWindows: Record<string, ClosedWindowState>; // Map of windowId -> closed window state
-  activeWindowId: string | null;
-  nextZIndex: number;
-  hasLoadedFromPersistence: boolean;
-
-  // Actions
-  openWindow: (windowId: string) => void;
-  closeWindow: (windowId: string) => void;
-  minimizeWindow: (windowId: string) => void;
-  maximizeWindow: (windowId: string) => void;
-  focusWindow: (windowId: string) => void;
-  unfocusWindow: () => void;
-  updateWindowPosition: (windowId: string, position: WindowPosition) => void;
-  updateWindowSize: (windowId: string, size: WindowSize) => void;
-  updateWindowContent: (windowId: string, content: string) => void;
-  snapWindow: (windowId: string, snapSide: SnapSide) => void;
-  unsnapWindow: (windowId: string) => void;
-  closeAllWindows: () => void;
-  initializeFromPersistence: (
-    persistedStates: WindowState[],
-    persistedNextZIndex: number
-  ) => void;
-  getWindowState: (windowId: string) => WindowState | undefined;
-}
-
-export const useWindowStore = create<WindowStore>((set, get) => ({
+export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
   // Initial state
   windowStates: [],
   closedWindows: {},
   activeWindowId: null,
   nextZIndex: BASE_Z_INDEX,
-  hasLoadedFromPersistence: false,
+  hasLoadedFromPersistence: initialHasLoadedFromPersistence,
 
   // Open a window
   openWindow: (windowId: string) => {
@@ -362,8 +329,20 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   ) => {
     const { hasLoadedFromPersistence } = get();
     if (!hasLoadedFromPersistence) {
+      // Restore full config from apps array (component references are lost during JSON serialization)
+      const restoredStates = persistedStates.map((persistedState) => {
+        const appConfig = apps.find((app) => app.id === persistedState.id);
+        if (appConfig) {
+          return {
+            ...persistedState,
+            config: appConfig, // Restore full config with component reference
+          };
+        }
+        return persistedState; // Fallback if app not found
+      });
+
       set({
-        windowStates: persistedStates,
+        windowStates: restoredStates,
         closedWindows: persistedClosedWindows || {},
         nextZIndex: persistedNextZIndex,
         hasLoadedFromPersistence: true,
@@ -375,24 +354,5 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   getWindowState: (windowId: string) => {
     return get().windowStates.find((ws) => ws.id === windowId);
   },
-}));
+});
 
-// Selectors for better performance and cleaner usage
-export const useWindowStates = () =>
-  useWindowStore((state) => state.windowStates);
-export const useActiveWindowId = () =>
-  useWindowStore((state) => state.activeWindowId);
-export const useWindowActions = () =>
-  useWindowStore((state) => ({
-    openWindow: state.openWindow,
-    closeWindow: state.closeWindow,
-    minimizeWindow: state.minimizeWindow,
-    maximizeWindow: state.maximizeWindow,
-    focusWindow: state.focusWindow,
-    updateWindowPosition: state.updateWindowPosition,
-    updateWindowSize: state.updateWindowSize,
-    updateWindowContent: state.updateWindowContent,
-    snapWindow: state.snapWindow,
-    unsnapWindow: state.unsnapWindow,
-    closeAllWindows: state.closeAllWindows,
-  }));

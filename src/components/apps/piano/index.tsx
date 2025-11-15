@@ -8,7 +8,7 @@ export { PianoIcon } from './icon';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { usePianoAudio } from './hooks/use-piano-audio';
 import { useKeyboardInput } from './hooks/use-keyboard-input';
-import { useWindowStore } from '@/stores/window-store';
+import { useStore } from '@/store';
 import PianoKeyboard from './piano-keyboard';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
@@ -21,7 +21,7 @@ export default function PianoWindow() {
   const mousePressedRef = useRef<boolean>(false);
 
   // Check if this window is active/focused
-  const activeWindowId = useWindowStore((state) => state.activeWindowId);
+  const activeWindowId = useStore((state) => state.activeWindowId);
   const isWindowActive = activeWindowId === 'piano';
 
   // Audio hook (simplified - no MIDI, no advanced features)

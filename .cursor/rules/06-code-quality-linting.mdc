@@ -1,7 +1,64 @@
 # Code Quality & Linting
 
-- Use ESLint + Prettier configured for Astro, React, and Tailwind.
-- After every major implementation, run lint and fix all issues automatically.
-- Maintain strict TypeScript configuration (`"strict": true`).
-- No `any` types unless explicitly justified with a comment.
-- Use descriptive variable and component names.
+## Linting Requirements
+
+**ALWAYS lint code after completing work:**
+1. **After every implementation**: Run linting before considering work complete
+2. **After every edit**: Fix linting errors immediately
+3. **Before committing**: Ensure all code passes linting
+
+**Linting commands:**
+- Run `npm run lint` or `pnpm lint` to check for issues
+- Run `npm run lint:fix` or `pnpm lint:fix` to auto-fix issues
+- Fix all linting errors before marking work as complete
+
+**What to lint:**
+- All TypeScript/JavaScript files
+- All React components
+- All Astro files
+- All configuration files
+
+## TypeScript Standards
+
+- Maintain strict TypeScript configuration (`"strict": true`)
+- No `any` types unless explicitly justified with a comment explaining why
+- Use proper type definitions for all functions, components, and data structures
+- Prefer `interface` over `type` for object shapes
+- Use type inference where appropriate, but be explicit for public APIs
+
+## Code Quality
+
+- Use descriptive variable and component names
+- Follow naming conventions (kebab-case for files, PascalCase for components)
+- Keep functions small and focused (single responsibility)
+- Avoid deep nesting (max 3-4 levels)
+- Use early returns to reduce nesting
+- Extract complex logic into utility functions or hooks
+
+## ESLint & Prettier
+
+- Use ESLint + Prettier configured for Astro, React, and Tailwind
+- Follow project-specific ESLint rules
+- Format code with Prettier (usually auto-formats on save)
+- Ensure consistent code style across the project
+
+## Error Handling
+
+- Handle errors appropriately (don't ignore them)
+- Provide meaningful error messages
+- Use try-catch for async operations
+- Validate inputs where necessary
+
+## Performance
+
+- Avoid unnecessary re-renders
+- Use React.memo, useMemo, useCallback when appropriate
+- Optimize expensive operations
+- Consider performance implications of changes
+
+## Testing Considerations
+
+- Write testable code (pure functions where possible)
+- Consider edge cases
+- Handle null/undefined values appropriately
+- Validate assumptions with type guards

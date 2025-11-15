@@ -11,38 +11,35 @@ export interface TitleBarProps {
   id: string;
   title: string;
   isMaximized: boolean;
-  position: { x: number; y: number };
+  // position: { x: number; y: number };
   isDragging?: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
   onClose?: () => void;
-  onFocus?: () => void;
-  onPositionChange?: (position: { x: number; y: number }) => void;
+  // onFocus?: () => void;
+  // onPositionChange?: (position: { x: number; y: number }) => void;
 }
 
 export default function TitleBar({
   id,
   title,
   isMaximized,
-  position,
+  // position,
   isDragging = false,
   onMouseDown,
   onKeyDown,
   onMinimize,
   onMaximize,
   onClose,
-  onFocus,
-  onPositionChange,
+  // onFocus,
+  // onPositionChange,
 }: TitleBarProps) {
   const handleDoubleClick = (e: React.MouseEvent) => {
     // Don't maximize/restore if clicking on buttons
     const target = e.target as HTMLElement;
-    if (
-      target.closest('button') ||
-      target.closest('.titlebar-controls')
-    ) {
+    if (target.closest('button') || target.closest('.titlebar-controls')) {
       return;
     }
 

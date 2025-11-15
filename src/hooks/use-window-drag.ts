@@ -10,7 +10,7 @@ import {
   MENU_BAR_HEIGHT,
 } from '../utils/window-utils';
 import type { Position, Size } from '../utils/viewport-constraints';
-import type { SnapSide } from '../stores/window-store';
+import type { SnapSide } from '../types/window';
 
 export interface UseWindowDragOptions {
   initialPosition: Position;

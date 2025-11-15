@@ -3,15 +3,7 @@
  * Helper functions for window calculations and positioning
  */
 
-export interface WindowPosition {
-  x: number;
-  y: number;
-}
-
-export interface WindowSize {
-  width: number;
-  height: number;
-}
+import type { WindowPosition, WindowSize } from '../types/window';
 
 const DEFAULT_WINDOW_WIDTH = 1100;
 const DEFAULT_WINDOW_HEIGHT = 800;

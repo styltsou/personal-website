@@ -4,11 +4,9 @@
  */
 
 import { useEffect } from 'react';
-import {
-  useWindowStore,
-  type WindowState,
-  type ClosedWindowState,
-} from '../stores/window-store';
+import { useStore } from '../store';
+import type { WindowState, ClosedWindowState } from '../types/window';
+import { BASE_Z_INDEX } from '../utils/window-utils';
 
 interface PersistedState {
   windowStates: WindowState[];
@@ -20,15 +18,21 @@ const STORAGE_KEY = 'desktop-windows';
 
 export function useWindowPersistence() {
   // Properly select from store with individual selectors
-  const windowStates = useWindowStore((state) => state.windowStates);
-  const closedWindows = useWindowStore((state) => state.closedWindows);
-  const nextZIndex = useWindowStore((state) => state.nextZIndex);
-  const initializeFromPersistence = useWindowStore(
+  const windowStates = useStore((state) => state.windowStates);
+  const closedWindows = useStore((state) => state.closedWindows);
+  const nextZIndex = useStore((state) => state.nextZIndex);
+  const initializeFromPersistence = useStore(
     (state) => state.initializeFromPersistence
+  );
+  const hasLoadedFromPersistence = useStore(
+    (state) => state.hasLoadedFromPersistence
   );
 
   // Load from sessionStorage on mount
   useEffect(() => {
+    // If already loaded, don't reload
+    if (hasLoadedFromPersistence) return;
+
     try {
       const saved = sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -39,8 +43,11 @@ export function useWindowPersistence() {
           parsed.closedWindows || {}
         );
       }
+      // If no saved state, hasLoadedFromPersistence is already true from initial check
     } catch (error) {
       console.warn('Failed to load window states from sessionStorage:', error);
+      // Mark as loaded even on error to prevent infinite loading
+      initializeFromPersistence([], BASE_Z_INDEX, {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount

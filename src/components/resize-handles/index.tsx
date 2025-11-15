@@ -3,9 +3,8 @@
  * Eight resize handles (corners and edges) for window resizing
  */
 
-import { useIconStore } from '../../stores/icon-store';
-
-import type { ResizeConstraint } from '@/data/apps';
+import { useStore } from '../../store';
+import type { ResizeConstraint } from '@/types/window';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
@@ -22,7 +21,7 @@ export default function ResizeHandles({
   }
 
   // Check if an icon is being dragged
-  const draggingIconId = useIconStore((state) => state.draggingIconId);
+  const draggingIconId = useStore((state) => state.draggingIconId);
   const isIconDragging = draggingIconId !== null;
 
   // When dragging an icon, use grabbing cursor instead of resize cursors

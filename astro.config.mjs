@@ -14,7 +14,7 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  output: 'static', // Enable static generation for better performance and SEO
   adapter: vercel({}),
   vite: {
     resolve: {

@@ -20,8 +20,8 @@ export const MusicPlayerIcon = (): ReactNode => (
       width="52"
       height="44"
       rx="4"
-      fill="#e5e3d9"
-      stroke="#7da3d1"
+      fill="#ffffff"
+      stroke="#f0b0b0"
       strokeWidth="2"
     />
     {/* CD/Disc */}
@@ -30,7 +30,7 @@ export const MusicPlayerIcon = (): ReactNode => (
       cy="28"
       r="12"
       fill="#2a2a2a"
-      stroke="#7da3d1"
+      stroke="#f0b0b0"
       strokeWidth="2"
     />
     <circle
@@ -45,21 +45,21 @@ export const MusicPlayerIcon = (): ReactNode => (
       cx="32"
       cy="28"
       r="3"
-      fill="#7da3d1"
+      fill="#f0b0b0"
     />
     {/* Music note */}
     <path
       d="M 20 42 L 20 38 L 24 40 L 24 44 L 20 42 Z M 24 40 L 28 38 L 28 42"
-      stroke="#7da3d1"
+      stroke="#f0b0b0"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
     {/* Equalizer bars */}
-    <rect x="36" y="40" width="2" height="8" rx="1" fill="#7da3d1" />
-    <rect x="40" y="38" width="2" height="10" rx="1" fill="#7da3d1" />
-    <rect x="44" y="42" width="2" height="6" rx="1" fill="#7da3d1" />
+    <rect x="36" y="40" width="2" height="8" rx="1" fill="#f0b0b0" />
+    <rect x="40" y="38" width="2" height="10" rx="1" fill="#f0b0b0" />
+    <rect x="44" y="42" width="2" height="6" rx="1" fill="#f0b0b0" />
   </svg>
 );
 

@@ -4,7 +4,8 @@
  */
 
 import { useEffect } from 'react';
-import { useIconStore, type IconState } from '../stores/icon-store';
+import { useStore } from '../store';
+import type { IconState } from '../types/icon';
 
 interface PersistedIconState {
   [iconId: string]: {
@@ -17,9 +18,9 @@ const STORAGE_KEY = 'desktop-icons';
 
 export function useIconPersistence() {
   // Properly select from store with individual selectors
-  const iconStates = useIconStore((state) => state.iconStates);
-  const initializeFromPersistence = useIconStore(
-    (state) => state.initializeFromPersistence
+  const iconStates = useStore((state) => state.iconStates);
+  const initializeIconFromPersistence = useStore(
+    (state) => state.initializeIconFromPersistence
   );
 
   // Load from localStorage on mount
@@ -40,7 +41,7 @@ export function useIconPersistence() {
           })
         );
 
-        initializeFromPersistence(persistedStates);
+        initializeIconFromPersistence(persistedStates);
       }
     } catch (error) {
       console.warn('Failed to load icon positions from localStorage:', error);
