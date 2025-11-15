@@ -28,16 +28,17 @@
       left: 0;
       width: 100%;
       height: 8px;
+      // Use accent color for one stripe, darker less vibrant for the other
       $accent-color: #f09c7c; // --accent value (orange)
-      $light-color-1: color.adjust($accent-color, $lightness: 20%);
-      $light-color-2: color.adjust($accent-color, $lightness: 30%);
-      background: repeating-linear-gradient(-45deg,
-          $light-color-1 0px,
-          $light-color-1 10px,
-          $light-color-2 10px,
-          $light-color-2 20px);
+      $darker-color: color.adjust($accent-color, $lightness: -15%, $saturation: -20%);
+      background: repeating-linear-gradient(
+        -45deg,
+        $accent-color 0px,
+        $accent-color 10px,
+        $darker-color 10px,
+        $darker-color 20px
+      );
       background-size: 28px 28px;
-      background-position: 0 0;
       animation: loading-stripes 1s linear infinite;
       pointer-events: none;
       z-index: 0;
@@ -53,13 +54,14 @@
 :global(.dark-theme) {
   .sliderWrapper.buffering .stripesOverlay {
     $accent-color: #f09c7c; // --accent value (orange)
-    $dark-color-1: color.adjust($accent-color, $lightness: -10%);
-    $dark-color-2: color.adjust($accent-color, $lightness: -20%);
-    background: repeating-linear-gradient(-45deg,
-        $dark-color-1 0px,
-        $dark-color-1 10px,
-        $dark-color-2 10px,
-        $dark-color-2 20px);
+    $darker-color: color.adjust($accent-color, $lightness: -25%, $saturation: -20%);
+    background: repeating-linear-gradient(
+      -45deg,
+      $accent-color 0px,
+      $accent-color 10px,
+      $darker-color 10px,
+      $darker-color 20px
+    );
   }
 }
 
@@ -194,7 +196,6 @@
   0% {
     background-position: 0 0;
   }
-
   100% {
     background-position: 28px 0;
   }

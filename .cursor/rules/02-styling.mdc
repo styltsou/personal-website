@@ -1,6 +1,10 @@
 # Styling Rules
 
-- Use Tailwind CSS for all layout, spacing, and color styling.
-- Create a single global stylesheet `retro.css` for the 90s OS aesthetic (window borders, button styles, etc.).
-- Use CSS variables and `@layer` with Tailwind for theme consistency.
+- Use SCSS modules for component styling.
+- Use CSS variables for theme consistency (defined in `src/styles/_variables.scss`).
+- **Unit Guidelines:**
+  - Use `rem` for values larger than 10px (e.g., font-size, padding, margin, width, height when > 10px)
+  - Use `px` for values 10px or smaller (e.g., borders, small gaps, precise positioning)
+  - This ensures better scalability and accessibility while maintaining precision for small details
 - Prefer class utilities to inline styles.
+- Use mixins from `src/styles/_mixins.scss` for reusable patterns (buttons, borders, etc.).

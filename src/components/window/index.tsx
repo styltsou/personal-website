@@ -14,7 +14,6 @@ import type { ResizeConstraint } from '../../types/window';
 import { cn } from '../../utils/cn';
 import TitleBar from '../title-bar';
 import ResizeHandles from '../resize-handles';
-import LoadingProgressBar from '../loading-progress-bar';
 import styles from './styles.module.scss';
 
 export interface WindowProps {
@@ -227,8 +226,6 @@ export default function Window({ id, isLoading }: WindowProps) {
           onMaximize={() => maximizeWindow(id)}
           onClose={() => closeWindow(id)}
         />
-        {/* Loading Progress Bar - shown at top when loading */}
-        {isWindowLoading && <LoadingProgressBar />}
         {/* Window Content */}
         <div
           className={cn(
@@ -253,16 +250,28 @@ export default function Window({ id, isLoading }: WindowProps) {
               );
             }
 
-            // Show no content message if not loading
-            if (!isLoading(windowState.id)) {
+            // Show loading message while loading
+            if (isWindowLoading) {
               return (
-                <div className={styles.noContent}>
-                  <p>No content available</p>
+                <div className={styles.loadingContent}>
+                  <p className={styles.loadingText}>
+                    Loading
+                    <span className={styles.loadingDots}>
+                      <span>.</span>
+                      <span>.</span>
+                      <span>.</span>
+                    </span>
+                  </p>
                 </div>
               );
             }
 
-            return null;
+            // Show no content message if not loading
+            return (
+              <div className={styles.noContent}>
+                <p>No content available</p>
+              </div>
+            );
           })()}
         </div>
         {/* Resize Handles - only show when not maximized */}

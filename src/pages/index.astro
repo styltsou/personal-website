@@ -2,36 +2,36 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Desktop from '../components/desktop';
 import { getContentApps } from '../utils/get-content-data';
-import AboutContent from '../components/content/about-content.astro';
-import ProjectsContent from '../components/content/projects-content.astro';
-import ContactContent from '../components/content/contact-content.astro';
-import { render } from 'astro/runtime/server/index.js';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
-// Extract content from shared content components at build time for SEO and performance
+// Extract content from source pages at build time for SEO and performance
 const contentApps = getContentApps();
 const contentData: Record<string, string> = {};
 
-// Render each content component and extract main content
-const contentComponents: Record<string, any> = {
-  about: AboutContent,
-  projects: ProjectsContent,
-  contact: ContactContent,
+// Map app IDs to their page file paths
+const pageMap: Record<string, string> = {
+  about: 'about.astro',
+  projects: 'projects.astro',
+  contact: 'contact.astro',
 };
 
+// Read content from source page files
 for (const app of contentApps) {
   try {
-    const Component = contentComponents[app.id];
-    if (Component) {
-      const result = await render(Component);
-      const html = result.html || '';
-      // Extract main content using regex (faster than DOMParser on server)
-      const mainMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    const pageFile = pageMap[app.id];
+    if (pageFile) {
+      const pagePath = join(process.cwd(), 'src', 'pages', pageFile);
+      const source = await readFile(pagePath, 'utf-8');
+      // Extract main content from the source file using regex
+      const mainMatch = source.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
       if (mainMatch) {
         contentData[app.id] = mainMatch[1].trim();
       }
     }
   } catch (error) {
-    console.error(`Failed to extract content for ${app.id}:`, error);
+    // If file doesn't exist, content will be fetched at runtime
+    console.warn(`Could not extract content for ${app.id} at build time:`, error);
   }
 }
 
