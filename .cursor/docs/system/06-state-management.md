@@ -10,10 +10,10 @@ The application uses Zustand for state management, providing a lightweight, perf
 
 ### Store Structure
 
-Two main Zustand stores:
+Two main Zustand store slices:
 
-1. **Window Store** (`window-store.ts`): Manages all window-related state
-2. **Icon Store** (`icon-store.ts`): Manages all icon-related state
+1. **Window Store** (`store/window/slice.ts`): Manages all window-related state
+2. **Icon Store** (`store/icon/slice.ts`): Manages all icon-related state
 
 Both stores follow similar patterns:
 - State properties
@@ -152,7 +152,7 @@ useEffect(() => {
 **Process**:
 1. State saved on every change (via `useEffect`)
 2. On page load, state restored from `sessionStorage`
-3. Component references restored from `apps.ts` (lost during serialization)
+3. Component references restored from `app-config.ts` (lost during serialization)
 4. Windows reappear in their previous positions
 
 **Hook**: `use-window-persistence.ts`
@@ -289,8 +289,11 @@ set((state) => ({
 
 ## Key Files
 
-- `src/stores/window-store.ts` - Window state management
-- `src/stores/icon-store.ts` - Icon state management
+- `src/store/window/slice.ts` - Window state management
+- `src/store/icon/slice.ts` - Icon state management
+- `src/store/index.ts` - Combined store root
+- `src/types/window.ts` - Window type definitions (`WindowPosition`, `WindowSize`, `WindowState`, etc.)
+- `src/types/icon.ts` - Icon type definitions
 - `src/hooks/use-window-persistence.ts` - Window persistence
 - `src/hooks/use-icon-persistence.ts` - Icon persistence
 - `src/hooks/use-url-sync.ts` - URL synchronization

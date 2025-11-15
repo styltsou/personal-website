@@ -12,7 +12,7 @@ The window management system is built on Zustand for state management and provid
 
 Each window has a `WindowState` that includes:
 - `id` - Unique identifier (matches app ID)
-- `config` - App configuration from `apps.ts`
+- `config` - App configuration from `app-config.ts`
 - `position` - Current position (x, y)
 - `size` - Current size (width, height)
 - `zIndex` - Stacking order
@@ -23,7 +23,7 @@ Each window has a `WindowState` that includes:
 
 ### Window Store
 
-The `window-store.ts` manages all window state using Zustand. It provides:
+The `store/window/slice.ts` manages all window state using Zustand. It provides:
 
 **State:**
 - `windowStates` - Array of all open windows
@@ -157,7 +157,7 @@ Window state is persisted to `sessionStorage`:
 - Saves on every state change
 - Restores on page reload
 - Includes position, size, z-index, minimized/maximized state
-- **Important**: Component references are lost during JSON serialization, so they're restored from `apps.ts` on load
+- **Important**: Component references are lost during JSON serialization, so they're restored from `app-config.ts` on load
 
 See `use-window-persistence.ts` for implementation details.
 
@@ -179,9 +179,11 @@ See `use-url-sync.ts` for implementation details.
 
 ## Key Files
 
-- `src/stores/window-store.ts` - Window state management
+- `src/store/window/slice.ts` - Window state management
 - `src/components/window/index.tsx` - Window component
 - `src/hooks/use-window-drag.ts` - Dragging logic
 - `src/hooks/use-window-resize.ts` - Resizing logic
-- `src/utils/window-utils.ts` - Positioning and calculation utilities
+- `src/components/window/utils/window-utils.ts` - Positioning and calculation utilities
+- `src/components/window/utils/viewport-constraints.ts` - Viewport constraint utilities
+- `src/types/window.ts` - Window type definitions (`WindowPosition`, `WindowSize`, `WindowState`, etc.)
 

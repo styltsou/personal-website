@@ -15,9 +15,10 @@ import {
   ICON_HEIGHT,
   type PixelPosition,
   type GridPosition,
-} from '../utils/icon-grid';
+} from '../components/desktop-icons/utils';
 import { useStore } from '../store';
-import { getSnappedPreview, MENU_BAR_HEIGHT } from '../utils/window-utils';
+import { MENU_BAR_HEIGHT } from '../constants';
+import { getSnappedPreview } from '../components/window/utils/window-utils';
 
 export interface UseIconDragOptions {
   iconId: string;

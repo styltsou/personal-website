@@ -190,7 +190,7 @@ The fundamental issue was **timing**: React's `useEffect` runs after the first r
 2. `src/components/menu-bar/theme-toggle/index.tsx` - Updated to sync with pre-initialized theme
 3. `src/components/desktop/index.tsx` - Added loading state tracking
 4. `src/components/desktop/styles.module.scss` - Added fade-in transition
-5. `src/stores/window-store.ts` - Added synchronous persistence check
+5. `src/store/window/slice.ts` - Added synchronous persistence check
 6. `src/hooks/use-window-persistence.ts` - Optimized loading logic
 
 ## Result

@@ -4,22 +4,21 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { getMinWindowSize } from '../utils/window-utils';
+import { getMinWindowSize } from '@/components/window/utils/window-utils';
 import {
   constrainPositionToViewport,
   constrainSizeToViewport,
-  type Position,
-  type Size,
-} from '../utils/viewport-constraints';
+} from '@/components/window/utils/viewport-constraints';
+import type { WindowPosition, WindowSize } from '@/types/window';
 
 export interface UseWindowResizeOptions {
-  initialSize: Size;
-  initialPosition: Position;
+  initialSize: WindowSize;
+  initialPosition: WindowPosition;
   isMaximized: boolean;
   onFocus?: () => void;
-  onSizeChange?: (size: Size) => void;
-  onPositionChange?: (position: Position) => void;
-  getCurrentPosition?: () => Position;
+  onSizeChange?: (size: WindowSize) => void;
+  onPositionChange?: (position: WindowPosition) => void;
+  getCurrentPosition?: () => WindowPosition;
 }
 
 export function useWindowResize({

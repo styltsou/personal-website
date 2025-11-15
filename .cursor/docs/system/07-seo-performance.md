@@ -278,7 +278,7 @@ These apps are client-side only (no SEO needed):
 
 3. **Add to apps config:**
    ```typescript
-   // src/data/apps.ts
+   // src/app-config.ts
    { id: 'new-page', title: 'New Page', path: '/new-page', pinned: true }
    ```
 

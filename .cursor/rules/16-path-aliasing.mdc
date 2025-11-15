@@ -1,0 +1,74 @@
+# Path Aliasing
+
+## Overview
+
+Use path aliases for all imports that go beyond one directory level. Relative imports (`./` and `../`) are acceptable for same-directory or parent-directory imports, but deeper relative paths (`../../`, `../../../`, etc.) should use path aliases.
+
+## Path Aliases
+
+The following path aliases are configured:
+
+- `@/*` - Maps to `src/*`
+- `@/components/*` - Maps to `src/components/*`
+- `@/hooks/*` - Maps to `src/hooks/*`
+- `@/utils/*` - Maps to `src/utils/*`
+- `@/styles/*` - Maps to `src/styles/*`
+- `@/types/*` - Maps to `src/types/*`
+- `@/store` - Maps to `src/store`
+- `@/constants` - Maps to `src/constants`
+- `@/app-config` - Maps to `src/app-config`
+- `@/content/*` - Maps to `src/content/*`
+
+## Rules
+
+### TypeScript/JavaScript Imports
+
+✅ **Good:**
+```typescript
+import { useStore } from '@/store';
+import { cn } from '@/utils/cn';
+import type { WindowPosition } from '@/types/window';
+import Loading from '@/components/ui/loading';
+```
+
+✅ **Also Good (same/parent directory):**
+```typescript
+import TitleBar from './title-bar';
+import WindowControls from '../window-controls';
+```
+
+❌ **Bad (deep relative paths):**
+```typescript
+import { useStore } from '../../../store';
+import { cn } from '../../utils/cn';
+import Loading from '../../ui/loading';
+```
+
+### SCSS Imports
+
+✅ **Good:**
+```scss
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+```
+
+❌ **Bad (deep relative paths):**
+```scss
+@use '../../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+```
+
+**Note**: The `~` prefix is not needed in Vite with the modern Sass compiler. Use `@/styles` directly.
+
+## Benefits
+
+1. **Readability**: Path aliases are more readable than deep relative paths
+2. **Maintainability**: Moving files doesn't break imports
+3. **Consistency**: All imports follow the same pattern
+4. **Clarity**: Makes it clear where code is coming from
+
+## Configuration
+
+Path aliases are configured in:
+- `tsconfig.json` - TypeScript path mapping
+- `astro.config.mjs` - Vite resolve aliases and SCSS preprocessor options

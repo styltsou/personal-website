@@ -7,10 +7,10 @@ import { useState, useEffect } from 'react';
 
 import ThemeToggle from './theme-toggle';
 
-import { apps } from '@/data/apps';
-import { useStore } from '../../store';
-import { formatDate, formatTime } from '../../utils/date-time';
-import { cn } from '../../utils/cn';
+import { apps } from '@/app-config';
+import { useStore } from '@/store';
+import { formatDate, formatTime } from '@/utils/date-time';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export default function MenuBar() {

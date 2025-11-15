@@ -4,7 +4,7 @@ This document explains how apps are configured, registered, and integrated into 
 
 ## Overview
 
-All apps are centrally registered in `src/data/apps.ts`. This file serves as the single source of truth for:
+All apps are centrally registered in `src/app-config.ts`. This file serves as the single source of truth for:
 - Available apps
 - App metadata
 - Desktop icon configuration
@@ -140,7 +140,7 @@ Apps with `pinned: true` appear in the menu bar:
    └── styles.module.scss
    ```
 
-2. **Register in `apps.ts`**:
+2. **Register in `app-config.ts`**:
    ```typescript
    import MyAppWindow, { MyAppIcon } from '../components/apps/my-app';
    
@@ -165,7 +165,7 @@ Apps with `pinned: true` appear in the menu bar:
 ## Window State Integration
 
 When a window is opened:
-1. App config is looked up by `id` in `apps.ts`
+1. App config is looked up by `id` in `app-config.ts`
 2. `WindowState` is created with the `config` reference
 3. Window component receives the config
 4. Content is loaded or component is rendered based on config type
@@ -176,7 +176,7 @@ When a window is opened:
 
 When windows are persisted to `sessionStorage`:
 - Component references are lost (can't serialize functions)
-- On restore, config is re-looked up from `apps.ts` by `id`
+- On restore, config is re-looked up from `app-config.ts` by `id`
 - Full config (including component) is restored
 
 This ensures component-based apps work correctly after page reload.
@@ -192,11 +192,11 @@ The system discovers apps in several ways:
 
 ## Key Files
 
-- `src/data/apps.ts` - Central app registry
+- `src/app-config.ts` - Central app registry
 - `src/types/app.ts` - AppConfig type definition
 - `src/types/window.ts` - Window-related types (ResizeConstraint, WindowState, etc.)
 - `src/components/desktop-icons/index.tsx` - Icon generation from apps
-- `src/stores/window-store.ts` - Uses apps config when opening windows
+- `src/store/window/slice.ts` - Uses apps config when opening windows
 
 ## Best Practices
 
@@ -204,5 +204,5 @@ The system discovers apps in several ways:
 2. **Consistent Naming**: Match component names to app IDs
 3. **Icon Components**: Export icon as named export from app component
 4. **Type Safety**: Use TypeScript types for app config
-5. **Single Source**: Keep all app definitions in `apps.ts`
+5. **Single Source**: Keep all app definitions in `app-config.ts`
 

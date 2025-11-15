@@ -12,7 +12,7 @@
 
 ### Core Structure and Data
 
-- ✅ Created `src/data/icons.ts` with initial icon configurations
+- ✅ Created icon configuration in `src/app-config.ts` (unified app configuration)
   - `cv.pdf` icon (id: 'cv', label: 'cv.pdf')
   - `Trash` icon (id: 'recycle-bin', label: 'Trash')
   - Icon interface: `{ id: string, label: string, icon: string | ReactNode, windowId?: string }`
@@ -24,7 +24,7 @@
 
 ### State Management
 
-- ✅ Created `src/stores/icon-store.ts`
+- ✅ Created `src/store/icon/slice.ts`
   - Zustand store managing icon positions (grid coordinates)
   - Selected icon ID state
   - Dragging icon ID and position tracking (for rendering at Desktop level)
@@ -33,7 +33,7 @@
 
 ### Grid System
 
-- ✅ Created `src/utils/icon-grid.ts`
+- ✅ Created `src/components/desktop-icons/utils.ts`
   - Constants: `GRID_CELL_SIZE = 100`, `GRID_PADDING = 20`, `ICON_WIDTH = 100`, `ICON_HEIGHT = 100`, `ICON_IMAGE_SIZE = 64`
   - Icons are rectangular (100x100px) to fit labels inside
   - Grid cell size matches icon container size exactly for perfect alignment
@@ -92,7 +92,7 @@
   - Handles click-outside to deselect icons
   - Ensures icons render behind windows (z-index < BASE_Z_INDEX)
   - Initializes icon positions with default grid layout
-  - Z-index: 900 (below windows' BASE_Z_INDEX of 1000)
+  - Z-index: 1 (below windows' BASE_Z_INDEX of 10)
 
 ### Persistence
 
@@ -160,7 +160,7 @@
 - **Icon container size**: 100x100px (rectangular to fit labels)
 - **Icon image size**: 64x64px (centered in container)
 - Grid calculated dynamically: `Math.floor((viewportWidth - padding * 2) / cellSize)`
-- Grid respects menu bar height (32px) via `MENU_BAR_HEIGHT` constant
+- Grid respects menu bar height (32px) via `MENU_BAR_HEIGHT` constant from `@/constants`
 - Snap positions are equal in size to icon containers for perfect alignment
 
 ### Z-Index Management
@@ -416,10 +416,10 @@ These features are planned but not critical for core functionality:
 
 ## 📚 References
 
-- Window management system (`src/stores/window-store.ts`)
+- Window management system (`src/store/window/slice.ts`)
 - Window drag implementation (`src/hooks/use-window-drag.ts`)
 - Window persistence (`src/hooks/use-window-persistence.ts`)
-- Grid calculation patterns (`src/utils/window-utils.ts`)
+- Grid calculation patterns (`src/components/desktop-icons/utils.ts`)
 
 ---
 

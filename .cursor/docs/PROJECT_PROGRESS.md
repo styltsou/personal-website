@@ -21,7 +21,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ Set up ESLint and Prettier configuration for Astro, React, and TypeScript
 - ✅ Created SCSS structure with CSS Modules (\_variables.scss, \_mixins.scss, \_base.scss, index.scss)
 - ✅ Created BaseLayout.astro with SEO meta tags, SCSS import, and View Transitions
-- ✅ Created apps.ts data file with app configurations (single source of truth)
+- ✅ Created app-config.ts file with app configurations (single source of truth)
   - Unified configuration for all apps (content-based and custom components)
   - Optional `path` field for content-based apps (omitted for custom component apps)
   - Icons co-located with their respective app components
@@ -184,7 +184,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### State Management Architecture
 
-#### Zustand Store (`window-store.ts`)
+#### Zustand Store (`store/window/slice.ts`)
 
 - ✅ **Centralized State**:
   - Window states array with position, size, z-index, and flags
@@ -219,7 +219,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 ### Positioning and Layout Features
 
-#### Window Utilities (`window-utils.ts`)
+#### Window Utilities (`components/window/utils/window-utils.ts`)
 
 - ✅ **Centered Positioning**:
   - Calculates centered position accounting for viewport size
@@ -238,10 +238,11 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 - ✅ **Maximized Window Calculations**:
   - Accounts for menu bar height (32px)
   - Calculates proper maximized size and position
-- ✅ **Viewport Constraints**:
-  - `constrainPositionToViewport()`: Keeps windows within viewport bounds
-  - `constrainWindowSize()`: Enforces minimum and maximum window sizes
+- ✅ **Viewport Constraints** (`components/window/utils/viewport-constraints.ts`):
+  - `constrainPositionToViewport()`: Keeps windows within viewport bounds (uses `WindowPosition` and `WindowSize` types)
+  - `constrainSizeToViewport()`: Enforces minimum and maximum window sizes
   - Menu bar height consideration (prevents windows above menu bar)
+  - **Note**: Uses canonical `WindowPosition` and `WindowSize` types from `@/types/window`
 - ✅ **Z-index Management**:
   - Simplified z-index system with smaller values (1-100)
   - Base z-index of 10 for windows, incrementing by 1 per focus
@@ -319,7 +320,7 @@ A personal portfolio website designed with a nostalgic 90s operating system aest
 
 #### App Configuration System
 
-- ✅ **Unified App Configuration** (`apps.ts`):
+- ✅ **Unified App Configuration** (`app-config.ts`):
   - Single source of truth for all app configurations
   - `AppConfig` interface with optional `path` field
   - Content-based apps: specify `path` (e.g., '/about', '/projects')
@@ -557,9 +558,13 @@ src/
 │   ├── resize-handles/
 │   ├── menu-bar/
 │   └── music-player/
-├── stores/           # Zustand stores (kebab-case naming)
-│   ├── window-store.ts
-│   └── icon-store.ts
+├── store/            # Zustand store (organized by domain)
+│   ├── window/
+│   │   ├── slice.ts
+│   │   └── types.ts
+│   └── icon/
+│       ├── slice.ts
+│       └── types.ts
 ├── hooks/            # Custom React hooks (kebab-case naming)
 │   ├── use-window-drag.ts
 │   ├── use-window-resize.ts
@@ -568,13 +573,13 @@ src/
 │   ├── use-url-sync.ts
 │   ├── use-icon-drag.ts
 │   └── use-icon-persistence.ts
-├── utils/            # Pure utility functions (kebab-case naming)
-│   ├── window-utils.ts
-│   ├── icon-grid.ts
-│   ├── viewport-constraints.ts
-│   └── date-time.ts
-├── data/             # Static data (kebab-case naming)
-│   └── apps.ts       # Single source of truth for app configuration
+├── utils/            # General-purpose utilities
+│   ├── cn.ts
+│   ├── date-time.ts
+│   ├── content-extractor.ts
+│   └── get-content-data.ts
+├── app-config.ts     # Single source of truth for app configuration
+├── constants.ts      # Application-wide constants
 │                      # - AppConfig interface
 │                      # - All apps (content-based and custom components)
 │                      # - Optional path field (only for content-based apps)
@@ -702,8 +707,11 @@ src/
 - ✅ **Kebab-Case Naming**: Migrated all files to kebab-case naming convention
   - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`, `window-controls.tsx`, `resize-handles.tsx`
   - Hooks: `use-window-drag.ts`, `use-window-resize.ts`, `use-window-persistence.ts`, `use-window-content.ts`, `use-url-sync.ts`
-  - Utils: `window-utils.ts`, `viewport-constraints.ts`, `date-time.ts`
-  - Stores: `window-store.ts`
+  - Utils: `cn.ts`, `date-time.ts` (general-purpose)
+  - Window utils: `components/window/utils/window-utils.ts`, `components/window/utils/viewport-constraints.ts`
+  - Icon utils: `components/desktop-icons/utils.ts`
+  - Types: All types in `types/` directory (`WindowPosition`, `WindowSize`, etc.)
+  - Store: `store/window/slice.ts`, `store/icon/slice.ts`
   - Follows modern React conventions and improves cross-platform compatibility
 - ✅ **Import Updates**: All import statements updated to reflect new kebab-case file names
 - ✅ **Cursor Rule Added**: Created `.cursor/rules/11-naming-conventions.mdc` to enforce kebab-case naming going forward

@@ -2,7 +2,8 @@
  * Window Slice Implementation
  */
 
-import { apps } from '../../data/apps';
+import { apps } from '@/app-config';
+import { BASE_Z_INDEX } from '@/constants';
 import {
   calculateCenteredPosition,
   calculateCascadedPosition,
@@ -10,9 +11,8 @@ import {
   calculateNextZIndex,
   getDefaultWindowSize,
   constrainWindowSize,
-  BASE_Z_INDEX,
-} from '../../utils/window-utils';
-import type { WindowState, ClosedWindowState, WindowPosition, WindowSize, SnapSide } from '../../types/window';
+} from '@/components/window/utils/window-utils';
+import type { WindowState, ClosedWindowState, WindowPosition, WindowSize, SnapSide } from '@/types/window';
 import type { WindowSlice } from './types';
 import type { Store } from '../index';
 

@@ -4,11 +4,11 @@
  */
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
-import { apps } from '@/data/apps';
-import DesktopIcon from '../desktop-icon';
+import { apps } from '@/app-config';
+import DesktopIcon from './desktop-icon';
 import { useStore } from '@/store';
-import { calculateGridDimensions, gridToPixel } from '@/utils/icon-grid';
-import { BASE_Z_INDEX } from '@/utils/window-utils';
+import { calculateGridDimensions, gridToPixel } from './utils';
+import { BASE_Z_INDEX } from '@/constants';
 import type { GridPosition, IconConfig } from '@/types/icon';
 
 /**

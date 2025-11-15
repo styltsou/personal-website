@@ -40,7 +40,7 @@ Icons use grid coordinates (gridX, gridY) rather than pixel coordinates:
 
 ### Icon Store
 
-The `icon-store.ts` manages icon state:
+The `store/icon/slice.ts` manages icon state:
 
 **State:**
 - `iconStates` - Array of icon positions (grid coordinates)
@@ -57,7 +57,7 @@ The `icon-store.ts` manages icon state:
 
 ### Icon Configuration
 
-Icons are generated from `apps.ts`:
+Icons are generated from `app-config.ts`:
 - Only apps with `desktopIcon` property appear as icons
 - Icon label defaults to app title if not specified
 - Icon can be a React component or image path
@@ -171,9 +171,9 @@ The `icon-grid.ts` file provides utility functions:
 
 ## Key Files
 
-- `src/stores/icon-store.ts` - Icon state management
+- `src/store/icon/slice.ts` - Icon state management
 - `src/components/desktop-icons/index.tsx` - Icon container component
 - `src/components/desktop-icon/index.tsx` - Individual icon component
 - `src/hooks/use-icon-drag.ts` - Icon dragging logic
-- `src/utils/icon-grid.ts` - Grid calculation utilities
+- `src/components/desktop-icons/utils.ts` - Grid calculation utilities
 

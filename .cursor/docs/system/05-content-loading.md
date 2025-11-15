@@ -312,7 +312,7 @@ For content-based windows to work, Astro pages should:
 - `src/hooks/use-window-content.ts` - Content loading hook (embedded + fetch)
 - `src/components/desktop/index.tsx` - Triggers content loading
 - `src/components/window/index.tsx` - Renders content
-- `src/stores/window-store.ts` - Stores content in window state
+- `src/store/window/slice.ts` - Stores content in window state
 - `src/components/content/*.astro` - Shared content components
 - `src/pages/index.astro` - Extracts and embeds content at build time
 - `src/utils/get-content-data.ts` - Utility for content extraction

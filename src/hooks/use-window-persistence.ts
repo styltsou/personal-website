@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import { useStore } from '../store';
 import type { WindowState, ClosedWindowState } from '../types/window';
-import { BASE_Z_INDEX } from '../utils/window-utils';
+import { BASE_Z_INDEX } from '../constants';
 
 interface PersistedState {
   windowStates: WindowState[];

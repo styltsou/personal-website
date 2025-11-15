@@ -2,7 +2,7 @@
  * Icon Slice Implementation
  */
 
-import type { IconPosition, IconState } from '../../types/icon';
+import type { IconPosition, IconState } from '@/types/icon';
 import type { IconSlice } from './types';
 import type { Store } from '../index';
 

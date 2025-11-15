@@ -13,7 +13,12 @@
       "@/stores/*": ["./src/stores/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/data/*": ["./src/data/*"],
-      "@/styles/*": ["./src/styles/*"]
+      "@/styles/*": ["./src/styles/*"],
+      "@/constants": ["./src/constants"],
+      "@/types/*": ["./src/types/*"],
+      "@/store": ["./src/store"],
+      "@/app-config": ["./src/app-config"],
+      "@/content/*": ["./src/content/*"]
     }
   }
 }

@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { apps } from '@/data/apps';
+import { apps } from '@/app-config';
 
 // Type for embedded content data
 declare global {

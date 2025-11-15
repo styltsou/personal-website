@@ -98,7 +98,7 @@ When debugging issues:
 - Grid calculated dynamically from viewport
 
 ### App System
-- All apps registered in `apps.ts`
+- All apps registered in `app-config.ts`
 - Two types: content-based (path) and component-based (component)
 - Desktop icons generated from app config
 - Window state includes full app config
@@ -117,7 +117,7 @@ When debugging issues:
 
 ## Architecture Principles
 
-1. **Single Source of Truth**: App config in `apps.ts`, state in stores
+1. **Single Source of Truth**: App config in `app-config.ts`, state in store
 2. **Separation of Concerns**: UI, state, and logic are separate
 3. **Type Safety**: TypeScript throughout
 4. **Performance**: Selective subscriptions, memoization, caching

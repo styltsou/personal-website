@@ -8,7 +8,7 @@ import type {
   WindowPosition,
   WindowSize,
   SnapSide,
-} from '../../types/window';
+} from '@/types/window';
 
 export interface WindowSlice {
   // State

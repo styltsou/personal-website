@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useStore } from '../../store';
+import { useStore } from '@/store';
 import styles from './styles.module.scss';
 
 export default function LoadingScreen() {

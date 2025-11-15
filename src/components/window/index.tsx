@@ -6,14 +6,16 @@
 
 import { useEffect, useRef } from 'react';
 import React from 'react';
-import { MENU_BAR_HEIGHT, getSnappedPreview } from '../../utils/window-utils';
-import { useWindowDrag } from '../../hooks/use-window-drag';
-import { useWindowResize } from '../../hooks/use-window-resize';
-import { useStore } from '../../store';
-import type { ResizeConstraint } from '../../types/window';
-import { cn } from '../../utils/cn';
-import TitleBar from '../title-bar';
-import ResizeHandles from '../resize-handles';
+import { MENU_BAR_HEIGHT } from '@/constants';
+import { getSnappedPreview } from './utils/window-utils';
+import { useWindowDrag } from '@/hooks/use-window-drag';
+import { useWindowResize } from '@/hooks/use-window-resize';
+import { useStore } from '@/store';
+import type { ResizeConstraint } from '@/types/window';
+import { cn } from '@/utils/cn';
+import TitleBar from './title-bar';
+import ResizeHandles from './resize-handles';
+import Loading from '@/components/ui/loading';
 import styles from './styles.module.scss';
 
 export interface WindowProps {
@@ -252,18 +254,7 @@ export default function Window({ id, isLoading }: WindowProps) {
 
             // Show loading message while loading
             if (isWindowLoading) {
-              return (
-                <div className={styles.loadingContent}>
-                  <p className={styles.loadingText}>
-                    Loading
-                    <span className={styles.loadingDots}>
-                      <span>.</span>
-                      <span>.</span>
-                      <span>.</span>
-                    </span>
-                  </p>
-                </div>
-              );
+              return <Loading />;
             }
 
             // Show no content message if not loading

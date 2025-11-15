@@ -55,7 +55,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ **Window System Integration**
   - ✅ Added to `src/data/windows.ts` with config
   - ✅ Created `MusicPlayerIcon` in `src/data/icon-components.tsx`
-  - ✅ Added icon config to `src/data/icons.ts`
+  - ✅ Added icon config to `src/app-config.ts`
   - ✅ Updated `src/components/desktop/index.tsx` to render MusicPlayer
 
 ### Styling

@@ -6,6 +6,7 @@
 export { WikipediaIcon } from './icon';
 
 import { useState } from 'react';
+import Loading from '@/components/ui/loading';
 import styles from './styles.module.scss';
 
 export default function WikipediaWindow() {
@@ -19,8 +20,7 @@ export default function WikipediaWindow() {
     <div className={styles.container}>
       {isLoading && (
         <div className={styles.loading}>
-          <div className={styles.spinner} />
-          <p>Loading Wikipedia...</p>
+          <Loading />
         </div>
       )}
       <iframe

@@ -27,12 +27,17 @@ This document provides an overview of the project's file and folder structure, e
 **Core Desktop Components:**
 - `desktop/` - Main desktop container component
 - `window/` - Window component (draggable, resizable)
-- `title-bar/` - Window title bar with controls
+  - `title-bar/` - Window title bar with controls
+    - `window-controls/` - Minimize, maximize, close buttons
+  - `resize-handles/` - Window resize handles
+  - `utils/` - Window-specific utilities
+    - `window-utils.ts` - Window calculations and positioning
+    - `viewport-constraints.ts` - Viewport constraint calculations
 - `menu-bar/` - Top system menu bar
 - `desktop-icons/` - Container for all desktop icons
-- `desktop-icon/` - Individual desktop icon component
-- `dragging-icon/` - Ghost icon shown while dragging
-- `resize-handles/` - Window resize handles
+  - `desktop-icon/` - Individual desktop icon component
+  - `dragging-icon/` - Ghost icon shown while dragging
+  - `utils.ts` - Icon grid utilities (single file, no folder)
 - `loading-progress-bar/` - Loading indicator for content windows
 
 **App Components (`src/components/apps/`):**
@@ -49,9 +54,10 @@ Each app directory typically contains:
 - `styles.module.scss` - Component-specific styles
 - Additional files as needed (hooks, utils, etc.)
 
-### Data (`src/data/`)
+### Configuration (`src/`)
 
-- `apps.ts` - Central app configuration registry. Defines all available apps, their metadata, and whether they appear as desktop icons.
+- `app-config.ts` - Central app configuration registry. Defines all available apps, their metadata, and whether they appear as desktop icons.
+- `constants.ts` - Application-wide constants (MENU_BAR_HEIGHT, z-index values, etc.)
 
 ### Types (`src/types/`)
 
@@ -59,14 +65,20 @@ Centralized type definitions organized by domain:
 
 - `app.ts` - App configuration types (`AppConfig`)
 - `window.ts` - Window-related types (`WindowState`, `WindowPosition`, `WindowSize`, `ResizeConstraint`, `SnapSide`, `ClosedWindowState`)
+  - **Note**: `WindowPosition` and `WindowSize` are the canonical types used throughout the codebase. All window-related utilities and hooks use these types from `@/types/window` (no duplicate `Position`/`Size` types exist).
 - `icon.ts` - Icon-related types (`IconState`, `IconPosition`, `IconConfig`, `GridPosition`, `PixelPosition`, `GridDimensions`)
 
-### Stores (`src/stores/`)
+### Store (`src/store/`)
 
 State management using Zustand:
 
-- `window-store.ts` - Window state management (open/closed, position, size, z-index, etc.)
-- `icon-store.ts` - Icon state management (positions, selection, dragging state)
+- `window/` - Window state management
+  - `slice.ts` - Window state slice (open/closed, position, size, z-index, etc.)
+  - `types.ts` - Window store types
+- `icon/` - Icon state management
+  - `slice.ts` - Icon state slice (positions, selection, dragging state)
+  - `types.ts` - Icon store types
+- `index.ts` - Store root (combines all slices)
 
 ### Hooks (`src/hooks/`)
 
@@ -82,13 +94,16 @@ Custom React hooks for specific functionality:
 
 ### Utils (`src/utils/`)
 
-Utility functions:
+General-purpose utility functions:
 
-- `window-utils.ts` - Window calculations (centering, cascading, z-index, constraints)
-- `icon-grid.ts` - Grid system for icon positioning (snap-to-grid, collision detection)
 - `cn.ts` - Class name utility (similar to clsx)
 - `date-time.ts` - Date/time formatting utilities
-- `viewport-constraints.ts` - Viewport constraint calculations
+- `content-extractor.ts` - Content extraction utilities for window content
+- `get-content-data.ts` - Content data utilities for build-time content embedding
+
+**Note**: Feature-specific utilities are colocated with their components:
+- Window utilities: `src/components/window/utils/`
+- Icon utilities: `src/components/desktop-icons/utils.ts`
 
 ### Styles (`src/styles/`)
 
@@ -125,7 +140,7 @@ Content configuration:
 
 ## Key Files
 
-### `src/data/apps.ts`
+### `src/app-config.ts`
 Central registry of all apps. Defines:
 - App IDs, titles, paths
 - Custom React components
@@ -135,6 +150,12 @@ Central registry of all apps. Defines:
 
 **Note**: Type definitions are in `src/types/app.ts` and `src/types/window.ts`, not in this file.
 
+### `src/constants.ts`
+Application-wide constants:
+- Layout constants (MENU_BAR_HEIGHT)
+- Z-index constants (BASE_Z_INDEX, MAX_WINDOW_Z_INDEX, etc.)
+- Other shared constants used across multiple modules
+
 ### `src/components/desktop/index.tsx`
 Main React island component. Orchestrates:
 - Window rendering
@@ -143,8 +164,8 @@ Main React island component. Orchestrates:
 - URL synchronization
 - Content loading
 
-### `src/stores/window-store.ts`
-Zustand store managing all window state:
+### `src/store/window/slice.ts`
+Zustand store slice managing all window state:
 - Open/closed windows
 - Positions and sizes
 - Z-index management
@@ -152,8 +173,8 @@ Zustand store managing all window state:
 - Window snapping
 - Persistence integration
 
-### `src/stores/icon-store.ts`
-Zustand store managing icon state:
+### `src/store/icon/slice.ts`
+Zustand store slice managing icon state:
 - Icon positions (grid coordinates)
 - Selection state
 - Dragging state
@@ -175,9 +196,12 @@ Zustand store managing icon state:
 ## Design Principles
 
 1. **Component-based**: Each feature is a self-contained component
-2. **State management**: Zustand stores for global state
-3. **Custom hooks**: Reusable logic extracted into hooks
-4. **Utility functions**: Pure functions for calculations
-5. **Type safety**: TypeScript throughout
-6. **Separation of concerns**: Clear boundaries between UI, state, and logic
+2. **Hierarchical organization**: Component structure reflects component relationships (e.g., window/title-bar/window-controls)
+3. **Colocation**: Feature-specific utilities are colocated with their components
+4. **State management**: Zustand stores for global state
+5. **Custom hooks**: Reusable logic extracted into hooks
+6. **Utility functions**: Pure functions for calculations
+7. **Type safety**: TypeScript throughout
+8. **Separation of concerns**: Clear boundaries between UI, state, and logic
+9. **Path aliases**: Deep relative imports (`../../`) are avoided in favor of path aliases (`@/`)
 

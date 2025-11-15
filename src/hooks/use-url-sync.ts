@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
-import { apps } from '@/data/apps';
+import { apps } from '@/app-config';
 import { useStore } from '../store';
 
 export function useURLSync() {

@@ -4,22 +4,19 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { constrainPositionToViewport } from '../utils/viewport-constraints';
-import {
-  detectSnapSideFromMouse,
-  MENU_BAR_HEIGHT,
-} from '../utils/window-utils';
-import type { Position, Size } from '../utils/viewport-constraints';
-import type { SnapSide } from '../types/window';
+import { constrainPositionToViewport } from '@/components/window/utils/viewport-constraints';
+import { MENU_BAR_HEIGHT } from '@/constants';
+import { detectSnapSideFromMouse } from '@/components/window/utils/window-utils';
+import type { WindowPosition, WindowSize, SnapSide } from '@/types/window';
 
 export interface UseWindowDragOptions {
-  initialPosition: Position;
-  initialSize: Size;
+  initialPosition: WindowPosition;
+  initialSize: WindowSize;
   isMaximized: boolean;
   snapSide: SnapSide;
   onFocus?: () => void;
-  onPositionChange?: (position: Position) => void;
-  onSizeChange?: (size: Size) => void;
+  onPositionChange?: (position: WindowPosition) => void;
+  onSizeChange?: (size: WindowSize) => void;
   onSnap?: (snapSide: SnapSide) => void;
   onUnsnap?: () => void;
   onMaximize?: () => void;
@@ -232,7 +229,7 @@ export function useWindowDrag({
         const cursorRatioInTitleBar = mouseOffsetX / viewportWidth;
 
         // Position window so cursor stays at same relative position in title bar
-        const newPosition: Position = {
+        const newPosition: WindowPosition = {
           x: e.clientX - cursorRatioInTitleBar * newSize.width,
           y:
             dragStartPosRef.current.y +
@@ -293,7 +290,7 @@ export function useWindowDrag({
 
           // Calculate new position based on which edge to resize from
           // Use the cursor's CURRENT position relative to the window's CURRENT position during drag
-          let newPosition: Position;
+          let newPosition: WindowPosition;
 
           // Calculate the window's current position during dragging
           const deltaX = e.clientX - dragMouseStartRef.current.x;
@@ -473,7 +470,7 @@ export function useWindowDrag({
         const cursorRatioInTitleBar = mouseOffsetX / viewportWidth;
 
         // Position window so cursor stays at same relative position in title bar
-        const newPosition: Position = {
+        const newPosition: WindowPosition = {
           x: e.clientX - cursorRatioInTitleBar * newSize.width,
           y: constrainedFinalPosition.y,
         };
@@ -531,7 +528,7 @@ export function useWindowDrag({
 
         // Position the window so the cursor is at the same relative position in the new window
         // Formula: windowX = mouseX - (cursorRatio * newWindowWidth)
-        const newPosition: Position = {
+        const newPosition: WindowPosition = {
           x: e.clientX - cursorRatioInTitleBar * newSize.width,
           y: constrainedFinalPosition.y,
         };

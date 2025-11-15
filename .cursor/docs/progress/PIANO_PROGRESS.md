@@ -78,7 +78,7 @@ A fully functional virtual piano component that showcases Web Audio API, MIDI AP
 - ✅ **Window System Integration**
   - ✅ Added to `src/data/windows.ts` with config
   - ✅ Created `PianoIcon` in `src/data/icon-components.tsx`
-  - ✅ Added icon config to `src/data/icons.ts`
+  - ✅ Added icon config to `src/app-config.ts`
   - ✅ Updated `src/components/desktop/index.tsx` to render PianoWindow
   - ✅ Proper window state management (skip content loading for piano window)
 

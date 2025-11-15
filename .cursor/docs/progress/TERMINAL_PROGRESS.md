@@ -187,7 +187,7 @@
 ### Dependencies
 - React hooks: `useState`, `useRef`, `useEffect`, `useCallback`
 - Zustand store: `useWindowStore` for window management
-- Icon config: `icons` from `src/data/icons.ts`
+- Icon config: `apps` from `src/app-config.ts`
 
 ### Key Functions
 - `executeCommand()` - Main command execution handler
@@ -210,8 +210,8 @@
 
 - Terminal component: `src/components/terminal-window/index.tsx`
 - Styles: `src/components/terminal-window/styles.module.scss`
-- Icon config: `src/data/icons.ts`
-- Window store: `src/stores/window-store.ts`
+- Icon config: `src/app-config.ts`
+- Window store: `src/store/window/slice.ts`
 
 ---
 

@@ -21,28 +21,33 @@ The project follows modern React conventions with kebab-case naming for all file
 │   │   │   ├── wikipedia/
 │   │   │   └── cv/
 │   │   ├── desktop/
-│   │   ├── desktop-icons/
-│   │   ├── desktop-icon/
-│   │   ├── window/
-│   │   ├── title-bar/
-│   │   ├── window-controls/
-│   │   ├── resize-handles/
+│   │   ├── desktop-icons/  # Desktop icon system (hierarchical)
+│   │   │   ├── desktop-icon/
+│   │   │   ├── dragging-icon/
+│   │   │   └── utils.ts
+│   │   ├── window/         # Window system (hierarchical)
+│   │   │   ├── title-bar/
+│   │   │   │   └── window-controls/
+│   │   │   ├── resize-handles/
+│   │   │   └── utils/
 │   │   ├── menu-bar/
 │   │   └── music-player/
-│   ├── stores/           # Zustand stores (kebab-case naming)
-│   │   └── window-store.ts
+│   ├── store/            # Zustand store (kebab-case naming)
+│   │   ├── window/
+│   │   └── icon/
 │   ├── hooks/            # Custom React hooks (kebab-case naming)
 │   │   ├── use-window-drag.ts
 │   │   ├── use-window-resize.ts
 │   │   ├── use-window-persistence.ts
 │   │   ├── use-window-content.ts
 │   │   └── use-url-sync.ts
-│   ├── utils/            # Pure utility functions (kebab-case naming)
-│   │   ├── window-utils.ts
-│   │   ├── viewport-constraints.ts
-│   │   └── date-time.ts
-│   ├── data/             # Static data (kebab-case naming)
-│   │   └── apps.ts       # Single source of truth for app configuration
+│   ├── utils/            # General-purpose utilities
+│   │   ├── cn.ts
+│   │   ├── date-time.ts
+│   │   ├── content-extractor.ts
+│   │   └── get-content-data.ts
+│   ├── app-config.ts     # Single source of truth for app configuration
+│   ├── constants.ts      # Application-wide constants
 │   ├── styles/           # SCSS files (CSS Modules)
 │   │   ├── index.scss
 │   │   ├── _variables.scss
@@ -68,9 +73,10 @@ All files use **kebab-case** naming convention:
 - Components: `desktop.tsx`, `window.tsx`, `title-bar.tsx`
 - Apps: `apps/terminal/`, `apps/piano/` (each app has its own folder with `index.tsx` and `icon.tsx`)
 - Hooks: `use-window-drag.ts`, `use-url-sync.ts`
-- Utils: `window-utils.ts`, `viewport-constraints.ts`
-- Stores: `window-store.ts`
-- Data: `apps.ts` (single configuration file for all apps)
+- Utils: `cn.ts`, `date-time.ts` (general-purpose in `utils/`, feature-specific colocated)
+- Store: `store/window/`, `store/icon/` (organized by domain)
+- Config: `app-config.ts` (single configuration file for all apps)
+- Constants: `constants.ts` (application-wide constants)
 
 See `.cursor/rules/11-naming-conventions.mdc` for complete naming guidelines.
 

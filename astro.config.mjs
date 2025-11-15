@@ -26,6 +26,21 @@ export default defineConfig({
         '@/utils': resolve(root, './src/utils'),
         '@/data': resolve(root, './src/data'),
         '@/styles': resolve(root, './src/styles'),
+        '@/constants': resolve(root, './src/constants'),
+        '@/types': resolve(root, './src/types'),
+        '@/store': resolve(root, './src/store'),
+        '@/app-config': resolve(root, './src/app-config'),
+        '@/content': resolve(root, './src/content'),
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // Enable path aliases in SCSS
+          // Usage: @use '@/styles/variables' as *;
+          // The alias '@' is resolved through Vite's resolve.alias
+          api: 'modern-compiler', // Use modern Sass compiler
+        },
       },
     },
   },

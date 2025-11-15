@@ -3,7 +3,7 @@
  * This enables SEO-friendly content that's available before React hydrates
  */
 
-import { apps } from '@/data/apps';
+import { apps } from '@/app-config';
 import type { AppConfig } from '@/types/app';
 
 /**

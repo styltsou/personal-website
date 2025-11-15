@@ -4,7 +4,7 @@
  */
 
 import { render } from 'astro/runtime/server/index.js';
-import { apps } from '@/data/apps';
+import { apps } from '@/app-config';
 import type { AppConfig } from '@/types/app';
 import { extractMainContent } from './content-extractor';
 

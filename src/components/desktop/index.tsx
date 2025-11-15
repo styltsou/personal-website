@@ -8,15 +8,15 @@ import { useEffect, useRef } from 'react';
 import Window from '../window';
 import MenuBar from '../menu-bar';
 import DesktopIcons from '../desktop-icons';
-import DraggingIcon from '../dragging-icon';
+import DraggingIcon from '../desktop-icons/dragging-icon';
 import LoadingScreen from '../loading-screen';
-import { MusicPlayerProvider, useMusicPlayer } from '../music-player';
-import { useStore } from '../../store';
-import { useWindowContent } from '../../hooks/use-window-content';
-import { useWindowPersistence } from '../../hooks/use-window-persistence';
-import { useIconPersistence } from '../../hooks/use-icon-persistence';
-import { useURLSync } from '../../hooks/use-url-sync';
-import { cn } from '../../utils/cn';
+import { MusicPlayerProvider, useMusicPlayer } from '../apps/music-player';
+import { useStore } from '@/store';
+import { useWindowContent } from '@/hooks/use-window-content';
+import { useWindowPersistence } from '@/hooks/use-window-persistence';
+import { useIconPersistence } from '@/hooks/use-icon-persistence';
+import { useURLSync } from '@/hooks/use-url-sync';
+import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export default function Desktop() {

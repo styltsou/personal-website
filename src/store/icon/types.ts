@@ -2,7 +2,7 @@
  * Icon Slice Types
  */
 
-import type { IconPosition, IconState } from '../../types/icon';
+import type { IconPosition, IconState } from '@/types/icon';
 
 export interface IconSlice {
   // State
