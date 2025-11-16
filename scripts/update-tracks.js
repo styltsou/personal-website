@@ -180,15 +180,17 @@ function normalizeText(str) {
 }
 
 function evaluateTrackNameMatch(title, trackName) {
-  if (title.includes(trackName)) {
-    return { match: true, score: 1000 };
+  // Exact match (case-insensitive) - highest priority
+  if (title.toLowerCase().includes(trackName.toLowerCase())) {
+    return { match: true, score: 1000, exact: true };
   }
 
   const normalizedTitle = normalizeText(title);
   const normalizedTrackName = normalizeText(trackName);
 
+  // Normalized exact match
   if (normalizedTitle.includes(normalizedTrackName)) {
-    return { match: true, score: 950 };
+    return { match: true, score: 950, exact: true };
   }
 
   const trackWords = normalizedTrackName.split(/\s+/);
@@ -196,10 +198,24 @@ function evaluateTrackNameMatch(title, trackName) {
   // This handles cases like "I Am" where "I" is dropped but "Am" is kept
   const significantWords = trackWords.filter((w) => w.length > 1);
   if (significantWords.length === 0) {
-    return { match: false, score: 0 };
+    return { match: false, score: 0, exact: false };
   }
 
   const titleWords = normalizedTitle.split(/\s+/);
+
+  // For single-word track names, require exact word match (not substring)
+  // This prevents "Paris" from matching "A Change Of Heart" or "Paris" in "Reparations"
+  if (significantWords.length === 1) {
+    const trackWord = significantWords[0];
+    const exactWordMatch = titleWords.some(
+      (titleWord) => titleWord === trackWord
+    );
+    if (exactWordMatch) {
+      return { match: true, score: 900, exact: true };
+    }
+    // For single words, if it's not an exact match, it's likely a different song
+    return { match: false, score: 0, exact: false };
+  }
 
   // Check if words appear in order (allowing for extra words in between)
   let trackWordIndex = 0;
@@ -208,21 +224,41 @@ function evaluateTrackNameMatch(title, trackName) {
   for (const titleWord of titleWords) {
     if (trackWordIndex < significantWords.length) {
       const trackWord = significantWords[trackWordIndex];
-      if (titleWord.includes(trackWord) || trackWord.includes(titleWord)) {
+      // For multi-word tracks, allow substring matching but prefer exact matches
+      if (titleWord === trackWord) {
+        // Exact word match - prefer this
         matchedInOrder++;
         trackWordIndex++;
+      } else if (titleWord.includes(trackWord) || trackWord.includes(titleWord)) {
+        // Substring match - only count if track word is at least 4 chars
+        // This prevents "of" matching "off" or short words causing false matches
+        if (trackWord.length >= 4 || titleWord.length <= trackWord.length + 2) {
+          matchedInOrder++;
+          trackWordIndex++;
+        }
       }
     }
   }
 
   const matchRatio = matchedInOrder / significantWords.length;
+  // Require ALL words to match for short track names (1-3 words)
+  // For longer names, require at least 60% match
   const minMatchRatio = significantWords.length <= 3 ? 1.0 : 0.6;
 
   if (matchRatio >= minMatchRatio) {
-    return { match: true, score: 800 + Math.floor(matchRatio * 150) };
+    // Prefer exact matches - give bonus if all words matched exactly
+    const exactMatches = titleWords.filter((tw) =>
+      significantWords.some((sw) => tw === sw)
+    ).length;
+    const exactBonus = exactMatches === significantWords.length ? 50 : 0;
+    return {
+      match: true,
+      score: 800 + Math.floor(matchRatio * 150) + exactBonus,
+      exact: matchRatio === 1.0,
+    };
   }
 
-  return { match: false, score: 0 };
+  return { match: false, score: 0, exact: false };
 }
 
 function isArtistChannel(channel, artistNameLower) {
@@ -342,22 +378,50 @@ function calculateVideoScore(video, trackNameLower, artistNameLower) {
   let score = 0;
 
   const trackNameMatch = evaluateTrackNameMatch(title, trackNameLower);
-  score += trackNameMatch.match ? trackNameMatch.score : -500;
+  
+  // CRITICAL: Track name match is mandatory - heavily penalize if no match
+  if (!trackNameMatch.match) {
+    // If track name doesn't match at all, this is likely a different song
+    // Apply heavy penalty that can't be overcome by artist bonuses
+    score -= 2000;
+  } else {
+    // Track name matches - apply base score
+    score += trackNameMatch.score;
+    
+    // Bonus for exact matches
+    if (trackNameMatch.exact) {
+      score += 200;
+    }
+  }
 
   const channelMatchesArtist = isArtistChannel(channel, artistNameLower);
-  if (channelMatchesArtist) score += 800;
-  if (title.includes(artistNameLower)) score += 400;
+  
+  // Artist bonuses only apply if track name matches
+  // This prevents wrong songs from scoring high just because they're from the same artist
+  if (trackNameMatch.match) {
+    if (channelMatchesArtist) score += 800;
+    if (title.includes(artistNameLower)) score += 400;
+  } else {
+    // Even if artist matches, wrong song should be heavily penalized
+    // Only give small bonus to show it's at least the right artist
+    if (channelMatchesArtist) score += 100;
+    if (title.includes(artistNameLower)) score += 50;
+  }
 
   const { isLive, isAcoustic, isAlternative } = detectVideoVersionType(
     title,
     trackNameLower
   );
-  if (isLive) score += channelMatchesArtist ? -500 : -300;
-  if (isAcoustic) score += channelMatchesArtist ? -400 : -250;
-  if (isAlternative && !isLive && !isAcoustic) score -= 100;
+  
+  // Version penalties only apply if track name matches
+  if (trackNameMatch.match) {
+    if (isLive) score += channelMatchesArtist ? -500 : -300;
+    if (isAcoustic) score += channelMatchesArtist ? -400 : -250;
+    if (isAlternative && !isLive && !isAcoustic) score -= 100;
 
-  if (!isLive && !isAcoustic && !isAlternative) {
-    score += calculateOfficialContentBonus(title, channelMatchesArtist);
+    if (!isLive && !isAcoustic && !isAlternative) {
+      score += calculateOfficialContentBonus(title, channelMatchesArtist);
+    }
   }
 
   score += calculateContentPenalty(title);
