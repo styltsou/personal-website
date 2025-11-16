@@ -5,9 +5,9 @@
 .terminal {
   height: 100%;
   width: 100%;
-  padding: 1rem;
+  padding: 1.6rem; /* 16px - was 1rem (16px) */
   font-family: monospace;
-  font-size: 1.25rem; // Larger text for better readability
+  font-size: 2rem; /* 20px - was 1.25rem (20px) */ // Larger text for better readability
   line-height: 1.6;
   background-color: #ffffff; // White background for light theme
   color: #000000; // Black text for light theme
@@ -23,7 +23,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem; /* 8px - was 0.5rem (8px) */
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -92,7 +92,7 @@
 .inputForm {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.4rem; /* 4px - was 0.25rem (4px) */
   flex-shrink: 0;
 }
 
@@ -117,7 +117,7 @@
 
 .cursor {
   display: inline-block;
-  height: 1.25rem; // Match line height
+  height: 2rem; /* 20px - was 1.25rem (20px) */ // Match line height
   width: 0.6em; // Width of one character (monospace)
   margin-left: 0.05em;
   animation: pulse 1s ease-in-out infinite;

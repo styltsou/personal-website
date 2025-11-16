@@ -153,4 +153,3 @@ function updateWindowPosition(id: string, position: WindowPosition) {
   }));
 }
 ```
-

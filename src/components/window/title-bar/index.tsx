@@ -60,7 +60,7 @@ export default function TitleBar({
       role="button"
       aria-label={`${title} window title bar`}
     >
-      <span id={`window-title-${id}`} className="titlebar-text">
+      <span id={`window-title-${id}`} className={styles.titleBarText}>
         {title}
       </span>
       <WindowControls

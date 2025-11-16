@@ -13,6 +13,7 @@ import {
   ICON_IMAGE_SIZE,
 } from '@/components/desktop-icons/utils';
 import { cn } from '@/utils/cn';
+import iconStyles from '../desktop-icon/styles.module.scss';
 import styles from './styles.module.scss';
 
 export default function DraggingIcon() {
@@ -41,7 +42,7 @@ export default function DraggingIcon() {
         <img
           src={iconConfig.icon}
           alt={iconConfig.label}
-          className="desktop-icon-image"
+          className={iconStyles.desktopIconImage}
           width={ICON_IMAGE_SIZE}
           height={ICON_IMAGE_SIZE}
         />
@@ -50,7 +51,7 @@ export default function DraggingIcon() {
       // Function that returns ReactNode (SVG component)
       const IconComponent = iconConfig.icon;
       return (
-        <div className="desktop-icon-image">
+        <div className={iconStyles.desktopIconImage}>
           <IconComponent />
         </div>
       );
@@ -61,7 +62,8 @@ export default function DraggingIcon() {
     <div
       className={cn(
         'desktop-icon',
-        'desktop-icon--dragging',
+        iconStyles.desktopIcon,
+        iconStyles.desktopIconDragging,
         styles.draggingIcon
       )}
       style={{
@@ -72,7 +74,7 @@ export default function DraggingIcon() {
       }}
     >
       {renderIcon()}
-      <div className="desktop-icon-label">{iconConfig.label}</div>
+      <div className={iconStyles.desktopIconLabel}>{iconConfig.label}</div>
     </div>
   );
 }

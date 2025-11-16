@@ -2,10 +2,31 @@
  * Desktop Component Styles
  */
 
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
 .desktop {
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      var(--desktop-pattern) 2px,
+      var(--desktop-pattern) 4px
+    );
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 32px; /* Space for menu bar */
   position: relative;
   height: 100vh;
-  width: 100%;
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.2s ease-in;
@@ -23,7 +44,7 @@
 }
 
 .content {
-  padding: 1.5rem; // Add padding for HTML content windows
+  padding: 2.4rem; /* 24px - was 1.5rem (24px) */ // Add padding for HTML content windows
   height: 100%;
 }
 

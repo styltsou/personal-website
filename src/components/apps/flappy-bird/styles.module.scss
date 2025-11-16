@@ -156,7 +156,7 @@
   top: 20px;
   left: 50%; // Centered horizontally
   transform: translateX(-50%);
-  font-size: 2rem;
+  font-size: 3.2rem; /* 32px - was 2rem (32px) */
   font-weight: bold;
   color: #ffffff; // White
   text-shadow: 
@@ -190,23 +190,23 @@
 
 .startText,
 .gameOverText {
-  font-size: 2.5rem;
+  font-size: 4rem; /* 40px - was 2.5rem (40px) */
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 1.6rem; /* 16px - was 1rem (16px) */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   font-family: monospace;
 }
 
 .gameOverScore {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 2.4rem; /* 24px - was 1.5rem (24px) */
+  margin-bottom: 1.6rem; /* 16px - was 1rem (16px) */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   font-family: monospace;
 }
 
 .startHint,
 .gameOverHint {
-  font-size: 1rem;
+  font-size: 1.6rem; /* 16px - was 1rem (16px) */
   opacity: 0.9;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   font-family: monospace;

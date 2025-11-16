@@ -1,9 +1,4 @@
-/**
- * Main stylesheet
- * Imports all SCSS partials
- */
-
+@use './base';
 @use './variables' as *;
 @use './mixins' as *;
-@use './base';
-
+@use './utilities';

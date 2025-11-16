@@ -229,13 +229,7 @@ export default function Window({ id, isLoading }: WindowProps) {
           onClose={() => closeWindow(id)}
         />
         {/* Window Content */}
-        <div
-          className={cn(
-            'window-content',
-            styles.content,
-            hideOverflow && styles.noOverflow
-          )}
-        >
+        <div className={cn(styles.content, hideOverflow && styles.noOverflow)}>
           {(() => {
             // Try to get custom component from config first
             if (windowState.config.component) {

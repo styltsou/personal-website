@@ -1,0 +1,40 @@
+/**
+ * Button Component Styles
+ */
+
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.button {
+  @include button;
+  min-width: 60px;
+  text-align: center;
+  border: none;
+  font-family: inherit;
+}
+
+.variantDefault {
+  // Default variant uses the base button mixin
+}
+
+.variantInset {
+  background-color: var(--button-bg);
+  @include inset-3d;
+  border-radius: 3px;
+}
+
+.sizeSmall {
+  padding: 4px 8px;
+  font-size: 11px;
+  min-width: auto;
+}
+
+.sizeMedium {
+  // Default size - padding and font-size from mixin
+}
+
+.sizeLarge {
+  padding: 8px 16px;
+  font-size: 15px;
+}
+

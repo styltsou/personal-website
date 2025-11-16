@@ -95,4 +95,3 @@ set((state) => ({
 2. **Memoize derived values**: Use `useMemo` for computed values
 3. **Stable action references**: Actions don't change, safe for dependencies
 4. **Avoid unnecessary re-renders**: Use React.memo when appropriate
-

@@ -5,6 +5,8 @@
 
 import { useStore } from '@/store';
 import type { ResizeConstraint } from '@/types/window';
+import { cn } from '@/utils/cn';
+import styles from './styles.module.scss';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
@@ -44,22 +46,22 @@ export default function ResizeHandles({
       {showCornerHandles && (
         <>
           <div
-            className="resize-handle resize-handle-nw"
+            className={cn(styles.resizeHandle, styles.resizeHandleNw)}
             onMouseDown={(e) => onResizeStart(e, 'nw')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
           <div
-            className="resize-handle resize-handle-ne"
+            className={cn(styles.resizeHandle, styles.resizeHandleNe)}
             onMouseDown={(e) => onResizeStart(e, 'ne')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
-            className="resize-handle resize-handle-sw"
+            className={cn(styles.resizeHandle, styles.resizeHandleSw)}
             onMouseDown={(e) => onResizeStart(e, 'sw')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
-            className="resize-handle resize-handle-se"
+            className={cn(styles.resizeHandle, styles.resizeHandleSe)}
             onMouseDown={(e) => onResizeStart(e, 'se')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
@@ -69,22 +71,22 @@ export default function ResizeHandles({
       {showEdgeHandles && (
         <>
           <div
-            className="resize-handle resize-handle-n"
+            className={cn(styles.resizeHandle, styles.resizeHandleN)}
             onMouseDown={(e) => onResizeStart(e, 'n')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
-            className="resize-handle resize-handle-s"
+            className={cn(styles.resizeHandle, styles.resizeHandleS)}
             onMouseDown={(e) => onResizeStart(e, 's')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
-            className="resize-handle resize-handle-w"
+            className={cn(styles.resizeHandle, styles.resizeHandleW)}
             onMouseDown={(e) => onResizeStart(e, 'w')}
             style={{ cursor: getCursor('ew-resize') }}
           />
           <div
-            className="resize-handle resize-handle-e"
+            className={cn(styles.resizeHandle, styles.resizeHandleE)}
             onMouseDown={(e) => onResizeStart(e, 'e')}
             style={{ cursor: getCursor('ew-resize') }}
           />

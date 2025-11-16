@@ -1,5 +1,4 @@
 /**
- * Viewport constraint utilities
  * Helper functions for constraining window positions and sizes to viewport
  */
 

@@ -1,13 +1,42 @@
 /**
  * Title Bar Component Styles
- * Note: Most styles are in global base styles (retro-titlebar, retro-titlebar-text)
  */
 
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
 .titleBar {
+  background-color: var(--accent);
+  color: #2a2a2a; /* Dark text for good contrast on accent background in both themes */
+  border-radius: 4px 4px 0 0;
+  padding: 8px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  box-shadow: 0 1px 2px var(--titlebar-shadow);
+  position: relative;
   cursor: pointer;
 
   &.dragging {
     cursor: grabbing;
   }
+
+  &[data-color='blue'] {
+    background-color: var(--accent);
+  }
+}
+
+.titleBarText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 8px;
+  display: flex;
+  align-items: center;
 }
 

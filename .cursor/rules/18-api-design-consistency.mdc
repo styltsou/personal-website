@@ -225,4 +225,3 @@ When creating new APIs:
 - [ ] Match patterns used elsewhere in codebase
 - [ ] Consider how it will be used
 - [ ] Keep it simple and predictable
-

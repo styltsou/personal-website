@@ -32,7 +32,6 @@
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
   /* Previous blue accent: #7da3d1 */
   --accent: #f09c7c;
-  --titlebar-default: var(--accent); /* Default titlebar uses accent color */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.1);
 
@@ -70,7 +69,6 @@
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
   /* Previous blue accent: #7da3d1 */
   --accent: #f09c7c;
-  --titlebar-default: var(--accent); /* Default titlebar uses accent color */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.5);
 

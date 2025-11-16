@@ -3,6 +3,9 @@
  * Minimize, Maximize/Restore, and Close buttons
  */
 
+import { cn } from '@/utils/cn';
+import styles from './styles.module.scss';
+
 export interface WindowControlsProps {
   title: string;
   isMaximized: boolean;
@@ -20,7 +23,7 @@ export default function WindowControls({
 }: WindowControlsProps) {
   return (
     <div
-      className="titlebar-controls"
+      className={cn('titlebar-controls', styles.titleBarControls)}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
@@ -28,7 +31,7 @@ export default function WindowControls({
       {onMinimize && (
         <button
           type="button"
-          className="window-control focus-ring"
+          className={cn(styles.windowControl, 'focus-ring')}
           onClick={(e) => {
             e.stopPropagation();
             onMinimize();
@@ -42,7 +45,7 @@ export default function WindowControls({
       {onMaximize && (
         <button
           type="button"
-          className="window-control focus-ring"
+          className={cn(styles.windowControl, 'focus-ring')}
           onClick={(e) => {
             e.stopPropagation();
             onMaximize();
@@ -56,7 +59,7 @@ export default function WindowControls({
       {onClose && (
         <button
           type="button"
-          className="window-control focus-ring"
+          className={cn(styles.windowControl, 'focus-ring')}
           onClick={(e) => {
             e.stopPropagation();
             onClose();

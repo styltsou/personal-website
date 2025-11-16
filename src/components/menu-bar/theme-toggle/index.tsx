@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { cn } from '@/utils/cn';
+import styles from './styles.module.scss';
 
 const THEME_STORAGE_KEY = 'retro-theme-preference';
 
@@ -56,7 +58,7 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="menu-bar-theme-toggle focus-ring"
+      className={cn(styles.themeToggle, 'focus-ring')}
       onClick={toggleTheme}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
     >

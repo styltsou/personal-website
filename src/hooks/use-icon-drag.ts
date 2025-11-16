@@ -161,7 +161,6 @@ export function useIconDrag({
         e.stopPropagation();
         document.body.style.cursor = 'grabbing';
         document.body.style.userSelect = 'none';
-        document.body.classList.add('icon-dragging');
       }
 
       // Only update position if we're actually dragging
@@ -263,11 +262,6 @@ export function useIconDrag({
       setDraggingIcon(null);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      document.body.classList.remove(
-        'icon-dragging',
-        'icon-dragging-over-window',
-        'icon-dragging-over-icon'
-      );
     };
 
     document.addEventListener('mousemove', handleMouseMove, { passive: false });
@@ -282,11 +276,6 @@ export function useIconDrag({
       setDraggingIcon(null);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      document.body.classList.remove(
-        'icon-dragging',
-        'icon-dragging-over-window',
-        'icon-dragging-over-icon'
-      );
     };
   }, [
     isPotentialDrag,

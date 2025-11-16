@@ -13,6 +13,7 @@ import {
   ICON_IMAGE_SIZE,
 } from '../utils';
 import { cn } from '@/utils/cn';
+import styles from './styles.module.scss';
 
 export interface DesktopIconProps {
   iconConfig: IconConfig;
@@ -95,7 +96,7 @@ export default function DesktopIcon({
         <img
           src={iconConfig.icon}
           alt={iconConfig.label}
-          className="desktop-icon-image"
+          className={styles.desktopIconImage}
           width={ICON_IMAGE_SIZE}
           height={ICON_IMAGE_SIZE}
         />
@@ -104,7 +105,7 @@ export default function DesktopIcon({
       // Function that returns ReactNode (SVG component)
       const IconComponent = iconConfig.icon;
       return (
-        <div className="desktop-icon-image">
+        <div className={styles.desktopIconImage}>
           <IconComponent />
         </div>
       );
@@ -116,7 +117,7 @@ export default function DesktopIcon({
       {/* Original position ghost (only visible while dragging) */}
       {isDragging && (
         <div
-          className={cn('desktop-icon', 'desktop-icon--ghost')}
+          className={cn('desktop-icon', styles.desktopIcon, styles.desktopIconGhost)}
           style={{
             position: 'absolute',
             left: `${initialPixelPosition.x}px`,
@@ -127,14 +128,14 @@ export default function DesktopIcon({
           }}
         >
           {renderIcon()}
-          <div className="desktop-icon-label">{iconConfig.label}</div>
+          <div className={styles.desktopIconLabel}>{iconConfig.label}</div>
         </div>
       )}
 
       {/* Preview position (where icon will snap to) - just the outline box */}
       {isDragging && previewPixelPosition && (
         <div
-          className={cn('desktop-icon', 'desktop-icon--preview')}
+          className={cn('desktop-icon', styles.desktopIcon, styles.desktopIconPreview)}
           style={{
             position: 'absolute',
             left: `${previewPixelPosition.x}px`,
@@ -152,7 +153,7 @@ export default function DesktopIcon({
       {/* When dragging, hide the icon here - it will be rendered at Desktop level */}
       {!isDragging && (
         <div
-          className={cn('desktop-icon', isSelected && 'desktop-icon--selected')}
+          className={cn('desktop-icon', styles.desktopIcon, isSelected && styles.desktopIconSelected)}
           style={{
             position: 'absolute',
             left: `${displayPosition.x}px`,
@@ -169,7 +170,7 @@ export default function DesktopIcon({
           aria-label={`${iconConfig.label} icon`}
         >
           {renderIcon()}
-          <div className="desktop-icon-label">{iconConfig.label}</div>
+          <div className={styles.desktopIconLabel}>{iconConfig.label}</div>
         </div>
       )}
     </>

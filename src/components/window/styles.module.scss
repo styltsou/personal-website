@@ -6,6 +6,11 @@
 @use '@/styles/mixins' as *;
 
 .window {
+  position: fixed;
+  background-color: var(--window-bg);
+  box-shadow: 1px 1px 2px var(--shadow-soft);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 
@@ -16,23 +21,68 @@
   &.resizing {
     cursor: resizing;
   }
+
+  &:global(.active) {
+    box-shadow:
+      4px 4px 12px var(--shadow),
+      0 0 0 1px var(--shadow-soft);
+  }
 }
 
 .snapPreview {
   position: fixed;
   pointer-events: none;
-  border: 1px dashed var(--titlebar-default);
-  @include accent-background(30%, var(--titlebar-default));
+  border: 1px dashed var(--accent);
+  @include accent-background(30%, var(--accent));
   box-sizing: border-box;
 }
 
 .content {
+  background-color: var(--window-bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
   flex: 1;
   overflow: auto;
   display: flex;
   flex-direction: column;
   position: relative;
   min-height: 0;
+
+  :global(h1) {
+    font-size: 3.2rem; /* 32px - was 2rem (32px) */
+    font-weight: 700;
+    margin-bottom: 1.6rem; /* 16px - was 1rem (16px) */
+  }
+
+  :global(h2) {
+    font-size: 2.4rem; /* 24px - was 1.5rem (24px) */
+    font-weight: 600;
+    margin-bottom: 1.2rem; /* 12px - was 0.75rem (12px) */
+  }
+
+  :global(h3) {
+    font-size: 2rem; /* 20px - was 1.25rem (20px) */
+    font-weight: 600;
+    margin-bottom: 0.8rem; /* 8px - was 0.5rem (8px) */
+  }
+
+  :global(p) {
+    margin-bottom: 1.6rem; /* 16px - was 1rem (16px) */
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  :global(ul),
+  :global(ol) {
+    margin-bottom: 1.6rem; /* 16px - was 1rem (16px) */
+    padding-left: 2.4rem; /* 24px - was 1.5rem (24px) */
+  }
+
+  :global(li) {
+    margin-bottom: 0.8rem; /* 8px - was 0.5rem (8px) */
+    font-size: 14px;
+  }
 }
 
 .noOverflow {
@@ -40,7 +90,7 @@
 }
 
 .htmlContent {
-  padding: 1.5rem; // Add padding for HTML content windows
+  padding: 2.4rem; /* 24px - was 1.5rem (24px) */ // Add padding for HTML content windows
   height: 100%;
   overflow: auto;
 }

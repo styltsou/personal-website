@@ -10,6 +10,7 @@ import { useStore } from '@/store';
 import { calculateGridDimensions, gridToPixel } from './utils';
 import { BASE_Z_INDEX } from '@/constants';
 import type { GridPosition, IconConfig } from '@/types/icon';
+import styles from './styles.module.scss';
 
 /**
  * Generate icons array from apps config
@@ -114,13 +115,8 @@ export default function DesktopIcons() {
   return (
     <div
       ref={containerRef}
-      className="desktop-icon-container"
+      className={styles.iconContainer}
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
         zIndex: ICON_Z_INDEX,
         pointerEvents: 'auto', // Container captures clicks for deselection
       }}

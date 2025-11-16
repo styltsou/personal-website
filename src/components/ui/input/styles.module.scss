@@ -1,0 +1,31 @@
+/**
+ * Input Component Styles
+ */
+
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.input {
+  background-color: #ffffff;
+  border-top: 1px solid var(--window-border-dark);
+  border-left: 1px solid var(--window-border-dark);
+  border-right: 1px solid var(--window-border-light);
+  border-bottom: 1px solid var(--window-border-light);
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text);
+  width: 100%;
+
+  &:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+

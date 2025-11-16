@@ -98,7 +98,6 @@ export default function Desktop() {
       <LoadingScreen />
       <div
         className={cn(
-          'desktop',
           styles.desktop,
           hasLoadedFromPersistence && styles.loaded
         )}

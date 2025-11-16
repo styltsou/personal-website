@@ -40,11 +40,11 @@ export default function MenuBar() {
 
   const getButtonClasses = (state: ReturnType<typeof getWindowButtonState>) => {
     return cn(
-      'menu-bar-button',
+      styles.menuBarButton,
       'focus-ring',
-      state.isOpen && 'menu-bar-button-open',
-      state.exists && state.isMinimized && 'menu-bar-button-minimized',
-      state.isActive && 'menu-bar-button-focused',
+      state.isOpen && styles.menuBarButtonOpen,
+      state.exists && state.isMinimized && styles.menuBarButtonMinimized,
+      state.isActive && styles.menuBarButtonFocused,
       state.isActive && styles.active,
       state.hasState && !state.isActive && styles.hasState
     );
@@ -77,9 +77,9 @@ export default function MenuBar() {
   };
 
   return (
-    <div className="menu-bar">
-      <div className="menu-bar-left">
-        <span className="menu-bar-logo">styltsou</span>
+    <div className={styles.menuBar}>
+      <div className={styles.menuBarLeft}>
+        <span className={styles.menuBarLogo}>styltsou</span>
         {apps
           .filter((window) => {
             // Show pinned windows always, or unpinned windows only if they exist (are open)
@@ -101,7 +101,7 @@ export default function MenuBar() {
               >
                 {state.exists && (
                   <span
-                    className="menu-bar-button-close-icon"
+                    className={styles.menuBarButtonCloseIcon}
                     onClick={(e) => handleCloseClick(window.id, e)}
                     onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
                     role="button"
@@ -116,10 +116,10 @@ export default function MenuBar() {
             );
           })}
       </div>
-      <div className="menu-bar-right">
-        <div className="menu-bar-time">
-          <span className="menu-bar-date">{formatDate(currentTime)}</span>
-          <span className="menu-bar-clock">
+      <div className={styles.menuBarRight}>
+        <div className={styles.menuBarTime}>
+          <span className={styles.menuBarDate}>{formatDate(currentTime)}</span>
+          <span className={styles.menuBarClock}>
             {formatTime(currentTime)}
           </span>
         </div>
