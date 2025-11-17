@@ -28,10 +28,10 @@
       "artist": "Lorde",
       "album": "Pure Heroine",
       "albumArt": "https://i.scdn.co/image/ab67616d0000b273e19c63f62581ab73a6589382",
-      "previewUrl": "youtube:4g03b4U_aPk",
+      "previewUrl": "youtube:biUnzjsuehA",
       "duration": 193058,
       "spotifyUrl": "https://open.spotify.com/track/2EA3zDCZYf3pKCCaOSP95r",
-      "youtubeScore": 2400
+      "youtubeScore": 2410
     },
     {
       "id": "1i1yttW6E8E7iNwhrCvz8U",
@@ -61,10 +61,10 @@
       "artist": "Lorde",
       "album": "Virgin",
       "albumArt": "https://i.scdn.co/image/ab67616d0000b27323d41bf736920a032e222a78",
-      "previewUrl": "youtube:diXWpOU-k7o",
+      "previewUrl": "youtube:1UpoZpMBM9Y",
       "duration": 209286,
       "spotifyUrl": "https://open.spotify.com/track/7hGCCQkdyF1MX6uk339uBS",
-      "youtubeScore": 2000
+      "youtubeScore": 2400
     },
     {
       "id": "2BwO5K8Q7EPAJSGze3AAh9",
@@ -111,26 +111,15 @@
       "youtubeScore": 2420
     },
     {
-      "id": "38wjP4MzvQRkJRgXz5F0LO",
-      "name": "Jungle",
-      "artist": "Somebody's Child",
-      "album": "Jungle",
-      "albumArt": "https://i.scdn.co/image/ab67616d0000b2733903461a34a0853699129240",
-      "previewUrl": "youtube:nBjood2gyGU",
-      "duration": 280613,
-      "spotifyUrl": "https://open.spotify.com/track/38wjP4MzvQRkJRgXz5F0LO",
-      "youtubeScore": 2400
-    },
-    {
-      "id": "1K8ZuQfhINJkswTTzTG036",
-      "name": "Reckless Love",
-      "artist": "Bleachers",
-      "album": "Strange Desire",
-      "albumArt": "https://i.scdn.co/image/ab67616d0000b2734849278ce9876ebea7353d66",
-      "previewUrl": "youtube:7JOu21_z9R8",
-      "duration": 181320,
-      "spotifyUrl": "https://open.spotify.com/track/1K8ZuQfhINJkswTTzTG036",
-      "youtubeScore": 2000
+      "id": "0ce9Datr7frOaDpshRRmVR",
+      "name": "Paris",
+      "artist": "The 1975",
+      "album": "I like it when you sleep, for you are so beautiful yet so unaware of it",
+      "albumArt": "https://i.scdn.co/image/ab67616d0000b2734c641b39e644e0683f3af4b1",
+      "previewUrl": "youtube:UlcxSLEXtHQ",
+      "duration": 293076,
+      "spotifyUrl": "https://open.spotify.com/track/0ce9Datr7frOaDpshRRmVR",
+      "youtubeScore": 2350
     }
   ],
   "error": null
