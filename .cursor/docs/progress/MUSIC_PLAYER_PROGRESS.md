@@ -152,19 +152,21 @@ A retro-styled music player component that integrates seamlessly with the existi
 - All basic playback features working
 - Component fully integrated with window system
 - Styling matches existing retro aesthetic
-- **Architecture**: Self-contained player with conditional mounting
-  - Provider only mounts when music player window exists (open or minimized)
+- **Architecture**: Self-contained player with config-based mounting
+  - Uses `keepMountedWhenMinimized: true` to stay mounted when minimized
   - Player unmounts when window is completely closed
-  - Background playback continues when window is minimized
+  - Background playback continues when minimized (component stays mounted)
   - YouTube player uses React Portal for proper DOM management
   - No Desktop-level dependencies (clean separation)
+  - Simplified background playback via `keepMountedWhenMinimized` config
 
 ### Architecture Details
 
-- **Conditional Mounting**: Player only exists when window is open or minimized
-- **Window Lifecycle**: Automatically pauses when window closes, continues when minimized
+- **Background Playback**: Player stays mounted when minimized via `keepMountedWhenMinimized: true` config
+- **Window Lifecycle**: Component unmounts automatically when window closes (React cleanup handles pause/stop)
+- **Simplified Logic**: No manual window state tracking needed - relies on React component lifecycle
 - **React Portal**: YouTube player container rendered via portal to `document.body`
-- **State Management**: Uses React Context for player state, read-only access to main Zustand store for window state
+- **State Management**: Uses React Context for player state, no dependency on window store
 - **Self-Contained**: All player logic contained within `src/components/apps/music-player/` directory
 - **No Desktop Coupling**: Desktop component has no knowledge of music player internals
 
@@ -212,12 +214,13 @@ A retro-styled music player component that integrates seamlessly with the existi
   - All player logic contained within `music-player` directory
 - ✅ **State Management**: Clean separation of concerns
   - Player state managed via React Context (within music-player directory)
-  - Read-only access to main Zustand store (only to check window state)
+  - No dependency on window store (simplified architecture)
   - No player-specific state in main Zustand store
-- ✅ **Window Lifecycle**: Internal handling of window state changes
-  - Automatically pauses playback when window closes
-  - Continues playback when window is minimized
-  - Window component renders component even when minimized (hidden) to allow background processes
+- ✅ **Simplified Window Lifecycle**: No manual window state tracking
+  - Uses `keepMountedWhenMinimized: true` config to stay mounted when minimized
+  - Component unmounts automatically when window closes
+  - React cleanup functions in audio/YouTube hooks handle pause/stop
+  - Removed window state tracking code (no longer needed)
 
 ---
 

@@ -36,11 +36,12 @@ The `store/window/slice.ts` manages all window state using Zustand. It provides:
 
 **Actions:**
 
-- `openWindow(id)` - Open or restore a window
+- `openWindow(id)` - Open or restore an app window
+- `openFile(filePath)` - Open a file in its associated app (see [File System documentation](./08-file-system.md))
 - `closeWindow(id)` - Close a window (saves state for restoration)
 - `minimizeWindow(id)` - Minimize a window
 - `maximizeWindow(id)` - Toggle maximize/restore
-- `focusWindow(id)` - Bring window to front
+- `focusWindow(id)` - Bring window to front (works with any window ID, including file windows)
 - `updateWindowPosition(id, position)` - Update window position
 - `updateWindowSize(id, size)` - Update window size
 - `snapWindow(id, side)` - Snap window to edge
@@ -50,11 +51,23 @@ The `store/window/slice.ts` manages all window state using Zustand. It provides:
 
 ### Opening a Window
 
+**For Apps (`openWindow(id)`):**
+
 1. **Check if already open**: If window exists in `windowStates`, bring to front and restore if minimized
 2. **Check closed state**: If window was previously closed, restore its position/size
 3. **Calculate position**: Use cascading algorithm if other windows are visible, otherwise center
 4. **Calculate z-index**: Bring to front (increment from current max)
-5. **Create window state**: Add to `windowStates` array
+5. **Create window state**: Add to `windowStates` array with app config
+
+**For Files (`openFile(filePath)`):**
+
+1. **Determine associated app**: Look up file extension in `file-associations.ts`
+2. **Generate unique window ID**: Format: `{appId}-{sanitized-file-path}`
+3. **Merge config with file path**: Create config with `filePath` in props and custom title
+4. **Reuse window opening logic**: Calls the same helper function as `openWindow` to avoid code duplication
+5. **Window title**: Shows as `{filename} - {appTitle}` (e.g., "me.jpg - Photos") or `{appTitle} - {filename}` for Photos app
+
+See [File System documentation](./08-file-system.md) for more details on file opening.
 
 ### Closing a Window
 
@@ -164,10 +177,12 @@ Windows with a `component` property:
 
 **Minimized Window Behavior:**
 
-- When minimized, component-based windows still render their component (hidden with `display: none`)
+- By default, windows unmount when minimized (saves memory)
+- Apps can opt-in to stay mounted by setting `keepMountedWhenMinimized: true` in their config
+- When kept mounted, the component renders but is hidden with `display: none`
 - This allows background processes (like music playback) to continue running
 - The component remains mounted, so state and processes persist
-- When the window is closed (not just minimized), the component unmounts
+- When the window is closed (not just minimized), the component unmounts regardless of the setting
 
 ## Persistence
 
@@ -177,6 +192,7 @@ Window state is persisted to `sessionStorage`:
 - Restores on page reload
 - Includes position, size, z-index, minimized/maximized state
 - **Important**: Component references are lost during JSON serialization, so they're restored from `app-config.ts` on load
+- **File windows**: When restoring file windows, the system extracts the base app ID from the window ID (e.g., `photos-me.jpg` → `photos`) and merges the persisted config (title, props) with the base app config (component, etc.)
 
 See `use-window-persistence.ts` for implementation details.
 

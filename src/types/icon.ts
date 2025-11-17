@@ -29,7 +29,8 @@ export interface IconConfig {
   id: string;
   label: string;
   icon: string | ComponentType; // Icon component (React component) or image path
-  windowId?: string; // Optional window ID to open on double-click
+  windowId?: string; // Optional window ID to open on double-click (for app icons)
+  filePath?: string; // Optional file path to open (for file icons)
 }
 
 /**

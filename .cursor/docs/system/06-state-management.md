@@ -31,7 +31,6 @@ Both stores follow similar patterns:
 - `WindowPosition` - Window position coordinates
 - `WindowSize` - Window size dimensions
 - `SnapSide` - Window snap side
-- `ResizeConstraint` - Resize behavior constraint
 
 ### State Properties
 
@@ -51,11 +50,12 @@ interface WindowStore {
 
 All window operations go through store actions:
 
-- `openWindow(id)` - Open/restore window
+- `openWindow(id)` - Open/restore app window
+- `openFile(filePath)` - Open a file in its associated app (see [File System documentation](./08-file-system.md))
 - `closeWindow(id)` - Close window (saves state)
 - `minimizeWindow(id)` - Minimize window
 - `maximizeWindow(id)` - Toggle maximize
-- `focusWindow(id)` - Bring to front
+- `focusWindow(id)` - Bring window to front (works with any window ID, including file windows)
 - `updateWindowPosition(id, position)` - Update position
 - `updateWindowSize(id, size)` - Update size
 - `snapWindow(id, side)` - Snap to edge

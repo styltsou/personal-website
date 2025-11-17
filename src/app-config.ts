@@ -1,6 +1,6 @@
 /**
- * Application Configuration
- * Defines available apps with their metadata, icons, and window components
+ * Unified Configuration
+ * Defines available apps and files with their metadata, icons, and window components
  */
 
 import type { AppConfig } from './types/app';
@@ -13,12 +13,18 @@ import FlappyBirdWindow, {
   FlappyBirdIcon,
 } from './components/apps/flappy-bird';
 import MusicPlayer, { MusicPlayerIcon } from './components/apps/music-player';
+import PhotosWindow, {
+  PhotosIcon,
+  ImageFileIcon,
+} from './components/apps/photos';
 import { AboutIcon } from './components/apps/about/icon';
 import { ProjectsIcon } from './components/apps/projects/icon';
 import { ContactIcon } from './components/apps/contact/icon';
 
 export const apps: AppConfig[] = [
+  // Apps
   {
+    type: 'app',
     id: 'about',
     title: 'ABOUT.md',
     path: '/about',
@@ -28,6 +34,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'projects',
     title: 'Projects',
     path: '/projects',
@@ -36,6 +43,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'contact',
     title: 'Contact',
     path: '/contact',
@@ -44,6 +52,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'cv',
     title: 'CV',
     component: CvWindow,
@@ -53,6 +62,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'terminal',
     title: 'Terminal',
     component: TerminalWindow,
@@ -61,6 +71,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'wikipedia',
     title: 'Wikipedia',
     component: WikipediaWindow,
@@ -69,6 +80,7 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'flappy-bird',
     title: 'Flappy Bird',
     component: FlappyBirdWindow,
@@ -77,16 +89,19 @@ export const apps: AppConfig[] = [
     },
   },
   {
+    type: 'app',
     id: 'music-player',
     title: 'MusicPlayer Pro v1.0',
     minSize: { width: 900, height: 700 }, // Larger minimum size for better vinyl display
     component: MusicPlayer,
+    keepMountedWhenMinimized: true, // Keep mounted for background playback
     desktopIcon: {
       label: 'Music',
       icon: MusicPlayerIcon,
     },
   },
   {
+    type: 'app',
     id: 'piano',
     title: 'Virtual Piano',
     resizable: false,
@@ -96,4 +111,40 @@ export const apps: AppConfig[] = [
       icon: PianoIcon,
     },
   },
+  {
+    type: 'app',
+    id: 'photos',
+    title: 'Photos',
+    component: PhotosWindow,
+    keepMountedWhenMinimized: true, // Keep mounted to prevent image reload
+    // Photos app can be opened as a gallery with multiple images
+    // Or files can be opened in it via openFile()
+    desktopIcon: {
+      label: 'Photos',
+      icon: PhotosIcon,
+    },
+  },
+
+  // Files
+  // Example: Image file that opens in Photos app
+  {
+    type: 'file',
+    id: 'myself',
+    title: 'me.jpg',
+    filePath: '/images/me.jpg',
+    desktopIcon: {
+      label: 'me.jpg',
+      icon: ImageFileIcon, // Use SVG icon for retro aesthetic
+    },
+  },
+  // Example: Text file that opens in Notepad app (when you create it)
+  // {
+  //   type: 'file',
+  //   id: 'readme',
+  //   title: 'readme.txt',
+  //   filePath: '/files/readme.txt',
+  //   desktopIcon: {
+  //     label: 'readme.txt',
+  //   },
+  // },
 ];

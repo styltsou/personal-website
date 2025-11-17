@@ -13,7 +13,6 @@ import {
   type ReactNode,
 } from 'react';
 
-import { useStore } from '@/store';
 import type { Track } from './types';
 import { useAudioPlayer } from './hooks/use-audio-player';
 import { useYouTubePlayer } from './hooks/use-youtube-player';
@@ -74,11 +73,8 @@ interface MusicPlayerProviderProps {
 }
 
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
-  // Read-only access to window state to check if music player window exists
-  const windows = useStore(state => state.windows);
-  const musicPlayerWindowExists = windows.some(
-    window => window.id === 'music-player'
-  );
+  // With keepMountedWhenMinimized: true, the component stays mounted when minimized
+  // So we don't need to track window state - the component will unmount automatically when closed
 
   // Get tracks from Content Collection (imported as static JSON)
   const tracks: Track[] = tracksData.tracks || [];
@@ -98,7 +94,6 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     pause: () => void;
     state: { isPlaying: boolean };
   } | null>(null);
-  const previousWindowExistsRef = useRef<boolean | null>(null);
 
   // Shuffle array helper
   const shuffleArray = useCallback((array: number[]): number[] => {
@@ -236,25 +231,9 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
     activePlayerRef.current = activePlayer;
   }, [activePlayer]);
 
-  // Handle window lifecycle: pause when window closes
-  useEffect(() => {
-    // Initialize ref on first render
-    if (previousWindowExistsRef.current === null) {
-      previousWindowExistsRef.current = musicPlayerWindowExists;
-      return;
-    }
-
-    // If window was open and now it's closed, pause playback
-    if (
-      previousWindowExistsRef.current &&
-      !musicPlayerWindowExists &&
-      activePlayerRef.current?.state.isPlaying
-    ) {
-      activePlayerRef.current.pause();
-    }
-
-    previousWindowExistsRef.current = musicPlayerWindowExists;
-  }, [musicPlayerWindowExists]);
+  // No need to handle window lifecycle manually:
+  // - With keepMountedWhenMinimized: true, component stays mounted when minimized (playback continues)
+  // - When window closes, component unmounts automatically, cleanup functions handle pause/stop
 
   const handleTrackSelect = useCallback((index: number) => {
     setCurrentTrackIndex(index);

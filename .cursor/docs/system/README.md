@@ -35,13 +35,17 @@ Desktop icon grid system:
 
 ### [04-app-configuration.md](./04-app-configuration.md)
 
-App registration and configuration:
+Unified app and file registration and configuration:
 
+- Unified config with `type: 'app' | 'file'` field
 - App types (content-based vs component-based)
+- File configuration and desktop icons
 - Desktop icon configuration
 - Resize constraints
-- Adding new apps
+- Keeping windows mounted when minimized (`keepMountedWhenMinimized`)
+- Adding new apps and files
 - Integration with window system
+- Props support for app components
 
 ### [05-content-loading.md](./05-content-loading.md)
 
@@ -73,6 +77,20 @@ SEO and performance optimizations:
 - Structured data (JSON-LD)
 - Meta tags and sitemap
 - Performance metrics and best practices
+
+### [08-file-system.md](./08-file-system.md)
+
+File system and file opening:
+
+- File associations (extension to app mappings)
+- `openFile` action and workflow (refactored to reuse `openWindow` logic)
+- File configuration in unified config
+- App component integration with `filePath` prop
+- Desktop file icons
+- File windows in menu bar
+- Multiple file instances
+- File window persistence
+- Adding support for new file types
 
 ## How to Use This Documentation
 
@@ -116,10 +134,13 @@ When debugging issues:
 
 ### App System
 
-- All apps registered in `app-config.ts`
-- Two types: content-based (path) and component-based (component)
-- Desktop icons generated from app config
+- All apps and files registered in unified `app-config.ts`
+- Config uses `type: 'app' | 'file'` to distinguish entries
+- Two app types: content-based (path) and component-based (component)
+- Files open in associated apps via file associations
+- Desktop icons generated from app and file config
 - Window state includes full app config
+- Apps can receive typed props via generic `TProps` parameter
 
 ### Content Loading
 

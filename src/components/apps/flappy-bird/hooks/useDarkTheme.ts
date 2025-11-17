@@ -9,7 +9,14 @@ import { useState, useEffect } from 'react';
  * Only checks for dark-theme class, not system preference
  */
 export function useDarkTheme(): boolean {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  // Initialize synchronously to prevent flash
+  const [isDarkTheme, setIsDarkTheme] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return (
+      document.documentElement.classList.contains('dark-theme') ||
+      document.body.classList.contains('dark-theme')
+    );
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -23,6 +30,7 @@ export function useDarkTheme(): boolean {
       setIsDarkTheme(isDark);
     };
 
+    // Check immediately in case theme changed since initial render
     checkDarkTheme();
 
     // Watch for theme changes

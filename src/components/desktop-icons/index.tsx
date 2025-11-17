@@ -13,8 +13,8 @@ import type { GridPosition, IconConfig } from '@/types/icon';
 import styles from './styles.module.scss';
 
 /**
- * Generate icons array from apps config
- * Only includes apps that have desktopIcon configured
+ * Generate icons array from unified config
+ * Includes both app icons and file icons
  */
 export function getDesktopIcons(): IconConfig[] {
   // Only compute on client side to avoid SSR issues
@@ -24,13 +24,26 @@ export function getDesktopIcons(): IconConfig[] {
 
   try {
     return apps
-      .filter(app => app.desktopIcon)
-      .map(app => ({
-        id: app.id,
-        label: app.desktopIcon!.label ?? app.title, // Use app title as fallback
-        icon: app.desktopIcon!.icon,
-        windowId: app.id,
-      }));
+      .filter(item => item.desktopIcon)
+      .map(item => {
+        if (item.type === 'file') {
+          // File icon
+          return {
+            id: item.id,
+            label: item.desktopIcon!.label ?? item.title,
+            icon: item.desktopIcon!.icon ?? item.filePath, // Use icon from config or file path
+            filePath: item.filePath!,
+          };
+        } else {
+          // App icon
+          return {
+            id: item.id,
+            label: item.desktopIcon!.label ?? item.title,
+            icon: item.desktopIcon!.icon,
+            windowId: item.id,
+          };
+        }
+      });
   } catch (error) {
     console.warn('Failed to load desktop icons:', error);
     return [];
@@ -43,6 +56,7 @@ export default function DesktopIcons() {
   const deselectIcons = useStore(state => state.deselectIcons);
   const updateIconPosition = useStore(state => state.updateIconPosition);
   const openWindow = useStore(state => state.openWindow);
+  const openFile = useStore(state => state.openFile);
   const unfocusWindow = useStore(state => state.unfocusWindow);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -98,15 +112,22 @@ export default function DesktopIcons() {
     return { gridX: 0, gridY: 0 };
   };
 
-  // Handle double-click on icon - open window if windowId is configured
+  // Handle double-click on icon - open window or file
   const handleIconDoubleClick = useCallback(
     (iconId: string) => {
       const icon = icons.find(i => i.id === iconId);
-      if (icon?.windowId) {
+      if (!icon) return;
+
+      // If it's a file icon, open the file
+      if (icon.filePath) {
+        openFile(icon.filePath);
+      }
+      // If it's an app icon, open the window
+      else if (icon.windowId) {
         openWindow(icon.windowId);
       }
     },
-    [openWindow]
+    [openWindow, openFile]
   );
 
   // Icon z-index should be below windows (BASE_Z_INDEX = 10)

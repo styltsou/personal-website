@@ -71,16 +71,23 @@ export default function Desktop() {
         <MenuBar />
         <DesktopIcons />
         <DraggingIcon />
-        {/* Render all open windows */}
-        {windows
-          .filter(window => !window.isMinimized)
-          .map(windowState => (
+        {/* Render windows - keep mounted when minimized only if keepMountedWhenMinimized is true (default: false) */}
+        {windows.map(windowState => {
+          // Default to false: if not minimized, always render; if minimized, only render if explicitly set to true
+          const shouldKeepMounted =
+            !windowState.isMinimized ||
+            windowState.config.keepMountedWhenMinimized === true;
+
+          if (!shouldKeepMounted) return null;
+
+          return (
             <Window
               key={windowState.id}
               id={windowState.id}
               isLoading={isLoading}
             />
-          ))}
+          );
+        })}
       </div>
     </>
   );

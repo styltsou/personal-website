@@ -3,6 +3,7 @@
  */
 
 import { apps } from '@/app-config';
+import { getAppForFile } from '@/config/file-associations';
 import { BASE_Z_INDEX } from '@/constants';
 import {
   calculateCenteredPosition,
@@ -21,6 +22,7 @@ import type {
 } from '@/types/window';
 import type { WindowSlice } from './types';
 import type { Store } from '../index';
+import type { StateCreator } from 'zustand';
 
 // Check if we should initialize from persistence synchronously (only on client)
 let initialHasLoadedFromPersistence = false;
@@ -40,7 +42,117 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
+// Helper function to open a window with a given config
+// This is used by both openWindow and openFile to avoid code duplication
+const openWindowWithConfig = (
+  windowId: string,
+  config: NonNullable<ReturnType<typeof apps.find>>,
+  set: Parameters<StateCreator<Store, [], [], WindowSlice>>[0],
+  get: Parameters<StateCreator<Store, [], [], WindowSlice>>[1],
+  configOverrides?: {
+    title?: string;
+    props?: Record<string, unknown>;
+  }
+) => {
+  const state = get();
+
+  // Merge config with any overrides
+  const mergedConfig = {
+    ...config,
+    ...(configOverrides?.title && { title: configOverrides.title }),
+    ...(configOverrides?.props && {
+      props: {
+        ...config.props,
+        ...configOverrides.props,
+      },
+    }),
+  };
+
+  // Check if window is already open
+  const existing = state.windows.find(window => window.id === windowId);
+  if (existing) {
+    // Bring to front and restore if minimized
+    const maxZIndex = getMaxZIndex(state.windows);
+    const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
+    set({
+      windows: state.windows.map(window => {
+        if (window.id !== windowId) return window;
+        // Restore the window: un-minimize and bring to front
+        return {
+          ...window,
+          config: mergedConfig, // Update config in case it changed
+          zIndex: newZIndex,
+          isMinimized: false,
+          // Keep snapSide unchanged - if window was snapped, it should remain snapped
+        };
+      }),
+      activeWindowId: windowId,
+      nextZIndex: state.nextZIndex + 1,
+    });
+    return;
+  }
+
+  // Check if this window was previously closed and restore its state
+  const closedState = state.closedWindows[windowId];
+  let newWindowSize: WindowSize;
+  let newWindowPosition: WindowPosition;
+  let newIsMaximized: boolean;
+
+  if (closedState) {
+    // Restore from closed window state
+    newWindowSize = closedState.size;
+    newWindowPosition = closedState.position;
+    newIsMaximized = closedState.isMaximized;
+  } else {
+    // First time opening - use initialSize from config or default size
+    const initialSize = mergedConfig.initialSize ?? getDefaultWindowSize();
+    const centeredPosition = calculateCenteredPosition(
+      initialSize.width,
+      initialSize.height
+    );
+
+    // Get visible windows (non-minimized) to check for cascading
+    const visibleWindows = state.windows.filter(window => !window.isMinimized);
+
+    // Calculate cascaded position if needed
+    newWindowPosition = calculateCascadedPosition(
+      centeredPosition,
+      visibleWindows,
+      initialSize.width,
+      initialSize.height
+    );
+    newWindowSize = initialSize;
+    newIsMaximized = false;
+  }
+
+  // Calculate z-index for new window
+  const maxZIndex = getMaxZIndex(state.windows);
+  const newWindowZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
+
+  // Create new window state
+  const newWindow: WindowState = {
+    id: windowId,
+    config: mergedConfig,
+    position: newWindowPosition,
+    size: newWindowSize,
+    zIndex: newWindowZIndex,
+    isMinimized: false,
+    isMaximized: newIsMaximized,
+    snapSide: null,
+    isPinned: mergedConfig.pinned === true, // Initialize from config (defaults to false), can be changed dynamically later
+  };
+
+  set({
+    windows: [...state.windows, newWindow],
+    nextZIndex: state.nextZIndex + 1,
+    activeWindowId: windowId,
+  });
+};
+
+export const createWindowSlice: StateCreator<Store, [], [], WindowSlice> = (
+  set,
+  get
+) => ({
   // Initial state
   windows: [],
   closedWindows: {},
@@ -50,90 +162,45 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Open a window
   openWindow: (windowId: string) => {
-    const state = get();
-    const config = apps.find(w => w.id === windowId);
+    const config = apps.find(w => w.id === windowId && w.type === 'app');
     if (!config) return;
 
-    // Check if window is already open
-    const existing = state.windows.find(window => window.id === windowId);
-    if (existing) {
-      // Bring to front and restore if minimized
-      // We need to update z-index and active window
-      const maxZIndex = getMaxZIndex(state.windows);
-      const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
-      set({
-        windows: state.windows.map(window => {
-          if (window.id !== windowId) return window;
-          // Restore the window: un-minimize and bring to front
-          return {
-            ...window,
-            zIndex: newZIndex,
-            isMinimized: false,
-            // Keep snapSide unchanged - if window was snapped, it should remain snapped
-          };
-        }),
-        activeWindowId: windowId,
-        nextZIndex: state.nextZIndex + 1,
-      });
+    openWindowWithConfig(windowId, config, set, get);
+  },
+
+  // Open a file in its associated app
+  openFile: (filePath: string) => {
+    const appId = getAppForFile(filePath);
+
+    if (!appId) {
+      console.warn(`No app associated with file: ${filePath}`);
       return;
     }
 
-    // Check if this window was previously closed and restore its state
-    const closedState = state.closedWindows[windowId];
-    let newWindowSize: WindowSize;
-    let newWindowPosition: WindowPosition;
-    let newIsMaximized: boolean;
-
-    if (closedState) {
-      // Restore from closed window state
-      newWindowSize = closedState.size;
-      newWindowPosition = closedState.position;
-      newIsMaximized = closedState.isMaximized;
-    } else {
-      // First time opening - use initialSize from config or default size
-      const initialSize = config.initialSize ?? getDefaultWindowSize();
-      const centeredPosition = calculateCenteredPosition(
-        initialSize.width,
-        initialSize.height
-      );
-
-      // Get visible windows (non-minimized) to check for cascading
-      const visibleWindows = state.windows.filter(
-        window => !window.isMinimized
-      );
-
-      // Calculate cascaded position if needed
-      newWindowPosition = calculateCascadedPosition(
-        centeredPosition,
-        visibleWindows,
-        initialSize.width,
-        initialSize.height
-      );
-      newWindowSize = initialSize;
-      newIsMaximized = false;
+    const config = apps.find(w => w.id === appId && w.type === 'app');
+    if (!config || !config.component) {
+      console.warn(`App ${appId} not found or doesn't support opening files`);
+      return;
     }
 
-    // Calculate z-index for new window
-    const maxZIndex = getMaxZIndex(state.windows);
-    const newWindowZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
+    // Generate a unique window ID for this file
+    // Use a combination of app ID and file path hash to allow multiple instances
+    const windowId = `${appId}-${filePath.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
-    // Create new window state
-    const newWindow: WindowState = {
-      id: windowId,
-      config,
-      position: newWindowPosition,
-      size: newWindowSize,
-      zIndex: newWindowZIndex,
-      isMinimized: false,
-      isMaximized: newIsMaximized,
-      snapSide: null,
-      isPinned: config.pinned === true, // Initialize from config (defaults to false), can be changed dynamically later
-    };
+    // Extract filename for window title
+    const fileName = filePath.split('/').pop() || filePath;
 
-    set({
-      windows: [...state.windows, newWindow],
-      nextZIndex: state.nextZIndex + 1,
-      activeWindowId: windowId,
+    // For photos app, show "Photos - filename", for others show "filename - appname"
+    const title =
+      config.id === 'photos'
+        ? `${config.title} - ${fileName}`
+        : `${fileName} - ${config.title}`;
+
+    openWindowWithConfig(windowId, config, set, get, {
+      title,
+      props: {
+        filePath, // Pass the file path to the app
+      },
     });
   },
 
@@ -156,7 +223,9 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       };
 
       return {
-        windows: state.windows.filter(window => window.id !== windowId),
+        windows: state.windows.filter(
+          (window: WindowState) => window.id !== windowId
+        ),
         closedWindows: {
           ...state.closedWindows,
           [windowId]: closedState,
@@ -169,8 +238,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Minimize a window
   minimizeWindow: (windowId: string) => {
-    set(state => ({
-      windows: state.windows.map(window =>
+    set((state: Store) => ({
+      windows: state.windows.map((window: WindowState) =>
         window.id === windowId ? { ...window, isMinimized: true } : window
       ),
     }));
@@ -178,12 +247,12 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Maximize/Restore a window
   maximizeWindow: (windowId: string) => {
-    set(state => {
+    set((state: Store) => {
       const maxZIndex = getMaxZIndex(state.windows);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map(window => {
+        windows: state.windows.map((window: WindowState) => {
           if (window.id !== windowId) return window;
 
           if (window.isMaximized) {
@@ -214,17 +283,23 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Focus a window (bring to front)
   focusWindow: (windowId: string) => {
-    const config = apps.find(w => w.id === windowId);
-    if (!config) return;
+    set((state: Store) => {
+      // Check if window exists (app window or file window)
+      const windowExists = state.windows.some(w => w.id === windowId);
+      if (!windowExists) return state;
 
-    set(state => {
       const maxZIndex = getMaxZIndex(state.windows);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
       return {
-        windows: state.windows.map(window => ({
-          ...window,
-          zIndex: window.id === windowId ? newZIndex : window.zIndex,
-        })),
+        windows: state.windows.map((window: WindowState) => {
+          if (window.id !== windowId) return window;
+          // Restore if minimized and bring to front
+          return {
+            ...window,
+            zIndex: newZIndex,
+            isMinimized: false,
+          };
+        }),
         activeWindowId: windowId,
         nextZIndex: state.nextZIndex + 1,
       };
@@ -238,8 +313,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window position
   updateWindowPosition: (windowId: string, position: WindowPosition) => {
-    set(state => ({
-      windows: state.windows.map(window => {
+    set((state: Store) => ({
+      windows: state.windows.map((window: WindowState) => {
         if (window.id !== windowId || window.isMaximized) return window;
         return {
           ...window,
@@ -251,8 +326,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window size
   updateWindowSize: (windowId: string, size: WindowSize) => {
-    set(state => ({
-      windows: state.windows.map(window => {
+    set((state: Store) => ({
+      windows: state.windows.map((window: WindowState) => {
         if (window.id !== windowId || window.isMaximized) return window;
         return {
           ...window,
@@ -264,8 +339,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window content
   updateWindowContent: (windowId: string, content: string) => {
-    set(state => ({
-      windows: state.windows.map(window =>
+    set((state: Store) => ({
+      windows: state.windows.map((window: WindowState) =>
         window.id === windowId ? { ...window, content } : window
       ),
     }));
@@ -273,8 +348,10 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Snap a window to a side
   snapWindow: (windowId: string, snapSide: SnapSide) => {
-    set(state => {
-      const targetWindow = state.windows.find(window => window.id === windowId);
+    set((state: Store) => {
+      const targetWindow = state.windows.find(
+        (window: WindowState) => window.id === windowId
+      );
       if (!targetWindow || targetWindow.isMaximized || !snapSide) return state;
 
       // Don't store snapped size/position - derive it during rendering
@@ -283,7 +360,7 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map(window => {
+        windows: state.windows.map((window: WindowState) => {
           if (window.id !== windowId) return window;
           return {
             ...window,
@@ -300,8 +377,10 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Unsnap a window
   unsnapWindow: (windowId: string) => {
-    set(state => {
-      const targetWindow = state.windows.find(window => window.id === windowId);
+    set((state: Store) => {
+      const targetWindow = state.windows.find(
+        (window: WindowState) => window.id === windowId
+      );
       if (!targetWindow || !targetWindow.snapSide) return state;
 
       // Since we don't store snapped size/position, just clear snapSide
@@ -310,7 +389,7 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map(window => {
+        windows: state.windows.map((window: WindowState) => {
           if (window.id !== windowId) return window;
           return {
             ...window,
@@ -342,7 +421,10 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
     if (!hasLoadedFromPersistence) {
       // Restore full config from apps array (component references are lost during JSON serialization)
       const restoredStates = persistedStates.map(persistedState => {
-        const appConfig = apps.find(app => app.id === persistedState.id);
+        // First, try to find a direct app match (for regular app windows)
+        const appConfig = apps.find(
+          app => app.type === 'app' && app.id === persistedState.id
+        );
         if (appConfig) {
           return {
             ...persistedState,
@@ -351,11 +433,41 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
             isPinned: persistedState.isPinned ?? appConfig.pinned === true,
           };
         }
+
+        // If no direct match, check if this is a file window (ID pattern: appId-filepath)
+        const fileWindowMatch = persistedState.id.match(/^([^-]+)-/);
+        if (fileWindowMatch) {
+          const baseAppId = fileWindowMatch[1];
+          const baseAppConfig = apps.find(
+            app => app.type === 'app' && app.id === baseAppId
+          );
+          if (baseAppConfig) {
+            // Merge persisted config (title, props) with base app config (component, etc.)
+            return {
+              ...persistedState,
+              config: {
+                ...baseAppConfig,
+                // Preserve the persisted title (which includes filename)
+                title: persistedState.config.title ?? baseAppConfig.title,
+                // Merge props: base app props first, then persisted props (filePath) override
+                props: {
+                  ...baseAppConfig.props,
+                  ...persistedState.config.props,
+                },
+              },
+              // Ensure isPinned exists
+              isPinned:
+                persistedState.isPinned ?? baseAppConfig.pinned === true,
+            };
+          }
+        }
+
+        // Fallback if app not found
         return {
           ...persistedState,
           // Ensure isPinned exists even if app not found
           isPinned: persistedState.isPinned ?? false,
-        }; // Fallback if app not found
+        };
       });
 
       set({

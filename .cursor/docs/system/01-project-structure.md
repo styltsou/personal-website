@@ -67,7 +67,7 @@ Each app directory typically contains:
 Centralized type definitions organized by domain:
 
 - `app.ts` - App configuration types (`AppConfig`)
-- `window.ts` - Window-related types (`WindowState`, `WindowPosition`, `WindowSize`, `ResizeConstraint`, `SnapSide`, `ClosedWindowState`)
+- `window.ts` - Window-related types (`WindowState`, `WindowPosition`, `WindowSize`, `SnapSide`, `ClosedWindowState`)
   - **Note**: `WindowPosition` and `WindowSize` are the canonical types used throughout the codebase. All window-related utilities and hooks use these types from `@/types/window` (no duplicate `Position`/`Size` types exist).
 - `icon.ts` - Icon-related types (`IconState`, `IconPosition`, `IconConfig`, `GridPosition`, `PixelPosition`, `GridDimensions`)
 

@@ -127,17 +127,6 @@ export default function Window({ id, isLoading }: WindowProps) {
     }
   };
 
-  // When minimized, still render the component (for background processes like music player)
-  // but hide the window UI
-  if (isMinimized) {
-    return (
-      <div style={{ display: 'none' }}>
-        {windowState.config.component &&
-          React.createElement(windowState.config.component)}
-      </div>
-    );
-  }
-
   // Calculate window size and position
   // If maximized, override display to maximized values (but keep actual position/size in store)
   // If snapped, derive snapped size/position visually (but keep actual size/position in store)
@@ -210,7 +199,8 @@ export default function Window({ id, isLoading }: WindowProps) {
           styles.window,
           isActive && 'active',
           isDragging && styles.dragging,
-          isResizing && styles.resizing
+          isResizing && styles.resizing,
+          isMinimized && styles.minimized
         )}
         style={{
           left: `${displayPosition.x}px`,
@@ -219,6 +209,7 @@ export default function Window({ id, isLoading }: WindowProps) {
           width: `${windowWidth}px`,
           height: `${windowHeight}px`,
           userSelect: isDragging || isResizing ? 'none' : 'auto',
+          display: isMinimized ? 'none' : undefined,
         }}
         onClick={handleWindowClick}
         role="dialog"
@@ -243,7 +234,10 @@ export default function Window({ id, isLoading }: WindowProps) {
           {(() => {
             // Try to get custom component from config first
             if (windowState.config.component) {
-              return React.createElement(windowState.config.component);
+              return React.createElement(
+                windowState.config.component,
+                windowState.config.props || undefined
+              );
             }
 
             // Fall back to content-based rendering

@@ -33,7 +33,7 @@ export function useWindowContent() {
 
   const loadWindowContent = useCallback(
     async (windowId: string): Promise<string | null> => {
-      const config = apps.find(w => w.id === windowId);
+      const config = apps.find(w => w.type === 'app' && w.id === windowId);
       if (!config || !config.path) return null; // Only handle path-based apps
 
       // Check cache first (includes embedded content)

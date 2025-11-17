@@ -20,6 +20,7 @@ export interface WindowSlice {
 
   // Actions
   openWindow: (windowId: string) => void;
+  openFile: (filePath: string) => void; // Open a file in its associated app
   closeWindow: (windowId: string) => void;
   minimizeWindow: (windowId: string) => void;
   maximizeWindow: (windowId: string) => void;

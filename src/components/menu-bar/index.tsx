@@ -17,6 +17,7 @@ export default function MenuBar() {
   const windows = useStore(state => state.windows);
   const activeWindowId = useStore(state => state.activeWindowId);
   const openWindow = useStore(state => state.openWindow);
+  const focusWindow = useStore(state => state.focusWindow);
   const closeWindow = useStore(state => state.closeWindow);
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -81,23 +82,59 @@ export default function MenuBar() {
   const menuBarWindows = useMemo(() => {
     // Get all apps that are either pinned or currently open
     const pinnedApps = apps.filter(app => {
+      if (app.type !== 'app') return false;
       const windowState = windows.find(w => w.id === app.id);
       // Show if pinned in config OR pinned in state (for dynamic pinning)
       return (app.pinned ?? false) || windowState?.isPinned;
     });
 
-    const openApps = windows
-      .map(windowState => {
-        return apps.find(app => app.id === windowState.id);
-      })
-      .filter((app): app is NonNullable<typeof app> => app !== undefined);
+    // Get open windows - both app windows and file windows
+    const openWindows = windows.map(windowState => {
+      // Check if this is a direct app window (window ID matches app ID)
+      const app = apps.find(a => a.type === 'app' && a.id === windowState.id);
+      if (app) {
+        return { type: 'app' as const, app, windowState };
+      }
 
-    // Combine: pinned apps first (in app config order), then open apps (in windows array order)
-    // Remove duplicates (if a pinned app is also open, it appears in openApps)
+      // Check if this is a file window (window ID starts with app ID + '-')
+      // Extract base app ID from file window IDs like "photos-me.jpg" -> "photos"
+      const fileWindowMatch = windowState.id.match(/^([^-]+)-/);
+      if (fileWindowMatch) {
+        const baseAppId = fileWindowMatch[1];
+        const baseApp = apps.find(a => a.type === 'app' && a.id === baseAppId);
+        if (baseApp) {
+          return { type: 'file' as const, app: baseApp, windowState };
+        }
+      }
+
+      return null;
+    }).filter((item): item is NonNullable<typeof item> => item !== null);
+
+    // Separate app windows and file windows
+    const openAppWindows = openWindows
+      .filter(item => item.type === 'app')
+      .map(item => item.app);
+
+    const openFileWindows = openWindows.filter(item => item.type === 'file');
+
+    // Combine: pinned apps first (in app config order), then open app windows (in windows array order),
+    // then file windows (in windows array order)
+    // Remove duplicates (if a pinned app is also open, it appears in openAppWindows)
     const pinnedIds = new Set(pinnedApps.map(app => app.id));
-    const openAppsNotPinned = openApps.filter(app => !pinnedIds.has(app.id));
+    const openAppsNotPinned = openAppWindows.filter(app => !pinnedIds.has(app.id));
 
-    return [...pinnedApps, ...openAppsNotPinned];
+    // For file windows, create menu bar entries using the window's own config
+    const fileWindowEntries = openFileWindows.map(item => ({
+      id: item.windowState.id,
+      title: item.windowState.config.title,
+      windowState: item.windowState,
+    }));
+
+    return [
+      ...pinnedApps,
+      ...openAppsNotPinned,
+      ...fileWindowEntries,
+    ];
   }, [windows]);
 
   return (
@@ -106,13 +143,25 @@ export default function MenuBar() {
         <span className={styles.menuBarLogo}>styltsou</span>
         {menuBarWindows.map(window => {
           const state = getWindowButtonState(window.id);
+          // Check if this is a file window (has windowState property) or an app window
+          const isFileWindow = 'windowState' in window;
+          
+          const handleClick = () => {
+            if (isFileWindow || state.exists) {
+              // Window already exists (file window or open app window) - focus it
+              focusWindow(window.id);
+            } else {
+              // App window not yet open - open it
+              openWindow(window.id);
+            }
+          };
 
           return (
             <button
               key={window.id}
               type="button"
               className={cn(getButtonClasses(state), styles.button)}
-              onClick={() => openWindow(window.id)}
+              onClick={handleClick}
               aria-label={getAriaLabel(window.title, state)}
             >
               {state.exists && (
