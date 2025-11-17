@@ -12,7 +12,7 @@ import type {
 
 export interface WindowSlice {
   // State
-  windowStates: WindowState[];
+  windows: WindowState[];
   closedWindows: Record<string, ClosedWindowState>;
   activeWindowId: string | null;
   nextZIndex: number;

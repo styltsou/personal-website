@@ -33,9 +33,9 @@
 }
 
 @media (max-width: 768px) {
-  .albumArtContainer {
-    width: min(350px, 100%);
-    height: min(350px, 100%);
+  .vinylContainer {
+    width: min(500px, 100%);
+    height: min(500px, 100%);
   }
   
   .trackTitle {
@@ -56,6 +56,8 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  // Ensure minimum width to prevent vinyl from being squished
+  min-width: 250px;
   gap: 3.2rem; /* 32px - was 2rem (32px) */
   justify-content: space-between;
 }
@@ -66,46 +68,215 @@
   align-items: center;
   flex: 1;
   min-height: 0;
-  padding: 3.2rem 1.6rem; /* 32px 16px - was 2rem 1rem (32px 16px) */
+  // Reduced padding to give more space for vinyl
+  padding: 1.6rem; /* 16px - reduced to give more room */
   // Container will size based on available space
+  // Ensure this section maintains reasonable proportions to prevent vinyl skewing
+  min-width: 250px;
+  // Make this a container for size queries (if supported)
+  container-type: size;
+  // Clip overflow to prevent vinyl from extending beyond bounds
+  overflow: hidden;
+  // Ensure this section has a defined size for container queries
+  position: relative;
+  // Ensure box-sizing so padding is included in size calculations
+  box-sizing: border-box;
 }
 
-.albumArtContainer {
-  // Use container's available space - calculate size to stay square
-  // Use both width and height constraints with aspect-ratio to ensure square
-  width: min(500px, 100%);
-  aspect-ratio: 1 / 1;
-  // Height will be auto-calculated from width via aspect-ratio
-  // But also constrain it to not exceed container height
-  max-height: 100%;
-  // If height constraint applies, width will adjust to maintain square
-  @include outset-3d;
-  border-radius: 8px;
-  overflow: hidden;
-  // Remove custom shadow - let retro-3d-outset handle the retro shadow
-  // Ensure container has a minimum size so it's visible
-  min-width: 200px;
-  min-height: 200px;
-  // Add background color so it's visible even if image doesn't load
-  background-color: var(--button-bg);
+.vinylContainer {
+  // Force perfect square that NEVER skews and NEVER overflows
+  // Use container queries to use the smaller of width or height
+  position: relative;
   
-  // Make the link wrapper fill the container
-  a {
-    display: block;
+  // Modern browsers with container query support: use smaller dimension
+  // Container queries (cqw, cqh) already account for padding, so use them directly
+  @supports (container-type: size) {
+    // Use the minimum of container width, container height, or 600px (increased from 400px)
+    // Use 92% to give a safe buffer for box-shadow (8px) and prevent clipping
+    width: min(600px, 92cqw, 92cqh);
+    height: min(600px, 92cqw, 92cqh);
+    // aspect-ratio ensures it stays square even if calculations differ slightly
+  aspect-ratio: 1 / 1;
+    // Ensure it never exceeds the container bounds (strict constraints)
+    max-width: 92cqw;
+    max-height: 92cqh;
+  }
+  
+  // Fallback for browsers without container queries
+  // Use padding-bottom trick which is more reliable for maintaining square
+  @supports not (container-type: size) {
+    // Use 92% to give a safe buffer for box-shadow and prevent overflow
+    width: min(600px, 92%);
+    height: 0;
+    padding-bottom: min(600px, 92%); // Creates square based on width
+    // Ensure it doesn't exceed available height
+    max-height: 92%;
+  }
+  
+  // Universal constraints - ensure it never exceeds parent
+  min-width: 150px; // Reduced from 200px for better flexibility
+  min-height: 150px; // Reduced from 200px for better flexibility
+  max-width: 600px; // Increased from 400px to allow larger vinyl
+  max-height: 600px; // Increased from 400px to allow larger vinyl
+  flex-shrink: 1; // Allow shrinking if needed to fit
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Clip overflow to prevent shadow from extending beyond
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.vinylLink {
+  // Fill the square container completely
     width: 100%;
     height: 100%;
     cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-    
-    &:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
-    }
-    
-    &:active {
-      transform: scale(0.98);
-    }
+  display: block;
+  box-sizing: border-box;
+  
+  // For padding-bottom fallback, position absolutely
+  @supports not (container-type: size) {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
+}
+
+.vinyl {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  // Realistic vinyl record background - black base with subtle groove pattern
+  // Using multiple gradients: center hole, grooves, and base color
+  background: 
+    // Center hole - window background color hole in the middle
+    // Reduced to half radius (1.25% instead of 2.5%)
+    // Black circle around hole extended to 5% (was 3%)
+    radial-gradient(
+      circle at center,
+      var(--window-bg) 0%,
+      var(--window-bg) 1.25%,
+      #000000 1.25%,
+      #000000 5%
+    ),
+    // Groove pattern - simple repeating pattern
+    repeating-radial-gradient(
+      circle at center,
+      #000000 5%,
+      #000000 5.1%,
+      #151515 5.1%,
+      #151515 5.15%,
+      #000000 5.15%,
+      #000000 5.45%
+    );
+  position: relative;
+  // Reduced box-shadow to prevent clipping
+  // Use inset shadow only to avoid extending beyond bounds
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  // Use CSS custom property for rotation to preserve angle when paused
+  // Default to 0deg if --rotation is not set
+  transform: rotate(var(--rotation, 0deg));
+  // No transition when spinning (handled by JavaScript for smooth animation)
+  // Transition only applies when class changes, not during continuous rotation
+}
+
+.vinyl.spinning {
+  // When spinning, animation is handled by JavaScript via --rotation
+  // No CSS animation needed
+  // Remove transition during spinning for smooth animation
+  transition: none;
+}
+
+.vinylGrooves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.vinylGroove {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  &:nth-child(1) {
+    top: 15%;
+    left: 15%;
+    width: 70%;
+    height: 70%;
+  }
+  
+  &:nth-child(2) {
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    }
+    
+  &:nth-child(3) {
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+  }
+  
+  &:nth-child(4) {
+    top: 30%;
+    left: 30%;
+    width: 40%;
+    height: 40%;
+  }
+  
+  &:nth-child(5) {
+    top: 35%;
+    left: 35%;
+    width: 30%;
+    height: 30%;
+  }
+}
+
+.vinylCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 27%; // Reduced from 30% to make it a bit smaller
+  height: 27%; // Reduced from 30% to make it a bit smaller
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  // Create a hole in the center using mask - this creates a transparent center
+  // The mask creates a radial gradient that makes the center transparent
+  // Reduced hole size to half (9% instead of 18%)
+  mask: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 9%,
+    black 9%,
+    black 100%
+  );
+  -webkit-mask: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 9%,
+    black 9%,
+    black 100%
+  );
 }
 
 .albumArt {
@@ -113,8 +284,12 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  // Ensure image is visible
-  opacity: 1;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.vinylLink:hover .albumArt {
+  transform: scale(1.1);
 }
 
 .trackInfoSection {
@@ -150,8 +325,8 @@
 .bottomControls {
   display: flex;
   flex-direction: column;
-  gap: 1.6rem; /* 16px - was 1rem (16px) */
-  padding: 2.4rem 3.2rem; /* 24px 32px - was 1.5rem 2rem (24px 32px) */
+  gap: 1rem; /* 16px - reduced from 1.6rem */
+  padding: 1.2rem 2rem; /* 12px 20px - reduced from 24px 32px */
   background-color: var(--button-bg);
   @include inset-3d;
   border-radius: 4px;
@@ -162,8 +337,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.2rem; /* 12px - was 0.75rem (12px) */
-  padding: 0.8rem; /* 8px - was 0.5rem (8px) */
+  gap: 0.8rem; /* 8px - reduced from 1.2rem */
+  padding: 0.4rem; /* 4px - reduced from 0.8rem */
 }
 
 .seekBarSection {

@@ -12,19 +12,40 @@ import PianoWindow, { PianoIcon } from './components/apps/piano';
 import FlappyBirdWindow, {
   FlappyBirdIcon,
 } from './components/apps/flappy-bird';
-import {
-  MusicPlayerContent,
-  MusicPlayerIcon,
-} from './components/apps/music-player';
+import MusicPlayer, { MusicPlayerIcon } from './components/apps/music-player';
+import { AboutIcon } from './components/apps/about/icon';
+import { ProjectsIcon } from './components/apps/projects/icon';
+import { ContactIcon } from './components/apps/contact/icon';
 
 export const apps: AppConfig[] = [
-  { id: 'about', title: 'About Me', path: '/about', pinned: true },
-  { id: 'projects', title: 'Projects', path: '/projects', pinned: true },
-  { id: 'contact', title: 'Contact', path: '/contact', pinned: true },
+  {
+    id: 'about',
+    title: 'ABOUT.md',
+    path: '/about',
+    desktopIcon: {
+      label: 'ABOUT.md',
+      icon: AboutIcon,
+    },
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    path: '/projects',
+    desktopIcon: {
+      icon: ProjectsIcon,
+    },
+  },
+  {
+    id: 'contact',
+    title: 'Contact',
+    path: '/contact',
+    desktopIcon: {
+      icon: ContactIcon,
+    },
+  },
   {
     id: 'cv',
     title: 'CV',
-    pinned: false,
     component: CvWindow,
     desktopIcon: {
       label: 'cv.pdf',
@@ -34,7 +55,6 @@ export const apps: AppConfig[] = [
   {
     id: 'terminal',
     title: 'Terminal',
-    pinned: false,
     component: TerminalWindow,
     desktopIcon: {
       icon: TerminalIcon,
@@ -43,7 +63,6 @@ export const apps: AppConfig[] = [
   {
     id: 'wikipedia',
     title: 'Wikipedia',
-    pinned: false,
     component: WikipediaWindow,
     desktopIcon: {
       icon: WikipediaIcon,
@@ -52,8 +71,6 @@ export const apps: AppConfig[] = [
   {
     id: 'flappy-bird',
     title: 'Flappy Bird',
-    pinned: false,
-    resizeConstraint: 'diagonal',
     component: FlappyBirdWindow,
     desktopIcon: {
       icon: FlappyBirdIcon,
@@ -62,8 +79,8 @@ export const apps: AppConfig[] = [
   {
     id: 'music-player',
     title: 'MusicPlayer Pro v1.0',
-    pinned: false,
-    component: MusicPlayerContent,
+    minSize: { width: 900, height: 700 }, // Larger minimum size for better vinyl display
+    component: MusicPlayer,
     desktopIcon: {
       label: 'Music',
       icon: MusicPlayerIcon,
@@ -72,8 +89,7 @@ export const apps: AppConfig[] = [
   {
     id: 'piano',
     title: 'Virtual Piano',
-    pinned: false,
-    resizeConstraint: 'disabled',
+    resizable: false,
     component: PianoWindow,
     desktopIcon: {
       label: 'Piano',

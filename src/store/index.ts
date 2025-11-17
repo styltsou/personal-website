@@ -19,7 +19,7 @@ export const useStore = create<Store>((set, get) => ({
 }));
 
 // Window Selectors (for backward compatibility)
-export const useWindowStates = () => useStore((state) => state.windowStates);
+export const useWindows = () => useStore((state) => state.windows);
 export const useActiveWindowId = () => useStore((state) => state.activeWindowId);
 export const useWindowActions = () =>
   useStore((state) => ({

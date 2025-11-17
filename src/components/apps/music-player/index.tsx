@@ -4,6 +4,7 @@
  * Integrates with existing retro OS window system
  */
 
+import { useEffect, useRef } from 'react';
 import { MusicPlayerProvider, useMusicPlayer } from './context';
 import ControlPanel from './control-panel';
 import PlaylistPanel from './playlist-panel';
@@ -17,9 +18,8 @@ export { MusicPlayerProvider, useMusicPlayer } from './context';
 // Export icon so it can be imported from the same place as the component
 export { MusicPlayerIcon } from './icon';
 
-// Export MusicPlayerContent separately so it can be used without the provider
-// This allows the provider to stay mounted at Desktop level while UI is conditionally rendered
-export function MusicPlayerContent() {
+// MusicPlayerContent - the actual UI component (requires provider)
+function MusicPlayerContent() {
   const {
     tracks,
     loading,
@@ -35,6 +35,7 @@ export function MusicPlayerContent() {
     handleTrackSelect,
     currentTrackIndex,
     isBuffering,
+    isPlaying,
   } = useMusicPlayer();
 
   if (loading) {
@@ -69,21 +70,83 @@ export function MusicPlayerContent() {
     );
   }
 
+  // Track vinyl rotation angle to preserve it when paused
+  const vinylRef = useRef<HTMLDivElement>(null);
+  const rotationAngleRef = useRef<number>(0);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastTimestampRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const vinylElement = vinylRef.current;
+    if (!vinylElement) return;
+
+    if (isPlaying) {
+      // Start/resume rotation animation
+      const animate = (timestamp: number) => {
+        if (lastTimestampRef.current === null) {
+          lastTimestampRef.current = timestamp;
+        }
+
+        const deltaTime = timestamp - lastTimestampRef.current;
+        lastTimestampRef.current = timestamp;
+
+        // Update rotation angle (3 seconds per full rotation = 120 degrees per second)
+        rotationAngleRef.current += (deltaTime / 1000) * 120; // degrees per second
+        rotationAngleRef.current = rotationAngleRef.current % 360;
+
+        // Apply rotation via CSS custom property
+        vinylElement.style.setProperty('--rotation', `${rotationAngleRef.current}deg`);
+
+        animationFrameRef.current = requestAnimationFrame(animate);
+      };
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    } else {
+      // Pause: stop animation but keep current angle
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      lastTimestampRef.current = null;
+      // Keep the current rotation angle in the CSS custom property
+      vinylElement.style.setProperty('--rotation', `${rotationAngleRef.current}deg`);
+    }
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [isPlaying]);
+
   return (
     <div className={styles.container}>
       <div className={styles.layout}>
         {/* Main content area */}
         <div className={styles.mainContent}>
-          {/* Album art section - large and centered */}
+          {/* Vinyl record section - large and centered */}
           <div className={styles.albumArtSection}>
-            <div className={styles.albumArtContainer}>
+            <div className={styles.vinylContainer}>
               <a
                 href={currentTrack.spotifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${currentTrack.name} by ${currentTrack.artist} on Spotify`}
                 title={`Open on Spotify: ${currentTrack.name} by ${currentTrack.artist}`}
+                className={styles.vinylLink}
               >
+                <div
+                  ref={vinylRef}
+                  className={`${styles.vinyl} ${isPlaying ? styles.spinning : ''}`}
+                >
+                  <div className={styles.vinylGrooves}>
+                    <div className={styles.vinylGroove}></div>
+                    <div className={styles.vinylGroove}></div>
+                    <div className={styles.vinylGroove}></div>
+                    <div className={styles.vinylGroove}></div>
+                    <div className={styles.vinylGroove}></div>
+                  </div>
+                  <div className={styles.vinylCenter}>
                 <img
                   src={currentTrack.albumArt}
                   alt={`${currentTrack.album} album cover`}
@@ -94,6 +157,8 @@ export function MusicPlayerContent() {
                       'https://via.placeholder.com/400x400/7da3d1/ffffff?text=No+Image';
                   }}
                 />
+                  </div>
+                </div>
               </a>
             </div>
           </div>
@@ -156,7 +221,8 @@ export function MusicPlayerContent() {
   );
 }
 
-// Default export includes provider (for backwards compatibility)
+// Wrapper component that includes provider - used in app-config
+// This ensures the provider only mounts when the window is rendered
 export default function MusicPlayer() {
   return (
     <MusicPlayerProvider>
@@ -164,3 +230,7 @@ export default function MusicPlayer() {
     </MusicPlayerProvider>
   );
 }
+
+// Export MusicPlayerContent separately for backwards compatibility
+// Note: This requires the provider to be mounted (via the default export wrapper)
+export { MusicPlayerContent };

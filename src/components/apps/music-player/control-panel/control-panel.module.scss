@@ -10,7 +10,7 @@
   grid-template-columns: max-content 1fr max-content;
   align-items: center;
   width: 100%;
-  gap: 0.8rem; /* 8px - was 0.5rem (8px) */
+  gap: 0.6rem; /* 6px - reduced from 0.8rem */
 }
 
 .shuffleWrapper {
@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem; /* 8px - was 0.5rem (8px) */
+  gap: 0.6rem; /* 6px - reduced from 0.8rem */
   
   // Ensure all buttons in mainControls have normal icon color
   .button {
@@ -42,10 +42,10 @@
 .button {
   @include button;
   aspect-ratio: 1;
-  min-width: 60px;
-  height: 60px;
-  font-size: 24px;
-  padding: 1.2rem; /* 12px - was 0.75rem (12px) */
+  min-width: 44px;
+  height: 44px;
+  font-size: 18px;
+  padding: 0.8rem; /* 8px - reduced from 12px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,8 +55,8 @@
   
   // Ensure SVG icons are properly sized and inherit color
   svg {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     display: block;
   }
   

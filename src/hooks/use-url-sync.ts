@@ -9,7 +9,7 @@ import { useStore } from '../store';
 
 export function useURLSync() {
   // Properly select from store with individual selectors
-  const windowStates = useStore((state) => state.windowStates);
+  const windows = useStore((state) => state.windows);
   const openWindow = useStore((state) => state.openWindow);
   const closeAllWindows = useStore((state) => state.closeAllWindows);
 
@@ -24,7 +24,7 @@ export function useURLSync() {
   // Check URL on initial mount and open window if needed
   // Only auto-open on initial mount, not when windows are closed programmatically
   useEffect(() => {
-    if (isInitialMount.current && windowStates.length === 0) {
+    if (isInitialMount.current && windows.length === 0) {
       const currentPath = window.location.pathname;
       // Only auto-open if we're on a window path (not home page)
       if (currentPath !== '/') {
@@ -37,7 +37,7 @@ export function useURLSync() {
     } else if (isInitialMount.current) {
       isInitialMount.current = false;
     }
-  }, [windowStates.length, findWindowByPath, openWindow]);
+  }, [windows.length, findWindowByPath, openWindow]);
 
   // Handle browser back/forward navigation
   useEffect(() => {

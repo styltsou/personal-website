@@ -6,14 +6,6 @@
 import type { AppConfig } from './app';
 
 /**
- * Resize constraint for windows
- * - 'none': Full resize capability (all handles)
- * - 'diagonal': Only corner handles (diagonal resize)
- * - 'disabled': No resize capability
- */
-export type ResizeConstraint = 'diagonal' | 'none' | 'disabled';
-
-/**
  * Window position coordinates
  */
 export interface WindowPosition {
@@ -47,6 +39,7 @@ export interface WindowState {
   isMaximized: boolean;
   snapSide: SnapSide;
   content?: string;
+  isPinned: boolean; // Whether window is pinned (can be changed dynamically, initially from config.pinned)
 }
 
 /**

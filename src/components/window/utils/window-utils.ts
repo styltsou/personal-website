@@ -40,10 +40,10 @@ export function calculateCenteredPosition(
  * Calculate the maximum z-index from window states
  */
 export function getMaxZIndex(
-  windowStates: Array<{ zIndex: number }>,
+  windows: Array<{ zIndex: number }>,
   fallback: number = BASE_Z_INDEX - 1
 ): number {
-  return windowStates.reduce((max, ws) => Math.max(max, ws.zIndex), fallback);
+  return windows.reduce((max, window) => Math.max(max, window.zIndex), fallback);
 }
 
 /**
@@ -243,7 +243,7 @@ export function calculateCascadedPosition(
 ): WindowPosition {
   // Check if any visible window is at the default position
   const hasWindowAtDefaultPosition = visibleWindows.some(
-    (ws) => !ws.isMaximized && positionsEqual(ws.position, defaultPosition)
+    (window) => !window.isMaximized && positionsEqual(window.position, defaultPosition)
   );
 
   // If no window is at default position, use default position

@@ -151,6 +151,12 @@ Windows with a `component` property:
 - No content loading needed
 - Examples: Terminal, Music Player, Piano
 
+**Minimized Window Behavior:**
+- When minimized, component-based windows still render their component (hidden with `display: none`)
+- This allows background processes (like music playback) to continue running
+- The component remains mounted, so state and processes persist
+- When the window is closed (not just minimized), the component unmounts
+
 ## Persistence
 
 Window state is persisted to `sessionStorage`:

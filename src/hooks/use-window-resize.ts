@@ -15,6 +15,7 @@ export interface UseWindowResizeOptions {
   initialSize: WindowSize;
   initialPosition: WindowPosition;
   isMaximized: boolean;
+  minSize?: WindowSize; // Optional app-specific minimum size
   onFocus?: () => void;
   onSizeChange?: (size: WindowSize) => void;
   onPositionChange?: (position: WindowPosition) => void;
@@ -25,6 +26,7 @@ export function useWindowResize({
   initialSize,
   initialPosition,
   isMaximized,
+  minSize: appMinSize,
   onFocus,
   onSizeChange,
   onPositionChange,
@@ -99,7 +101,14 @@ export function useWindowResize({
   useEffect(() => {
     if (!isResizing || isMaximized || !resizeHandle) return;
 
-    const minSize = getMinWindowSize();
+    // Use app-specific minSize if provided, otherwise use global minimum
+    const globalMinSize = getMinWindowSize();
+    const minSize = appMinSize
+      ? {
+          width: Math.max(globalMinSize.width, appMinSize.width),
+          height: Math.max(globalMinSize.height, appMinSize.height),
+        }
+      : globalMinSize;
 
     // Set cursor on document body based on resize handle
     document.body.style.cursor = getCursor(resizeHandle);
@@ -149,7 +158,7 @@ export function useWindowResize({
       const constrainedSize = constrainSizeToViewport(
         { width: newWidth, height: newHeight },
         constrainedPosition,
-        minSize
+        minSize // Pass app-specific minSize to viewport constraints
       );
 
       // Store current values in refs for use in mouseup handler

@@ -4,21 +4,20 @@
  */
 
 import { useStore } from '@/store';
-import type { ResizeConstraint } from '@/types/window';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
-  constraint?: ResizeConstraint; // Resize constraint: 'none' (full resize, default), 'diagonal' (corners only), 'disabled' (no resize)
+  resizable?: boolean; // Whether window can be resized (default: true)
 }
 
 export default function ResizeHandles({
   onResizeStart,
-  constraint = 'none',
+  resizable = true,
 }: ResizeHandlesProps) {
   // Don't render any handles if resizing is disabled
-  if (constraint === 'disabled') {
+  if (!resizable) {
     return null;
   }
 
@@ -34,11 +33,9 @@ export default function ResizeHandles({
     return resizeCursor; // Normal resize cursor
   };
 
-  // Determine which handles to show
-  // 'none' means no constraint (full resize - all handles)
-  // 'diagonal' means only corner handles
-  const showCornerHandles = true; // Always show corners
-  const showEdgeHandles = constraint !== 'diagonal'; // Only hide edges when constraint is 'diagonal'
+  // Show all handles when resizable is true
+  const showCornerHandles = true;
+  const showEdgeHandles = true;
 
   return (
     <>

@@ -4,13 +4,12 @@
  * Handles window management, URL synchronization, and sessionStorage persistence
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Window from '../window';
 import MenuBar from '../menu-bar';
 import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../desktop-icons/dragging-icon';
 import LoadingScreen from '../loading-screen';
-import { MusicPlayerProvider, useMusicPlayer } from '../apps/music-player';
 import { useStore } from '@/store';
 import { useWindowContent } from '@/hooks/use-window-content';
 import { useWindowPersistence } from '@/hooks/use-window-persistence';
@@ -23,7 +22,7 @@ export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
 
   // Zustand store - clean and simple!
-  const windowStates = useStore((state) => state.windowStates);
+  const windows = useStore((state) => state.windows);
   const hasLoadedFromPersistence = useStore(
     (state) => state.hasLoadedFromPersistence
   );
@@ -40,19 +39,19 @@ export default function Desktop() {
 
   // Load content for newly opened windows (skip windows with custom components - those with empty path)
   useEffect(() => {
-    windowStates.forEach((ws) => {
+    windows.forEach((window) => {
       // Skip windows with custom components (no path means they use custom React components)
-      if (!ws.config.path) return;
+      if (!window.config.path) return;
 
-      if (!ws.content && !isLoading(ws.id)) {
-        loadWindowContent(ws.id).then((content) => {
+      if (!window.content && !isLoading(window.id)) {
+        loadWindowContent(window.id).then((content) => {
           if (content) {
-            updateWindowContent(ws.id, content);
+            updateWindowContent(window.id, content);
           }
         });
       }
     });
-  }, [windowStates, loadWindowContent, isLoading, updateWindowContent]);
+  }, [windows, loadWindowContent, isLoading, updateWindowContent]);
 
   // Update URL when active window changes
   const activeWindowId = useStore((state) => state.activeWindowId);
@@ -60,41 +59,8 @@ export default function Desktop() {
     updateURL(activeWindowId);
   }, [activeWindowId, updateURL]);
 
-  // Component to handle music player window close
-  function MusicPlayerWindowWatcher() {
-    const windowStates = useStore((state) => state.windowStates);
-    const { pause, isPlaying } = useMusicPlayer();
-    const previousWindowExistsRef = useRef<boolean | null>(null);
-
-    useEffect(() => {
-      const musicPlayerWindowExists = windowStates.some(
-        (ws) => ws.id === 'music-player'
-      );
-
-      // Initialize ref on first render
-      if (previousWindowExistsRef.current === null) {
-        previousWindowExistsRef.current = musicPlayerWindowExists;
-        return;
-      }
-
-      // If window was open and now it's closed, stop the player
-      if (
-        previousWindowExistsRef.current &&
-        !musicPlayerWindowExists &&
-        isPlaying
-      ) {
-        pause();
-      }
-
-      previousWindowExistsRef.current = musicPlayerWindowExists;
-    }, [windowStates, pause, isPlaying]);
-
-    return null;
-  }
-
   return (
-    <MusicPlayerProvider>
-      <MusicPlayerWindowWatcher />
+    <>
       <LoadingScreen />
       <div
         className={cn(
@@ -106,8 +72,8 @@ export default function Desktop() {
         <DesktopIcons />
         <DraggingIcon />
         {/* Render all open windows */}
-        {windowStates
-          .filter((ws) => !ws.isMinimized)
+        {windows
+          .filter((window) => !window.isMinimized)
           .map((windowState) => (
             <Window
               key={windowState.id}
@@ -116,6 +82,6 @@ export default function Desktop() {
             />
           ))}
       </div>
-    </MusicPlayerProvider>
+    </>
   );
 }

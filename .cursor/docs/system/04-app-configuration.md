@@ -74,6 +74,8 @@ Apps that use custom React components:
 - Component is rendered directly in the window
 - No content loading needed
 - Full React component capabilities
+- Component remains mounted when window is minimized (allows background processes)
+- Component unmounts when window is closed
 
 ## Desktop Icons
 
@@ -85,13 +87,15 @@ To appear as a desktop icon, an app must have a `desktopIcon` property:
 {
   id: 'music-player',
   title: 'MusicPlayer Pro v1.0',
-  component: MusicPlayerContent,
+  component: MusicPlayer,  // Wrapper component that includes provider
   desktopIcon: {
     label: 'Music',           // Optional: defaults to title
     icon: MusicPlayerIcon     // React component or image path
   }
 }
 ```
+
+**Note**: For apps that need providers or context (like the music player), the component should be a wrapper that includes the provider. This ensures the provider only mounts when the window is rendered.
 
 **Icon Generation:**
 - Icons are automatically generated from apps with `desktopIcon`

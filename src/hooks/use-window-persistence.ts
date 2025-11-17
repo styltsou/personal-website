@@ -9,7 +9,7 @@ import type { WindowState, ClosedWindowState } from '../types/window';
 import { BASE_Z_INDEX } from '../constants';
 
 interface PersistedState {
-  windowStates: WindowState[];
+  windows: WindowState[];
   closedWindows: Record<string, ClosedWindowState>;
   nextZIndex: number;
 }
@@ -18,7 +18,7 @@ const STORAGE_KEY = 'desktop-windows';
 
 export function useWindowPersistence() {
   // Properly select from store with individual selectors
-  const windowStates = useStore((state) => state.windowStates);
+  const windows = useStore((state) => state.windows);
   const closedWindows = useStore((state) => state.closedWindows);
   const nextZIndex = useStore((state) => state.nextZIndex);
   const initializeFromPersistence = useStore(
@@ -37,8 +37,10 @@ export function useWindowPersistence() {
       const saved = sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: PersistedState = JSON.parse(saved);
+        // Support both old 'windowStates' and new 'windows' keys for backward compatibility
+        const persistedWindows = parsed.windows || parsed.windowStates || [];
         initializeFromPersistence(
-          parsed.windowStates || [],
+          persistedWindows,
           parsed.nextZIndex || 1000,
           parsed.closedWindows || {}
         );
@@ -56,7 +58,7 @@ export function useWindowPersistence() {
   useEffect(() => {
     try {
       const stateToSave: PersistedState = {
-        windowStates,
+        windows,
         closedWindows,
         nextZIndex,
       };
@@ -64,5 +66,5 @@ export function useWindowPersistence() {
     } catch (error) {
       console.warn('Failed to save window states to sessionStorage:', error);
     }
-  }, [windowStates, closedWindows, nextZIndex]);
+  }, [windows, closedWindows, nextZIndex]);
 }

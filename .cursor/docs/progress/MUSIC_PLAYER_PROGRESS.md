@@ -53,10 +53,12 @@ A retro-styled music player component that integrates seamlessly with the existi
 ### Integration
 
 - ✅ **Window System Integration**
-  - ✅ Added to `src/data/windows.ts` with config
-  - ✅ Created `MusicPlayerIcon` in `src/data/icon-components.tsx`
-  - ✅ Added icon config to `src/app-config.ts`
-  - ✅ Updated `src/components/desktop/index.tsx` to render MusicPlayer
+  - ✅ Added to `src/app-config.ts` with config
+  - ✅ Created `MusicPlayerIcon` component
+  - ✅ Self-contained architecture (no Desktop-level dependencies)
+  - ✅ Provider only mounts when window is open or minimized
+  - ✅ Player unmounts when window is completely closed
+  - ✅ Background playback support (continues when minimized)
 
 ### Styling
 
@@ -88,9 +90,12 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ Proper TypeScript interfaces
 - ✅ No linter errors
 - ✅ Follows kebab-case naming conventions
-- ✅ Self-contained component
+- ✅ Self-contained component (all logic within music-player directory)
 - ✅ Proper cleanup on unmount
 - ✅ Error handling for audio playback
+- ✅ React Portal for YouTube player (proper React patterns)
+- ✅ No state pollution in main Zustand store (read-only window state access)
+- ✅ Clean separation of concerns (Desktop component unaware of player)
 
 ---
 
@@ -142,28 +147,43 @@ A retro-styled music player component that integrates seamlessly with the existi
 
 ### Current Implementation
 
-- Uses mock data for tracks (10 classic rock tracks)
-- Ready for Spotify API integration when credentials are provided
+- Uses static JSON data for tracks (fetched from Spotify API via automated script)
+- Supports both HTML5 Audio and YouTube IFrame API playback
 - All basic playback features working
 - Component fully integrated with window system
 - Styling matches existing retro aesthetic
+- **Architecture**: Self-contained player with conditional mounting
+  - Provider only mounts when music player window exists (open or minimized)
+  - Player unmounts when window is completely closed
+  - Background playback continues when window is minimized
+  - YouTube player uses React Portal for proper DOM management
+  - No Desktop-level dependencies (clean separation)
+
+### Architecture Details
+
+- **Conditional Mounting**: Player only exists when window is open or minimized
+- **Window Lifecycle**: Automatically pauses when window closes, continues when minimized
+- **React Portal**: YouTube player container rendered via portal to `document.body`
+- **State Management**: Uses React Context for player state, read-only access to main Zustand store for window state
+- **Self-Contained**: All player logic contained within `src/components/apps/music-player/` directory
+- **No Desktop Coupling**: Desktop component has no knowledge of music player internals
 
 ### Known Limitations
 
-- Mock data only (no real Spotify API yet)
 - No visualizer yet
 - No audio effects yet
-- No persistence yet
+- No persistence yet (player state not saved between sessions)
 - No keyboard shortcuts yet
 
 ### Next Steps
 
-1. Test basic playback functionality
-2. Add Spotify API integration when credentials available
-3. Implement visualizer (Phase 2)
-4. Add audio effects (Phase 3)
-5. Add persistence (Phase 4)
-6. Polish and enhancements (Phase 5)
+1. ✅ Basic playback functionality - Complete
+2. ✅ Spotify API integration - Complete (automated track updates)
+3. ✅ Architecture refactoring - Complete (conditional mounting, React Portal, self-contained)
+4. Implement visualizer (Phase 2)
+5. Add audio effects (Phase 3)
+6. Add persistence (Phase 4)
+7. Polish and enhancements (Phase 5)
 
 ---
 
@@ -174,6 +194,34 @@ A retro-styled music player component that integrates seamlessly with the existi
 - ✅ Fixed syntax error in `seek-bar.module.scss` (missing closing parenthesis)
 - ✅ Fixed audio cleanup in `use-audio-player.ts` (added null check)
 - ✅ Fixed playlist toggle layout (added container for hidden state)
+
+### Architecture Refactoring (Latest)
+
+- ✅ **Conditional Mounting**: Refactored to only mount player when window is open or minimized
+  - Provider wraps component internally (not at Desktop level)
+  - Player unmounts when window is completely closed
+  - Background playback continues when minimized
+  
+- ✅ **React Portal**: Replaced direct DOM manipulation with React Portal for YouTube player
+  - YouTube player container now rendered via `createPortal` to `document.body`
+  - Proper React lifecycle management
+  - Cleaner, more maintainable code
+  
+- ✅ **Self-Contained Architecture**: Removed all Desktop-level dependencies
+  - No `MusicPlayerProvider` wrapper in Desktop component
+  - No `MusicPlayerWindowWatcher` component
+  - Desktop component completely unaware of music player
+  - All player logic contained within `music-player` directory
+  
+- ✅ **State Management**: Clean separation of concerns
+  - Player state managed via React Context (within music-player directory)
+  - Read-only access to main Zustand store (only to check window state)
+  - No player-specific state in main Zustand store
+  
+- ✅ **Window Lifecycle**: Internal handling of window state changes
+  - Automatically pauses playback when window closes
+  - Continues playback when window is minimized
+  - Window component renders component even when minimized (hidden) to allow background processes
 
 ---
 

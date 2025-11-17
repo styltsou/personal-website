@@ -3,7 +3,8 @@
  * Uses a hidden YouTube iframe to play tracks
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { Track, AudioState } from '../types';
 
 // YouTube IFrame API types
@@ -68,6 +69,7 @@ interface UseYouTubePlayerReturn {
   stop: () => void;
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
+  portalContainer: JSX.Element | null;
 }
 
 /**
@@ -138,32 +140,9 @@ export function useYouTubePlayer(
     };
   }, []);
 
-  // Create container element on mount
-  useEffect(() => {
-    if (containerRef.current) return;
+  // Container will be created via portal - no direct DOM manipulation needed
 
-    const container = document.createElement('div');
-    container.id = 'youtube-player-container';
-    // Hidden YouTube player container
-    container.style.position = 'fixed';
-    container.style.top = '-9999px';
-    container.style.left = '-9999px';
-    container.style.width = '320px';
-    container.style.height = '240px';
-    container.style.opacity = '0';
-    container.style.pointerEvents = 'none';
-    container.style.visibility = 'hidden';
-    document.body.appendChild(container);
-    containerRef.current = container;
-
-    return () => {
-      if (containerRef.current && containerRef.current.parentNode) {
-        containerRef.current.parentNode.removeChild(containerRef.current);
-      }
-    };
-  }, []);
-
-  // Initialize player when API is ready (only once)
+  // Initialize player when API is ready and container is mounted
   useEffect(() => {
     if (!apiReady || !containerRef.current || playerRef.current) return;
 
@@ -616,6 +595,33 @@ export function useYouTubePlayer(
     };
   }, []);
 
+  // Create portal container element - hidden YouTube player container
+  // Memoize to prevent unnecessary recreations
+  const portalContainer = useMemo(
+    () =>
+      createPortal(
+        <div
+          id="youtube-player-container"
+          ref={(el) => {
+            if (el) {
+              containerRef.current = el;
+              // Apply hidden styles
+              el.style.position = 'fixed';
+              el.style.top = '-9999px';
+              el.style.left = '-9999px';
+              el.style.width = '320px';
+              el.style.height = '240px';
+              el.style.opacity = '0';
+              el.style.pointerEvents = 'none';
+              el.style.visibility = 'hidden';
+            }
+          }}
+        />,
+        document.body
+      ),
+    [] // Only create once
+  );
+
   return {
     state: {
       isPlaying,
@@ -632,5 +638,6 @@ export function useYouTubePlayer(
     stop,
     seek,
     setVolume,
+    portalContainer,
   };
 }

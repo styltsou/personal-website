@@ -7,11 +7,10 @@
 import { useEffect, useRef } from 'react';
 import React from 'react';
 import { MENU_BAR_HEIGHT } from '@/constants';
-import { getSnappedPreview } from './utils/window-utils';
+import { getSnappedPreview, getMinWindowSize } from './utils/window-utils';
 import { useWindowDrag } from '@/hooks/use-window-drag';
 import { useWindowResize } from '@/hooks/use-window-resize';
 import { useStore } from '@/store';
-import type { ResizeConstraint } from '@/types/window';
 import { cn } from '@/utils/cn';
 import TitleBar from './title-bar';
 import ResizeHandles from './resize-handles';
@@ -26,7 +25,7 @@ export interface WindowProps {
 export default function Window({ id, isLoading }: WindowProps) {
   // Get window state and actions from store
   const windowState = useStore((state) =>
-    state.windowStates.find((ws) => ws.id === id)
+    state.windows.find((window) => window.id === id)
   );
   const activeWindowId = useStore((state) => state.activeWindowId);
 
@@ -57,7 +56,8 @@ export default function Window({ id, isLoading }: WindowProps) {
   const title = config.title;
   const isActive = activeWindowId === id;
   const hideOverflow = id === 'wikipedia';
-  const resizeConstraint: ResizeConstraint = config.resizeConstraint || 'none';
+  const resizable = config.resizable ?? true; // Default to true if not specified
+  const minSize = config.minSize ?? getMinWindowSize(); // Default to global minimum if not specified
   // Determine if window is loading (only for content-based windows)
   const isWindowLoading = windowState.config.path && isLoading(windowState.id);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -90,6 +90,7 @@ export default function Window({ id, isLoading }: WindowProps) {
     initialSize,
     initialPosition,
     isMaximized,
+    minSize, // Use defaulted minSize (either from config or global minimum)
     onFocus: () => focusWindow(id),
     onSizeChange: (size) => updateWindowSize(id, size),
     // Pass function to get current drag position so resize can sync with it
@@ -126,7 +127,16 @@ export default function Window({ id, isLoading }: WindowProps) {
     }
   };
 
-  if (isMinimized) return null;
+  // When minimized, still render the component (for background processes like music player)
+  // but hide the window UI
+  if (isMinimized) {
+    return (
+      <div style={{ display: 'none' }}>
+        {windowState.config.component &&
+          React.createElement(windowState.config.component)}
+      </div>
+    );
+  }
 
   // Calculate window size and position
   // If maximized, override display to maximized values (but keep actual position/size in store)
@@ -263,7 +273,7 @@ export default function Window({ id, isLoading }: WindowProps) {
         {!isMaximized && (
           <ResizeHandles
             onResizeStart={handleResizeStart}
-            constraint={resizeConstraint}
+            resizable={resizable}
           />
         )}
       </div>

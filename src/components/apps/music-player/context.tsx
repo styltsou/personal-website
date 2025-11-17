@@ -12,9 +12,11 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
+
+import { useStore } from '@/store';
+import type { Track } from './types';
 import { useAudioPlayer } from './hooks/use-audio-player';
 import { useYouTubePlayer } from './hooks/use-youtube-player';
-import type { Track } from './types';
 import tracksData from '@/content/tracks/tracks.json';
 
 type LoopMode = 'none' | 'playlist' | 'song';
@@ -72,6 +74,12 @@ interface MusicPlayerProviderProps {
 }
 
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
+  // Read-only access to window state to check if music player window exists
+  const windows = useStore((state) => state.windows);
+  const musicPlayerWindowExists = windows.some(
+    (window) => window.id === 'music-player'
+  );
+
   // Get tracks from Content Collection (imported as static JSON)
   const tracks: Track[] = tracksData.tracks || [];
   const loading = false; // No loading needed for static data
@@ -85,6 +93,12 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
 
   const playRef = useRef<(() => void) | null>(null);
   const seekRef = useRef<((time: number) => void) | null>(null);
+  const activePlayerRef = useRef<{
+    play: () => void;
+    pause: () => void;
+    state: { isPlaying: boolean };
+  } | null>(null);
+  const previousWindowExistsRef = useRef<boolean | null>(null);
 
   // Shuffle array helper
   const shuffleArray = useCallback((array: number[]): number[] => {
@@ -211,25 +225,48 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   // Select the active player based on track type
   const activePlayer = isYouTubeTrack ? youtubePlayer : audioPlayer;
 
+  // Get portal container from YouTube player (only when using YouTube)
+  const youtubePortalContainer = isYouTubeTrack
+    ? youtubePlayer.portalContainer
+    : null;
+
   useEffect(() => {
     playRef.current = activePlayer.play;
     seekRef.current = activePlayer.seek;
-  }, [activePlayer.play, activePlayer.seek]);
+    activePlayerRef.current = activePlayer;
+  }, [activePlayer]);
 
-  const handleTrackSelect = useCallback(
-    (index: number) => {
-      setCurrentTrackIndex(index);
-      
-      // Auto-play when user explicitly selects a track
-      // Wait a bit for the player to load the new track, then play
-      setTimeout(() => {
-        if (playRef.current) {
-          playRef.current();
-        }
-      }, 300);
-    },
-    []
-  );
+  // Handle window lifecycle: pause when window closes
+  useEffect(() => {
+    // Initialize ref on first render
+    if (previousWindowExistsRef.current === null) {
+      previousWindowExistsRef.current = musicPlayerWindowExists;
+      return;
+    }
+
+    // If window was open and now it's closed, pause playback
+    if (
+      previousWindowExistsRef.current &&
+      !musicPlayerWindowExists &&
+      activePlayerRef.current?.state.isPlaying
+    ) {
+      activePlayerRef.current.pause();
+    }
+
+    previousWindowExistsRef.current = musicPlayerWindowExists;
+  }, [musicPlayerWindowExists]);
+
+  const handleTrackSelect = useCallback((index: number) => {
+    setCurrentTrackIndex(index);
+
+    // Auto-play when user explicitly selects a track
+    // Wait a bit for the player to load the new track, then play
+    setTimeout(() => {
+      if (playRef.current) {
+        playRef.current();
+      }
+    }, 300);
+  }, []);
 
   const toggleLoop = useCallback(() => {
     setLoopMode((prev) => {
@@ -307,11 +344,14 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   }, [getPreviousIndex, activePlayer]);
 
   const isBufferingValue = activePlayer.state.isBuffering;
-  
+
   // Debug: log buffering state
   useEffect(() => {
     if (isBufferingValue) {
-      console.log('Context: isBuffering = true, activePlayer:', activePlayer.state);
+      console.log(
+        'Context: isBuffering = true, activePlayer:',
+        activePlayer.state
+      );
     }
   }, [isBufferingValue, activePlayer]);
 
@@ -345,6 +385,8 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   return (
     <MusicPlayerContext.Provider value={value}>
       {children}
+      {/* Render YouTube player portal container */}
+      {youtubePortalContainer}
     </MusicPlayerContext.Provider>
   );
 }

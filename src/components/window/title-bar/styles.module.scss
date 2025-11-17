@@ -9,14 +9,14 @@
   background-color: var(--accent);
   color: #2a2a2a; /* Dark text for good contrast on accent background in both themes */
   border-radius: 4px 4px 0 0;
-  padding: 8px 10px;
+  padding: 5px 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 40px;
+  min-height: 30px;
   box-shadow: 0 1px 2px var(--titlebar-shadow);
   position: relative;
   cursor: pointer;

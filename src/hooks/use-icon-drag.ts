@@ -47,7 +47,7 @@ export function useIconDrag({
   // Get all icon states from store for collision detection
   const iconStates = useStore((state) => state.iconStates);
   const setDraggingIcon = useStore((state) => state.setDraggingIcon);
-  const windowStates = useStore((state) => state.windowStates);
+  const windows = useStore((state) => state.windows);
 
   // Helper function to check if icon position overlaps with another icon
   const isPositionOverIcon = useCallback(
@@ -74,30 +74,30 @@ export function useIconDrag({
       const iconCenterX = iconPos.x + ICON_WIDTH / 2;
       const iconCenterY = iconPos.y + ICON_HEIGHT / 2;
 
-      return windowStates.some((ws) => {
-        if (ws.isMinimized) return false;
+      return windows.some((windowState) => {
+        if (windowState.isMinimized) return false;
 
         let windowX: number,
           windowY: number,
           windowWidth: number,
           windowHeight: number;
 
-        if (ws.isMaximized) {
+        if (windowState.isMaximized) {
           windowX = 0;
           windowY = MENU_BAR_HEIGHT;
           windowWidth = window.innerWidth;
           windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
-        } else if (ws.snapSide) {
-          const snapped = getSnappedPreview(ws.snapSide);
+        } else if (windowState.snapSide) {
+          const snapped = getSnappedPreview(windowState.snapSide);
           windowX = snapped.position.x;
           windowY = snapped.position.y;
           windowWidth = snapped.size.width;
           windowHeight = snapped.size.height;
         } else {
-          windowX = ws.position.x;
-          windowY = ws.position.y;
-          windowWidth = ws.size.width;
-          windowHeight = ws.size.height;
+          windowX = windowState.position.x;
+          windowY = windowState.position.y;
+          windowWidth = windowState.size.width;
+          windowHeight = windowState.size.height;
         }
 
         return (
@@ -108,7 +108,7 @@ export function useIconDrag({
         );
       });
     },
-    [windowStates]
+    [windows]
   );
 
   // Convert initial grid position to pixel position

@@ -56,7 +56,7 @@ export default function ControlPanel() {
               : 'Shuffle: Off (click to turn on)'
           }
         >
-          <Shuffle size={24} strokeWidth={2} />
+          <Shuffle size={18} strokeWidth={2} />
         </button>
       </div>
       <div className={styles.mainControls}>
@@ -66,7 +66,7 @@ export default function ControlPanel() {
           aria-label="Previous track"
           title="Previous track"
         >
-          <SkipBack size={24} strokeWidth={2} />
+          <SkipBack size={18} strokeWidth={2} />
         </button>
         <button
           className={styles.button}
@@ -75,9 +75,9 @@ export default function ControlPanel() {
           title={isPlaying ? 'Pause' : 'Play'}
         >
           {isPlaying ? (
-            <Pause size={24} strokeWidth={2} />
+            <Pause size={18} strokeWidth={2} />
           ) : (
-            <Play size={24} strokeWidth={2} />
+            <Play size={18} strokeWidth={2} />
           )}
         </button>
         <button
@@ -86,7 +86,7 @@ export default function ControlPanel() {
           aria-label="Next track"
           title="Next track"
         >
-          <SkipForward size={24} strokeWidth={2} />
+          <SkipForward size={18} strokeWidth={2} />
         </button>
       </div>
       <div className={styles.loopWrapper}>
@@ -97,9 +97,9 @@ export default function ControlPanel() {
           title={getLoopTitle()}
         >
           {loopMode === 'song' ? (
-            <Repeat1 size={24} strokeWidth={2} />
+            <Repeat1 size={18} strokeWidth={2} />
           ) : (
-            <Repeat size={24} strokeWidth={2} />
+            <Repeat size={18} strokeWidth={2} />
           )}
         </button>
       </div>

@@ -3,7 +3,7 @@
  * Top system menu bar with window buttons, clock, date, and theme toggle
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import ThemeToggle from './theme-toggle';
 
@@ -14,7 +14,7 @@ import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export default function MenuBar() {
-  const windowStates = useStore((state) => state.windowStates);
+  const windows = useStore((state) => state.windows);
   const activeWindowId = useStore((state) => state.activeWindowId);
   const openWindow = useStore((state) => state.openWindow);
   const closeWindow = useStore((state) => state.closeWindow);
@@ -28,7 +28,7 @@ export default function MenuBar() {
   }, []);
 
   const getWindowButtonState = (windowId: string) => {
-    const windowState = windowStates.find((ws) => ws.id === windowId);
+    const windowState = windows.find((window) => window.id === windowId);
     const exists = !!windowState;
     const isMinimized = windowState?.isMinimized ?? false;
     const isOpen = exists && !isMinimized;
@@ -76,19 +76,35 @@ export default function MenuBar() {
     }
   };
 
+  // Show pinned windows (even when closed) and open windows
+  // Use windows array order - most recently opened appears at the end (since we append to array)
+  const menuBarWindows = useMemo(() => {
+    // Get all apps that are either pinned or currently open
+    const pinnedApps = apps.filter((app) => {
+      const windowState = windows.find((w) => w.id === app.id);
+      // Show if pinned in config OR pinned in state (for dynamic pinning)
+      return (app.pinned ?? false) || windowState?.isPinned;
+    });
+    
+    const openApps = windows
+      .map((windowState) => {
+        return apps.find((app) => app.id === windowState.id);
+      })
+      .filter((app): app is NonNullable<typeof app> => app !== undefined);
+
+    // Combine: pinned apps first (in app config order), then open apps (in windows array order)
+    // Remove duplicates (if a pinned app is also open, it appears in openApps)
+    const pinnedIds = new Set(pinnedApps.map((app) => app.id));
+    const openAppsNotPinned = openApps.filter((app) => !pinnedIds.has(app.id));
+    
+    return [...pinnedApps, ...openAppsNotPinned];
+  }, [windows]);
+
   return (
     <div className={styles.menuBar}>
       <div className={styles.menuBarLeft}>
         <span className={styles.menuBarLogo}>styltsou</span>
-        {apps
-          .filter((window) => {
-            // Show pinned windows always, or unpinned windows only if they exist (are open)
-            return (
-              window.pinned === true ||
-              windowStates.some((ws) => ws.id === window.id)
-            );
-          })
-          .map((window) => {
+        {menuBarWindows.map((window) => {
             const state = getWindowButtonState(window.id);
 
             return (
