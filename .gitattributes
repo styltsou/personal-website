@@ -1,0 +1,3 @@
+# Always use remote version of tracks.json (updated by GitHub Actions)
+src/content/tracks/tracks.json merge=theirs
+
