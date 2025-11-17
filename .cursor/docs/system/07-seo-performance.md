@@ -271,7 +271,7 @@ These apps are client-side only (no SEO needed):
    ---
    
    <BaseLayout title="..." description="...">
-     <script type="application/ld+json" set:html={...} />
+     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
      <NewPageContent />
    </BaseLayout>
    ```
