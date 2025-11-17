@@ -12,7 +12,13 @@ import {
   getDefaultWindowSize,
   constrainWindowSize,
 } from '@/components/window/utils/window-utils';
-import type { WindowState, ClosedWindowState, WindowPosition, WindowSize, SnapSide } from '@/types/window';
+import type {
+  WindowState,
+  ClosedWindowState,
+  WindowPosition,
+  WindowSize,
+  SnapSide,
+} from '@/types/window';
 import type { WindowSlice } from './types';
 import type { Store } from '../index';
 
@@ -45,18 +51,18 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
   // Open a window
   openWindow: (windowId: string) => {
     const state = get();
-    const config = apps.find((w) => w.id === windowId);
+    const config = apps.find(w => w.id === windowId);
     if (!config) return;
 
     // Check if window is already open
-    const existing = state.windows.find((window) => window.id === windowId);
+    const existing = state.windows.find(window => window.id === windowId);
     if (existing) {
       // Bring to front and restore if minimized
       // We need to update z-index and active window
       const maxZIndex = getMaxZIndex(state.windows);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
       set({
-        windows: state.windows.map((window) => {
+        windows: state.windows.map(window => {
           if (window.id !== windowId) return window;
           // Restore the window: un-minimize and bring to front
           return {
@@ -92,7 +98,9 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       );
 
       // Get visible windows (non-minimized) to check for cascading
-      const visibleWindows = state.windows.filter((window) => !window.isMinimized);
+      const visibleWindows = state.windows.filter(
+        window => !window.isMinimized
+      );
 
       // Calculate cascaded position if needed
       newWindowPosition = calculateCascadedPosition(
@@ -131,8 +139,10 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Close a window - save its state before closing
   closeWindow: (windowId: string) => {
-    set((state) => {
-      const windowToClose = state.windows.find((window) => window.id === windowId);
+    set(state => {
+      const windowToClose = state.windows.find(
+        window => window.id === windowId
+      );
       if (!windowToClose) return state;
 
       // Save window state before closing
@@ -146,7 +156,7 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       };
 
       return {
-        windows: state.windows.filter((window) => window.id !== windowId),
+        windows: state.windows.filter(window => window.id !== windowId),
         closedWindows: {
           ...state.closedWindows,
           [windowId]: closedState,
@@ -159,8 +169,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Minimize a window
   minimizeWindow: (windowId: string) => {
-    set((state) => ({
-      windows: state.windows.map((window) =>
+    set(state => ({
+      windows: state.windows.map(window =>
         window.id === windowId ? { ...window, isMinimized: true } : window
       ),
     }));
@@ -168,12 +178,12 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Maximize/Restore a window
   maximizeWindow: (windowId: string) => {
-    set((state) => {
+    set(state => {
       const maxZIndex = getMaxZIndex(state.windows);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map((window) => {
+        windows: state.windows.map(window => {
           if (window.id !== windowId) return window;
 
           if (window.isMaximized) {
@@ -204,14 +214,14 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Focus a window (bring to front)
   focusWindow: (windowId: string) => {
-    const config = apps.find((w) => w.id === windowId);
+    const config = apps.find(w => w.id === windowId);
     if (!config) return;
 
-    set((state) => {
+    set(state => {
       const maxZIndex = getMaxZIndex(state.windows);
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
       return {
-        windows: state.windows.map((window) => ({
+        windows: state.windows.map(window => ({
           ...window,
           zIndex: window.id === windowId ? newZIndex : window.zIndex,
         })),
@@ -228,8 +238,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window position
   updateWindowPosition: (windowId: string, position: WindowPosition) => {
-    set((state) => ({
-      windows: state.windows.map((window) => {
+    set(state => ({
+      windows: state.windows.map(window => {
         if (window.id !== windowId || window.isMaximized) return window;
         return {
           ...window,
@@ -241,8 +251,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window size
   updateWindowSize: (windowId: string, size: WindowSize) => {
-    set((state) => ({
-      windows: state.windows.map((window) => {
+    set(state => ({
+      windows: state.windows.map(window => {
         if (window.id !== windowId || window.isMaximized) return window;
         return {
           ...window,
@@ -254,8 +264,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Update window content
   updateWindowContent: (windowId: string, content: string) => {
-    set((state) => ({
-      windows: state.windows.map((window) =>
+    set(state => ({
+      windows: state.windows.map(window =>
         window.id === windowId ? { ...window, content } : window
       ),
     }));
@@ -263,8 +273,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Snap a window to a side
   snapWindow: (windowId: string, snapSide: SnapSide) => {
-    set((state) => {
-      const targetWindow = state.windows.find((window) => window.id === windowId);
+    set(state => {
+      const targetWindow = state.windows.find(window => window.id === windowId);
       if (!targetWindow || targetWindow.isMaximized || !snapSide) return state;
 
       // Don't store snapped size/position - derive it during rendering
@@ -273,7 +283,7 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map((window) => {
+        windows: state.windows.map(window => {
           if (window.id !== windowId) return window;
           return {
             ...window,
@@ -290,8 +300,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Unsnap a window
   unsnapWindow: (windowId: string) => {
-    set((state) => {
-      const targetWindow = state.windows.find((window) => window.id === windowId);
+    set(state => {
+      const targetWindow = state.windows.find(window => window.id === windowId);
       if (!targetWindow || !targetWindow.snapSide) return state;
 
       // Since we don't store snapped size/position, just clear snapSide
@@ -300,7 +310,7 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
       const newZIndex = calculateNextZIndex(maxZIndex, state.nextZIndex);
 
       return {
-        windows: state.windows.map((window) => {
+        windows: state.windows.map(window => {
           if (window.id !== windowId) return window;
           return {
             ...window,
@@ -331,8 +341,8 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
     const { hasLoadedFromPersistence } = get();
     if (!hasLoadedFromPersistence) {
       // Restore full config from apps array (component references are lost during JSON serialization)
-      const restoredStates = persistedStates.map((persistedState) => {
-        const appConfig = apps.find((app) => app.id === persistedState.id);
+      const restoredStates = persistedStates.map(persistedState => {
+        const appConfig = apps.find(app => app.id === persistedState.id);
         if (appConfig) {
           return {
             ...persistedState,
@@ -359,7 +369,6 @@ export const createWindowSlice = (set: any, get: () => Store): WindowSlice => ({
 
   // Get window state by ID
   getWindowState: (windowId: string) => {
-    return get().windows.find((window) => window.id === windowId);
+    return get().windows.find(window => window.id === windowId);
   },
 });
-

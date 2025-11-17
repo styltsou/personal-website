@@ -28,4 +28,3 @@ export const ContactIcon = (): ReactNode => (
     </text>
   </svg>
 );
-

@@ -152,7 +152,7 @@ export function useAudioPlayer(
       setIsBuffering(false); // Done loading
       // Auto-play if we were supposed to
       if (shouldAutoPlay) {
-        audio.play().catch((err) => {
+        audio.play().catch(err => {
           console.error('Error auto-playing audio:', err);
         });
       }
@@ -245,7 +245,7 @@ export function useAudioPlayer(
           setIsPaused(false);
           setIsStopped(false);
         })
-        .catch((err) => {
+        .catch(err => {
           console.error('Error playing audio:', err);
           setIsPlaying(false);
           setIsPaused(false);

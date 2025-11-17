@@ -19,10 +19,10 @@ export const useStore = create<Store>((set, get) => ({
 }));
 
 // Window Selectors (for backward compatibility)
-export const useWindows = () => useStore((state) => state.windows);
-export const useActiveWindowId = () => useStore((state) => state.activeWindowId);
+export const useWindows = () => useStore(state => state.windows);
+export const useActiveWindowId = () => useStore(state => state.activeWindowId);
 export const useWindowActions = () =>
-  useStore((state) => ({
+  useStore(state => ({
     openWindow: state.openWindow,
     closeWindow: state.closeWindow,
     minimizeWindow: state.minimizeWindow,
@@ -37,12 +37,11 @@ export const useWindowActions = () =>
   }));
 
 // Icon Selectors (for backward compatibility)
-export const useIconStates = () => useStore((state) => state.iconStates);
-export const useSelectedIconId = () => useStore((state) => state.selectedIconId);
+export const useIconStates = () => useStore(state => state.iconStates);
+export const useSelectedIconId = () => useStore(state => state.selectedIconId);
 export const useIconActions = () =>
-  useStore((state) => ({
+  useStore(state => ({
     updateIconPosition: state.updateIconPosition,
     selectIcon: state.selectIcon,
     deselectIcons: state.deselectIcons,
   }));
-

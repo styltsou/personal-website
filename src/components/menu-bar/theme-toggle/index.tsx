@@ -26,7 +26,8 @@ export default function ThemeToggle() {
   // Sync with pre-initialized theme (theme is already set by blocking script in head)
   useEffect(() => {
     // Read current theme state from DOM (already set by blocking script)
-    const isCurrentlyDark = document.documentElement.classList.contains('dark-theme');
+    const isCurrentlyDark =
+      document.documentElement.classList.contains('dark-theme');
     setIsDark(isCurrentlyDark);
 
     // Listen for system preference changes (only if no manual preference is saved)

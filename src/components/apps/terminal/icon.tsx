@@ -25,14 +25,7 @@ export const TerminalIcon = (): ReactNode => (
       strokeWidth="2"
     />
     {/* Screen */}
-    <rect
-      x="7"
-      y="11"
-      width="50"
-      height="42"
-      fill="#000000"
-      rx="2"
-    />
+    <rect x="7" y="11" width="50" height="42" fill="#000000" rx="2" />
     {/* Terminal chevron right prompt */}
     <path
       d="M 12 18 L 16 22 L 12 26"
@@ -54,4 +47,3 @@ export const TerminalIcon = (): ReactNode => (
     />
   </svg>
 );
-

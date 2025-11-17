@@ -9,4 +9,3 @@ export default {
   collectCoverageFrom: ['scripts/**/*.js'],
   coveragePathIgnorePatterns: ['/node_modules/', '/test/'],
 };
-

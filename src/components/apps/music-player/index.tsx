@@ -95,7 +95,10 @@ function MusicPlayerContent() {
         rotationAngleRef.current = rotationAngleRef.current % 360;
 
         // Apply rotation via CSS custom property
-        vinylElement.style.setProperty('--rotation', `${rotationAngleRef.current}deg`);
+        vinylElement.style.setProperty(
+          '--rotation',
+          `${rotationAngleRef.current}deg`
+        );
 
         animationFrameRef.current = requestAnimationFrame(animate);
       };
@@ -109,7 +112,10 @@ function MusicPlayerContent() {
       }
       lastTimestampRef.current = null;
       // Keep the current rotation angle in the CSS custom property
-      vinylElement.style.setProperty('--rotation', `${rotationAngleRef.current}deg`);
+      vinylElement.style.setProperty(
+        '--rotation',
+        `${rotationAngleRef.current}deg`
+      );
     }
 
     return () => {
@@ -147,16 +153,16 @@ function MusicPlayerContent() {
                     <div className={styles.vinylGroove}></div>
                   </div>
                   <div className={styles.vinylCenter}>
-                <img
-                  src={currentTrack.albumArt}
-                  alt={`${currentTrack.album} album cover`}
-                  className={styles.albumArt}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src =
-                      'https://via.placeholder.com/400x400/7da3d1/ffffff?text=No+Image';
-                  }}
-                />
+                    <img
+                      src={currentTrack.albumArt}
+                      alt={`${currentTrack.album} album cover`}
+                      className={styles.albumArt}
+                      onError={e => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          'https://via.placeholder.com/400x400/7da3d1/ffffff?text=No+Image';
+                      }}
+                    />
                   </div>
                 </div>
               </a>

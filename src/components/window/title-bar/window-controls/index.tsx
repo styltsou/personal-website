@@ -24,15 +24,15 @@ export default function WindowControls({
   return (
     <div
       className={cn('titlebar-controls', styles.titleBarControls)}
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
+      onClick={e => e.stopPropagation()}
+      onMouseDown={e => e.stopPropagation()}
     >
       {/* Minimize Button */}
       {onMinimize && (
         <button
           type="button"
           className={cn(styles.windowControl, 'focus-ring')}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onMinimize();
           }}
@@ -46,7 +46,7 @@ export default function WindowControls({
         <button
           type="button"
           className={cn(styles.windowControl, 'focus-ring')}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onMaximize();
           }}
@@ -60,7 +60,7 @@ export default function WindowControls({
         <button
           type="button"
           className={cn(styles.windowControl, 'focus-ring')}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onClose();
           }}

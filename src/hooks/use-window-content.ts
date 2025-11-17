@@ -33,7 +33,7 @@ export function useWindowContent() {
 
   const loadWindowContent = useCallback(
     async (windowId: string): Promise<string | null> => {
-      const config = apps.find((w) => w.id === windowId);
+      const config = apps.find(w => w.id === windowId);
       if (!config || !config.path) return null; // Only handle path-based apps
 
       // Check cache first (includes embedded content)
@@ -49,7 +49,7 @@ export function useWindowContent() {
 
       // Mark as loading
       loadingRef.current.add(windowId);
-      setLoadingContent((prev) => new Set(prev).add(windowId));
+      setLoadingContent(prev => new Set(prev).add(windowId));
 
       try {
         // Fallback: fetch from prerendered page if not embedded
@@ -71,7 +71,7 @@ export function useWindowContent() {
         console.error(`Failed to load content for window ${windowId}:`, error);
       } finally {
         loadingRef.current.delete(windowId);
-        setLoadingContent((prev) => {
+        setLoadingContent(prev => {
           const next = new Set(prev);
           next.delete(windowId);
           return next;

@@ -75,9 +75,9 @@ interface MusicPlayerProviderProps {
 
 export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   // Read-only access to window state to check if music player window exists
-  const windows = useStore((state) => state.windows);
+  const windows = useStore(state => state.windows);
   const musicPlayerWindowExists = windows.some(
-    (window) => window.id === 'music-player'
+    window => window.id === 'music-player'
   );
 
   // Get tracks from Content Collection (imported as static JSON)
@@ -269,7 +269,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   }, []);
 
   const toggleLoop = useCallback(() => {
-    setLoopMode((prev) => {
+    setLoopMode(prev => {
       if (prev === 'none') return 'playlist';
       if (prev === 'playlist') return 'song';
       return 'none';
@@ -277,7 +277,7 @@ export function MusicPlayerProvider({ children }: MusicPlayerProviderProps) {
   }, []);
 
   const toggleShuffle = useCallback(() => {
-    setIsShuffled((prev) => !prev);
+    setIsShuffled(prev => !prev);
     // Reset shuffled indices when toggling off
     if (isShuffled) {
       setShuffledIndices([]);

@@ -66,7 +66,7 @@ const contentData: Record<string, string> = {};
 ---
 
 <script define:inline>
-  window.__CONTENT_DATA__ = {JSON.stringify(contentData)};
+  window.__CONTENT_DATA__ = JSON.stringify(contentData);
 </script>
 ```
 

@@ -22,7 +22,7 @@ export default function ResizeHandles({
   }
 
   // Check if an icon is being dragged
-  const draggingIconId = useStore((state) => state.draggingIconId);
+  const draggingIconId = useStore(state => state.draggingIconId);
   const isIconDragging = draggingIconId !== null;
 
   // When dragging an icon, use grabbing cursor instead of resize cursors
@@ -44,22 +44,22 @@ export default function ResizeHandles({
         <>
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleNw)}
-            onMouseDown={(e) => onResizeStart(e, 'nw')}
+            onMouseDown={e => onResizeStart(e, 'nw')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleNe)}
-            onMouseDown={(e) => onResizeStart(e, 'ne')}
+            onMouseDown={e => onResizeStart(e, 'ne')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleSw)}
-            onMouseDown={(e) => onResizeStart(e, 'sw')}
+            onMouseDown={e => onResizeStart(e, 'sw')}
             style={{ cursor: getCursor('nesw-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleSe)}
-            onMouseDown={(e) => onResizeStart(e, 'se')}
+            onMouseDown={e => onResizeStart(e, 'se')}
             style={{ cursor: getCursor('nwse-resize') }}
           />
         </>
@@ -69,22 +69,22 @@ export default function ResizeHandles({
         <>
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleN)}
-            onMouseDown={(e) => onResizeStart(e, 'n')}
+            onMouseDown={e => onResizeStart(e, 'n')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleS)}
-            onMouseDown={(e) => onResizeStart(e, 's')}
+            onMouseDown={e => onResizeStart(e, 's')}
             style={{ cursor: getCursor('ns-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleW)}
-            onMouseDown={(e) => onResizeStart(e, 'w')}
+            onMouseDown={e => onResizeStart(e, 'w')}
             style={{ cursor: getCursor('ew-resize') }}
           />
           <div
             className={cn(styles.resizeHandle, styles.resizeHandleE)}
-            onMouseDown={(e) => onResizeStart(e, 'e')}
+            onMouseDown={e => onResizeStart(e, 'e')}
             style={{ cursor: getCursor('ew-resize') }}
           />
         </>

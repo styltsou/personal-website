@@ -45,9 +45,9 @@ export function useIconDrag({
   const hasStartedDragRef = useRef(false); // Track if we've crossed the threshold
 
   // Get all icon states from store for collision detection
-  const iconStates = useStore((state) => state.iconStates);
-  const setDraggingIcon = useStore((state) => state.setDraggingIcon);
-  const windows = useStore((state) => state.windows);
+  const iconStates = useStore(state => state.iconStates);
+  const setDraggingIcon = useStore(state => state.setDraggingIcon);
+  const windows = useStore(state => state.windows);
 
   // Helper function to check if icon position overlaps with another icon
   const isPositionOverIcon = useCallback(
@@ -59,8 +59,8 @@ export function useIconDrag({
       );
       const occupiedCells = getOccupiedCells(
         iconStates
-          .filter((state) => state.id !== iconId)
-          .map((state) => state.position)
+          .filter(state => state.id !== iconId)
+          .map(state => state.position)
       );
       const targetCellKey = `${constrainedGrid.gridX},${constrainedGrid.gridY}`;
       return occupiedCells.has(targetCellKey);
@@ -74,7 +74,7 @@ export function useIconDrag({
       const iconCenterX = iconPos.x + ICON_WIDTH / 2;
       const iconCenterY = iconPos.y + ICON_HEIGHT / 2;
 
-      return windows.some((windowState) => {
+      return windows.some(windowState => {
         if (windowState.isMinimized) return false;
 
         let windowX: number,
@@ -193,8 +193,8 @@ export function useIconDrag({
           );
           const occupiedCells = getOccupiedCells(
             iconStates
-              .filter((state) => state.id !== iconId)
-              .map((state) => state.position)
+              .filter(state => state.id !== iconId)
+              .map(state => state.position)
           );
           const freeGrid = findNearestFreeCell(
             constrainedGrid.gridX,
@@ -234,8 +234,8 @@ export function useIconDrag({
         );
         const occupiedCells = getOccupiedCells(
           iconStates
-            .filter((state) => state.id !== iconId)
-            .map((state) => state.position)
+            .filter(state => state.id !== iconId)
+            .map(state => state.position)
         );
         const freeGrid = findNearestFreeCell(
           constrainedGrid.gridX,

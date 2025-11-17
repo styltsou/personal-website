@@ -89,7 +89,7 @@ export default function FlappyBirdWindow() {
 
   // Reset bird position when size changes
   useEffect(() => {
-    setGameState((prev) => ({
+    setGameState(prev => ({
       ...prev,
       birdY: gameSize.height / 2,
     }));
@@ -102,7 +102,7 @@ export default function FlappyBirdWindow() {
     if (gameState.pipes.length > 0) return; // Don't reinitialize if pipes already exist
 
     const initialPipes = generateInitialPipes(gameSize);
-    setGameState((prev) => {
+    setGameState(prev => {
       const newState = {
         ...prev,
         pipes: initialPipes,
@@ -143,8 +143,18 @@ export default function FlappyBirdWindow() {
 
       // Draw directly without waiting for React state update
       // Use ref to get latest high score (avoids stale closures)
-      const currentHighScore = newState.score > highScoreRef.current ? newState.score : highScoreRef.current;
-      draw(ctx, currentSize.width, currentSize.height, newState, isDarkTheme, currentHighScore);
+      const currentHighScore =
+        newState.score > highScoreRef.current
+          ? newState.score
+          : highScoreRef.current;
+      draw(
+        ctx,
+        currentSize.width,
+        currentSize.height,
+        newState,
+        isDarkTheme,
+        currentHighScore
+      );
 
       if (!newState.gameOver) {
         gameLoopRef.current = requestAnimationFrame(gameLoop);
@@ -169,10 +179,17 @@ export default function FlappyBirdWindow() {
     if (!ctx) return;
 
     // Show the maximum of current score and high score on game over screen
-    const displayHighScore = gameState.gameOver 
-      ? Math.max(gameState.score, highScore) 
+    const displayHighScore = gameState.gameOver
+      ? Math.max(gameState.score, highScore)
       : highScore;
-    draw(ctx, gameSize.width, gameSize.height, gameState, isDarkTheme, displayHighScore);
+    draw(
+      ctx,
+      gameSize.width,
+      gameSize.height,
+      gameState,
+      isDarkTheme,
+      displayHighScore
+    );
   }, [gameState, gameSize, isDarkTheme, highScore]);
 
   // Handle jump/spacebar
@@ -191,10 +208,10 @@ export default function FlappyBirdWindow() {
     }
 
     if (!gameState.started) {
-      setGameState((prev) => ({ ...prev, started: true }));
+      setGameState(prev => ({ ...prev, started: true }));
     }
 
-    setGameState((prev) => ({
+    setGameState(prev => ({
       ...prev,
       birdVelocity: JUMP_STRENGTH,
     }));

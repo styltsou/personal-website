@@ -31,7 +31,10 @@ for (const app of contentApps) {
     }
   } catch (error) {
     // If file doesn't exist, content will be fetched at runtime
-    console.warn(`Could not extract content for ${app.id} at build time:`, error);
+    console.warn(
+      `Could not extract content for ${app.id} at build time:`,
+      error
+    );
   }
 }
 

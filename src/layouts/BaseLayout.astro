@@ -60,7 +60,7 @@ const canonicalURL = new URL(
     <script define:inline>
       (function () {
         const THEME_STORAGE_KEY = 'retro-theme-preference';
-        
+
         // Check localStorage first
         const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
         let shouldBeDark = false;
@@ -71,7 +71,9 @@ const canonicalURL = new URL(
         } else {
           // No saved preference, use system preference
           if (typeof window !== 'undefined' && window.matchMedia) {
-            shouldBeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            shouldBeDark = window.matchMedia(
+              '(prefers-color-scheme: dark)'
+            ).matches;
           }
         }
 

@@ -80,10 +80,7 @@ export function useWindowDrag({
     (e: React.MouseEvent) => {
       // Don't drag if clicking on buttons
       const target = e.target as HTMLElement;
-      if (
-        target.closest('button') ||
-        target.closest('.titlebar-controls')
-      ) {
+      if (target.closest('button') || target.closest('.titlebar-controls')) {
         return;
       }
 

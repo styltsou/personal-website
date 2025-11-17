@@ -16,6 +16,7 @@ Two main Zustand store slices:
 2. **Icon Store** (`store/icon/slice.ts`): Manages all icon-related state
 
 Both stores follow similar patterns:
+
 - State properties
 - Action methods
 - Persistence integration
@@ -24,6 +25,7 @@ Both stores follow similar patterns:
 ## Window Store
 
 **Types**: Window-related types are defined in `src/types/window.ts`:
+
 - `WindowState` - Complete window state
 - `ClosedWindowState` - Closed window state (for persistence)
 - `WindowPosition` - Window position coordinates
@@ -37,17 +39,18 @@ Both stores follow similar patterns:
 import type { WindowState, ClosedWindowState } from '@/types/window';
 
 interface WindowStore {
-  windowStates: WindowState[];           // All open windows
+  windowStates: WindowState[]; // All open windows
   closedWindows: Record<string, ClosedWindowState>; // Closed window states
-  activeWindowId: string | null;         // Currently focused window
-  nextZIndex: number;                    // Next available z-index
-  hasLoadedFromPersistence: boolean;     // Whether state restored
+  activeWindowId: string | null; // Currently focused window
+  nextZIndex: number; // Next available z-index
+  hasLoadedFromPersistence: boolean; // Whether state restored
 }
 ```
 
 ### Actions
 
 All window operations go through store actions:
+
 - `openWindow(id)` - Open/restore window
 - `closeWindow(id)` - Close window (saves state)
 - `minimizeWindow(id)` - Minimize window
@@ -61,11 +64,12 @@ All window operations go through store actions:
 ### State Updates
 
 Zustand's `set` function is used for updates:
+
 ```typescript
-set((state) => ({
-  windowStates: state.windowStates.map(ws => 
+set(state => ({
+  windowStates: state.windowStates.map(ws =>
     ws.id === windowId ? { ...ws, isMinimized: true } : ws
-  )
+  ),
 }));
 ```
 
@@ -74,6 +78,7 @@ set((state) => ({
 ## Icon Store
 
 **Types**: Icon-related types are defined in `src/types/icon.ts`:
+
 - `IconState` - Icon state (id and position)
 - `IconPosition` - Icon grid position
 - `IconConfig` - Icon configuration
@@ -87,9 +92,9 @@ set((state) => ({
 import type { IconState } from '@/types/icon';
 
 interface IconStore {
-  iconStates: IconState[];                // Icon positions
-  selectedIconId: string | null;          // Selected icon
-  draggingIconId: string | null;          // Icon being dragged
+  iconStates: IconState[]; // Icon positions
+  selectedIconId: string | null; // Selected icon
+  draggingIconId: string | null; // Icon being dragged
   draggingIconPosition: { x: number; y: number } | null;
   hasLoadedFromPersistence: boolean;
 }
@@ -98,6 +103,7 @@ interface IconStore {
 ### Actions
 
 Icon operations:
+
 - `updateIconPosition(id, position)` - Update grid position
 - `selectIcon(id)` - Select icon
 - `deselectIcons()` - Clear selection
@@ -108,16 +114,17 @@ Icon operations:
 ### Direct Access
 
 ```typescript
-const windowStates = useWindowStore((state) => state.windowStates);
-const openWindow = useWindowStore((state) => state.openWindow);
+const windowStates = useWindowStore(state => state.windowStates);
+const openWindow = useWindowStore(state => state.openWindow);
 ```
 
 ### Selector Pattern
 
 For better performance, use individual selectors:
+
 ```typescript
 // Good: Only subscribes to windowStates
-const windowStates = useWindowStore((state) => state.windowStates);
+const windowStates = useWindowStore(state => state.windowStates);
 
 // Bad: Subscribes to entire store (causes unnecessary re-renders)
 const store = useWindowStore();
@@ -126,8 +133,9 @@ const store = useWindowStore();
 ### Action Access
 
 Actions are stable references (don't change), so they're safe to use in dependencies:
+
 ```typescript
-const openWindow = useWindowStore((state) => state.openWindow);
+const openWindow = useWindowStore(state => state.openWindow);
 
 useEffect(() => {
   openWindow('about');
@@ -141,6 +149,7 @@ useEffect(() => {
 **Storage**: `sessionStorage` (clears on tab close)
 
 **Format**:
+
 ```typescript
 {
   windowStates: WindowState[],
@@ -150,6 +159,7 @@ useEffect(() => {
 ```
 
 **Process**:
+
 1. State saved on every change (via `useEffect`)
 2. On page load, state restored from `sessionStorage`
 3. Component references restored from `app-config.ts` (lost during serialization)
@@ -162,6 +172,7 @@ useEffect(() => {
 **Storage**: `localStorage` (persists across sessions)
 
 **Format**:
+
 ```typescript
 {
   [iconId: string]: {
@@ -172,6 +183,7 @@ useEffect(() => {
 ```
 
 **Process**:
+
 1. Positions saved on every change
 2. On page load, positions restored
 3. Icons appear in their previous grid positions
@@ -185,10 +197,12 @@ useEffect(() => {
 Window state is synchronized with browser URL:
 
 **Window → URL**:
+
 - Opening a window with a `path` updates URL
 - Closing all windows resets URL to `/`
 
 **URL → Window**:
+
 - Browser back/forward navigation opens/closes windows
 - Direct URL access opens corresponding window
 
@@ -205,6 +219,7 @@ Theme preference is stored in `localStorage` and applied before React renders (b
 Some state is initialized synchronously (before React renders):
 
 **Window Store**:
+
 ```typescript
 // Check if saved state exists
 let initialHasLoadedFromPersistence = false;
@@ -219,6 +234,7 @@ if (typeof window !== 'undefined') {
 ### Asynchronous Restoration
 
 When saved state exists:
+
 1. Store starts with `hasLoadedFromPersistence: false`
 2. `useWindowPersistence` hook loads state in `useEffect`
 3. State is restored and `hasLoadedFromPersistence` set to `true`
@@ -229,14 +245,16 @@ When saved state exists:
 ### 1. Selective Subscriptions
 
 Use individual selectors to minimize re-renders:
+
 ```typescript
 // Only re-renders when windowStates changes
-const windowStates = useWindowStore((state) => state.windowStates);
+const windowStates = useWindowStore(state => state.windowStates);
 ```
 
 ### 2. Memoization
 
 Memoize derived values:
+
 ```typescript
 const windowActions = useMemo(() => ({
   openWindow,
@@ -248,14 +266,16 @@ const windowActions = useMemo(() => ({
 ### 3. Stable References
 
 Actions are stable (don't change), safe for dependencies:
+
 ```typescript
-const openWindow = useWindowStore((state) => state.openWindow);
+const openWindow = useWindowStore(state => state.openWindow);
 // openWindow reference never changes
 ```
 
 ### 4. Batch Updates
 
 Zustand batches updates automatically, but you can also batch manually:
+
 ```typescript
 set((state) => ({
   windowStates: [...],
@@ -306,4 +326,3 @@ set((state) => ({
 4. **Batch Updates**: Group related updates in single `set` call
 5. **Persistence**: Let hooks handle persistence, don't manually save
 6. **Type Safety**: Use TypeScript types for all state
-

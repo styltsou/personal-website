@@ -21,7 +21,9 @@ export function useMIDIInput(): UseMIDIInputReturn {
   const [devices, setDevices] = useState<MIDIDevice[]>([]);
   const [isSupported, setIsSupported] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
-  const onNoteOnRef = useRef<((note: number, velocity: number) => void) | undefined>();
+  const onNoteOnRef = useRef<
+    ((note: number, velocity: number) => void) | undefined
+  >();
   const onNoteOffRef = useRef<((note: number) => void) | undefined>();
   const midiAccessRef = useRef<MIDIAccess | null>(null);
 
@@ -37,7 +39,20 @@ export function useMIDIInput(): UseMIDIInputReturn {
   const midiToNoteName = useCallback((midiNumber: number): string => {
     const octave = Math.floor((midiNumber - 12) / 12);
     const noteIndex = (midiNumber - 12) % 12;
-    const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+    ];
     return `${noteNames[noteIndex]}${octave}`;
   }, []);
 
@@ -75,7 +90,7 @@ export function useMIDIInput(): UseMIDIInputReturn {
 
       // Update device list
       const deviceList: MIDIDevice[] = [];
-      access.inputs.forEach((input) => {
+      access.inputs.forEach(input => {
         deviceList.push({
           id: input.id,
           name: input.name || 'Unknown Device',
@@ -90,11 +105,11 @@ export function useMIDIInput(): UseMIDIInputReturn {
       setDevices(deviceList);
 
       // Listen for device connections/disconnections
-      access.onstatechange = (event) => {
+      access.onstatechange = event => {
         const port = event.port as MIDIInput;
         if (port.type === 'input') {
           const deviceList: MIDIDevice[] = [];
-          access.inputs.forEach((input) => {
+          access.inputs.forEach(input => {
             deviceList.push({
               id: input.id,
               name: input.name || 'Unknown Device',
@@ -118,9 +133,12 @@ export function useMIDIInput(): UseMIDIInputReturn {
   }, [handleMIDIMessage]);
 
   // Set note on callback
-  const setOnNoteOn = useCallback((callback: (note: number, velocity: number) => void) => {
-    onNoteOnRef.current = callback;
-  }, []);
+  const setOnNoteOn = useCallback(
+    (callback: (note: number, velocity: number) => void) => {
+      onNoteOnRef.current = callback;
+    },
+    []
+  );
 
   // Set note off callback
   const setOnNoteOff = useCallback((callback: (note: number) => void) => {
@@ -131,7 +149,7 @@ export function useMIDIInput(): UseMIDIInputReturn {
   useEffect(() => {
     return () => {
       if (midiAccessRef.current) {
-        midiAccessRef.current.inputs.forEach((input) => {
+        midiAccessRef.current.inputs.forEach(input => {
           input.onmidimessage = null;
         });
       }
@@ -149,4 +167,3 @@ export function useMIDIInput(): UseMIDIInputReturn {
     setOnNoteOff,
   };
 }
-

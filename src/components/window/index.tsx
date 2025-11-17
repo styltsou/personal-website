@@ -24,20 +24,20 @@ export interface WindowProps {
 
 export default function Window({ id, isLoading }: WindowProps) {
   // Get window state and actions from store
-  const windowState = useStore((state) =>
-    state.windows.find((window) => window.id === id)
+  const windowState = useStore(state =>
+    state.windows.find(window => window.id === id)
   );
-  const activeWindowId = useStore((state) => state.activeWindowId);
+  const activeWindowId = useStore(state => state.activeWindowId);
 
   // Get actions from store
-  const closeWindow = useStore((state) => state.closeWindow);
-  const minimizeWindow = useStore((state) => state.minimizeWindow);
-  const maximizeWindow = useStore((state) => state.maximizeWindow);
-  const focusWindow = useStore((state) => state.focusWindow);
-  const updateWindowPosition = useStore((state) => state.updateWindowPosition);
-  const updateWindowSize = useStore((state) => state.updateWindowSize);
-  const snapWindow = useStore((state) => state.snapWindow);
-  const unsnapWindow = useStore((state) => state.unsnapWindow);
+  const closeWindow = useStore(state => state.closeWindow);
+  const minimizeWindow = useStore(state => state.minimizeWindow);
+  const maximizeWindow = useStore(state => state.maximizeWindow);
+  const focusWindow = useStore(state => state.focusWindow);
+  const updateWindowPosition = useStore(state => state.updateWindowPosition);
+  const updateWindowSize = useStore(state => state.updateWindowSize);
+  const snapWindow = useStore(state => state.snapWindow);
+  const unsnapWindow = useStore(state => state.unsnapWindow);
 
   // Early return if window state not found
   if (!windowState) return null;
@@ -73,9 +73,9 @@ export default function Window({ id, isLoading }: WindowProps) {
     isMaximized,
     snapSide,
     onFocus: () => focusWindow(id),
-    onPositionChange: (position) => updateWindowPosition(id, position),
-    onSizeChange: (size) => updateWindowSize(id, size),
-    onSnap: (snapSide) => snapWindow(id, snapSide),
+    onPositionChange: position => updateWindowPosition(id, position),
+    onSizeChange: size => updateWindowSize(id, size),
+    onSnap: snapSide => snapWindow(id, snapSide),
     onUnsnap: () => unsnapWindow(id),
     onMaximize: () => maximizeWindow(id),
   });
@@ -92,11 +92,11 @@ export default function Window({ id, isLoading }: WindowProps) {
     isMaximized,
     minSize, // Use defaulted minSize (either from config or global minimum)
     onFocus: () => focusWindow(id),
-    onSizeChange: (size) => updateWindowSize(id, size),
+    onSizeChange: size => updateWindowSize(id, size),
     // Pass function to get current drag position so resize can sync with it
     getCurrentPosition: () => dragPosition,
     // Pass onPositionChange so resize can update drag position when left/top edges are used
-    onPositionChange: (position) => updateWindowPosition(id, position),
+    onPositionChange: position => updateWindowPosition(id, position),
   });
 
   // Use resize position when resizing (it may update position for left/top edges)
@@ -109,7 +109,7 @@ export default function Window({ id, isLoading }: WindowProps) {
     }
   }, [zIndex]);
 
-  const deselectIcons = useStore((state) => state.deselectIcons);
+  const deselectIcons = useStore(state => state.deselectIcons);
 
   const handleWindowClick = () => {
     deselectIcons();

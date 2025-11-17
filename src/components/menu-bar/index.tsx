@@ -14,10 +14,10 @@ import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export default function MenuBar() {
-  const windows = useStore((state) => state.windows);
-  const activeWindowId = useStore((state) => state.activeWindowId);
-  const openWindow = useStore((state) => state.openWindow);
-  const closeWindow = useStore((state) => state.closeWindow);
+  const windows = useStore(state => state.windows);
+  const activeWindowId = useStore(state => state.activeWindowId);
+  const openWindow = useStore(state => state.openWindow);
+  const closeWindow = useStore(state => state.closeWindow);
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -28,7 +28,7 @@ export default function MenuBar() {
   }, []);
 
   const getWindowButtonState = (windowId: string) => {
-    const windowState = windows.find((window) => window.id === windowId);
+    const windowState = windows.find(window => window.id === windowId);
     const exists = !!windowState;
     const isMinimized = windowState?.isMinimized ?? false;
     const isOpen = exists && !isMinimized;
@@ -80,23 +80,23 @@ export default function MenuBar() {
   // Use windows array order - most recently opened appears at the end (since we append to array)
   const menuBarWindows = useMemo(() => {
     // Get all apps that are either pinned or currently open
-    const pinnedApps = apps.filter((app) => {
-      const windowState = windows.find((w) => w.id === app.id);
+    const pinnedApps = apps.filter(app => {
+      const windowState = windows.find(w => w.id === app.id);
       // Show if pinned in config OR pinned in state (for dynamic pinning)
       return (app.pinned ?? false) || windowState?.isPinned;
     });
-    
+
     const openApps = windows
-      .map((windowState) => {
-        return apps.find((app) => app.id === windowState.id);
+      .map(windowState => {
+        return apps.find(app => app.id === windowState.id);
       })
       .filter((app): app is NonNullable<typeof app> => app !== undefined);
 
     // Combine: pinned apps first (in app config order), then open apps (in windows array order)
     // Remove duplicates (if a pinned app is also open, it appears in openApps)
-    const pinnedIds = new Set(pinnedApps.map((app) => app.id));
-    const openAppsNotPinned = openApps.filter((app) => !pinnedIds.has(app.id));
-    
+    const pinnedIds = new Set(pinnedApps.map(app => app.id));
+    const openAppsNotPinned = openApps.filter(app => !pinnedIds.has(app.id));
+
     return [...pinnedApps, ...openAppsNotPinned];
   }, [windows]);
 
@@ -104,40 +104,38 @@ export default function MenuBar() {
     <div className={styles.menuBar}>
       <div className={styles.menuBarLeft}>
         <span className={styles.menuBarLogo}>styltsou</span>
-        {menuBarWindows.map((window) => {
-            const state = getWindowButtonState(window.id);
+        {menuBarWindows.map(window => {
+          const state = getWindowButtonState(window.id);
 
-            return (
-              <button
-                key={window.id}
-                type="button"
-                className={cn(getButtonClasses(state), styles.button)}
-                onClick={() => openWindow(window.id)}
-                aria-label={getAriaLabel(window.title, state)}
-              >
-                {state.exists && (
-                  <span
-                    className={styles.menuBarButtonCloseIcon}
-                    onClick={(e) => handleCloseClick(window.id, e)}
-                    onKeyDown={(e) => handleCloseKeyDown(window.id, e)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Close ${window.title} window`}
-                  >
-                    ×
-                  </span>
-                )}
-                <span>{window.title}</span>
-              </button>
-            );
-          })}
+          return (
+            <button
+              key={window.id}
+              type="button"
+              className={cn(getButtonClasses(state), styles.button)}
+              onClick={() => openWindow(window.id)}
+              aria-label={getAriaLabel(window.title, state)}
+            >
+              {state.exists && (
+                <span
+                  className={styles.menuBarButtonCloseIcon}
+                  onClick={e => handleCloseClick(window.id, e)}
+                  onKeyDown={e => handleCloseKeyDown(window.id, e)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Close ${window.title} window`}
+                >
+                  ×
+                </span>
+              )}
+              <span>{window.title}</span>
+            </button>
+          );
+        })}
       </div>
       <div className={styles.menuBarRight}>
         <div className={styles.menuBarTime}>
           <span className={styles.menuBarDate}>{formatDate(currentTime)}</span>
-          <span className={styles.menuBarClock}>
-            {formatTime(currentTime)}
-          </span>
+          <span className={styles.menuBarClock}>{formatTime(currentTime)}</span>
         </div>
         <ThemeToggle />
       </div>

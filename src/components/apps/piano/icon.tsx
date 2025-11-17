@@ -25,14 +25,7 @@ export const PianoIcon = (): ReactNode => (
       strokeWidth="2"
     />
     {/* Piano body */}
-    <rect
-      x="12"
-      y="20"
-      width="40"
-      height="28"
-      fill="#2a2a2a"
-      rx="2"
-    />
+    <rect x="12" y="20" width="40" height="28" fill="#2a2a2a" rx="2" />
     {/* White keys */}
     <rect x="14" y="22" width="5" height="24" fill="#f5f5f5" rx="1" />
     <rect x="20" y="22" width="5" height="24" fill="#f5f5f5" rx="1" />
@@ -47,4 +40,3 @@ export const PianoIcon = (): ReactNode => (
     <rect x="41" y="22" width="3" height="14" fill="#1a1a1a" rx="0.5" />
   </svg>
 );
-

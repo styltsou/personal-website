@@ -48,7 +48,9 @@ export default function SeekBar({
   return (
     <div className={styles.container}>
       <span className={styles.time}>{formatTime(currentTime)}</span>
-      <div className={`${styles.sliderWrapper} ${isBuffering ? styles.buffering : ''}`}>
+      <div
+        className={`${styles.sliderWrapper} ${isBuffering ? styles.buffering : ''}`}
+      >
         <input
           type="range"
           min="0"
@@ -62,7 +64,7 @@ export default function SeekBar({
           disabled={duration <= 0}
         />
         {isBuffering && (
-          <div 
+          <div
             className={styles.stripesOverlay}
             style={{ '--progress': `${percentage}%` } as React.CSSProperties}
           />

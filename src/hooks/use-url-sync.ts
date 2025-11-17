@@ -9,16 +9,16 @@ import { useStore } from '../store';
 
 export function useURLSync() {
   // Properly select from store with individual selectors
-  const windows = useStore((state) => state.windows);
-  const openWindow = useStore((state) => state.openWindow);
-  const closeAllWindows = useStore((state) => state.closeAllWindows);
+  const windows = useStore(state => state.windows);
+  const openWindow = useStore(state => state.openWindow);
+  const closeAllWindows = useStore(state => state.closeAllWindows);
 
   // Track if this is the initial mount to only auto-open on first load
   const isInitialMount = useRef(true);
 
   // Find window by path
   const findWindowByPath = useCallback((path: string) => {
-    return apps.find((w) => w.path === path);
+    return apps.find(w => w.path === path);
   }, []);
 
   // Check URL on initial mount and open window if needed
@@ -64,7 +64,7 @@ export function useURLSync() {
   // Update URL when window changes
   const updateURL = useCallback((windowId: string | null) => {
     if (windowId) {
-      const config = apps.find((w) => w.id === windowId);
+      const config = apps.find(w => w.id === windowId);
       if (config && config.path) {
         history.pushState({ windowId }, '', config.path);
       }

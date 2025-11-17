@@ -5,6 +5,7 @@ This document explains how apps are configured, registered, and integrated into 
 ## Overview
 
 All apps are centrally registered in `src/app-config.ts`. This file serves as the single source of truth for:
+
 - Available apps
 - App metadata
 - Desktop icon configuration
@@ -20,15 +21,16 @@ Each app is defined with an `AppConfig` object. The type is defined in `src/type
 import type { AppConfig } from '@/types/app';
 
 interface AppConfig {
-  id: string;                    // Unique identifier
-  title: string;                  // Window title
-  path?: string;                  // Optional: URL path for content-based apps
-  icon?: string;                  // Optional: Icon path (for menu bar)
-  pinned?: boolean;               // Whether to show in menu bar
+  id: string; // Unique identifier
+  title: string; // Window title
+  path?: string; // Optional: URL path for content-based apps
+  icon?: string; // Optional: Icon path (for menu bar)
+  pinned?: boolean; // Whether to show in menu bar
   resizeConstraint?: ResizeConstraint; // Resize behavior (from @/types/window)
-  component?: ComponentType;      // Optional: Custom React component
-  desktopIcon?: {                 // Optional: Desktop icon configuration
-    label?: string;                // Icon label (defaults to title)
+  component?: ComponentType; // Optional: Custom React component
+  desktopIcon?: {
+    // Optional: Desktop icon configuration
+    label?: string; // Icon label (defaults to title)
     icon: string | ComponentType; // Icon component or image path
   };
 }
@@ -50,6 +52,7 @@ Apps that load content from Astro pages:
 ```
 
 **How it works:**
+
 - When opened, the window fetches HTML from the `path`
 - Content is extracted from the `<main>` element
 - HTML is injected into the window using `dangerouslySetInnerHTML`
@@ -71,6 +74,7 @@ Apps that use custom React components:
 ```
 
 **How it works:**
+
 - Component is rendered directly in the window
 - No content loading needed
 - Full React component capabilities
@@ -98,6 +102,7 @@ To appear as a desktop icon, an app must have a `desktopIcon` property:
 **Note**: For apps that need providers or context (like the music player), the component should be a wrapper that includes the provider. This ensures the provider only mounts when the window is rendered.
 
 **Icon Generation:**
+
 - Icons are automatically generated from apps with `desktopIcon`
 - Only these apps appear on the desktop
 - Icons are positioned using the grid system
@@ -137,6 +142,7 @@ Apps with `pinned: true` appear in the menu bar:
 ### Adding a New App
 
 1. **Create the app component** (if component-based):
+
    ```
    src/components/apps/my-app/
    ├── index.tsx      # Main component
@@ -145,9 +151,10 @@ Apps with `pinned: true` appear in the menu bar:
    ```
 
 2. **Register in `app-config.ts`**:
+
    ```typescript
    import MyAppWindow, { MyAppIcon } from '../components/apps/my-app';
-   
+
    export const apps: AppConfig[] = [
      // ... existing apps
      {
@@ -155,9 +162,9 @@ Apps with `pinned: true` appear in the menu bar:
        title: 'My App',
        component: MyAppWindow,
        desktopIcon: {
-         icon: MyAppIcon
-       }
-     }
+         icon: MyAppIcon,
+       },
+     },
    ];
    ```
 
@@ -169,6 +176,7 @@ Apps with `pinned: true` appear in the menu bar:
 ## Window State Integration
 
 When a window is opened:
+
 1. App config is looked up by `id` in `app-config.ts`
 2. `WindowState` is created with the `config` reference
 3. Window component receives the config
@@ -179,6 +187,7 @@ When a window is opened:
 ## Persistence Considerations
 
 When windows are persisted to `sessionStorage`:
+
 - Component references are lost (can't serialize functions)
 - On restore, config is re-looked up from `app-config.ts` by `id`
 - Full config (including component) is restored
@@ -209,4 +218,3 @@ The system discovers apps in several ways:
 3. **Icon Components**: Export icon as named export from app component
 4. **Type Safety**: Use TypeScript types for app config
 5. **Single Source**: Keep all app definitions in `app-config.ts`
-

@@ -234,7 +234,7 @@ A fully functional virtual piano component that showcases Web Audio API, MIDI AP
 
 - 🐛 **Keys getting stuck in pressed state** (Status: Open)
   - **Description**: Sometimes keys remain visually pressed and continue playing even after release
-  - **Symptoms**: 
+  - **Symptoms**:
     - Visual state shows key as pressed when it shouldn't be
     - Audio continues playing even after key release
     - Can happen with both keyboard and mouse input
@@ -244,7 +244,7 @@ A fully functional virtual piano component that showcases Web Audio API, MIDI AP
     - Added window inactive handler to release keys when window becomes inactive
     - Improved note release logic in audio hook
   - **Status**: Issue persists - root cause not identified
-  - **Next Steps**: 
+  - **Next Steps**:
     - Investigate state synchronization between visual state (`pressedNotes`) and audio state (`activeNotes`)
     - Check if `stopNote` is being called correctly in all scenarios
     - Verify event handlers are firing as expected
@@ -307,4 +307,3 @@ A fully functional virtual piano component that showcases Web Audio API, MIDI AP
 ---
 
 _Last Updated: Phase 1 Complete - Basic Piano Implementation_
-

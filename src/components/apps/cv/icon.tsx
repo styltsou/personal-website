@@ -79,4 +79,3 @@ export const CvIcon = (): ReactNode => (
     />
   </svg>
 );
-

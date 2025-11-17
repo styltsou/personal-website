@@ -12,6 +12,7 @@ When the page reloaded, users experienced two visual issues:
 ### 1. Theme Flash
 
 **Why it happened:**
+
 - The theme preference was stored in `localStorage`
 - The `ThemeToggle` component initialized the theme in a `useEffect` hook, which runs **after** React renders
 - This meant:
@@ -20,6 +21,7 @@ When the page reloaded, users experienced two visual issues:
   3. Result: Visible flash of light theme before dark theme is applied
 
 **The Problem:**
+
 ```tsx
 // ThemeToggle component - runs AFTER first render
 useEffect(() => {
@@ -31,6 +33,7 @@ useEffect(() => {
 ### 2. Content Flash
 
 **Why it happened:**
+
 - Windows were persisted to `sessionStorage` and restored in a `useEffect` hook
 - The restoration process happened asynchronously after React's first render
 - This meant:
@@ -39,6 +42,7 @@ useEffect(() => {
   3. Result: Empty desktop briefly, then windows suddenly appear
 
 **The Problem:**
+
 ```tsx
 // useWindowPersistence - runs AFTER first render
 useEffect(() => {
@@ -60,7 +64,7 @@ useEffect(() => {
 <script define:inline>
   (function () {
     const THEME_STORAGE_KEY = 'retro-theme-preference';
-    
+
     // Check localStorage first
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
     let shouldBeDark = false;
@@ -70,7 +74,9 @@ useEffect(() => {
     } else {
       // No saved preference, use system preference
       if (typeof window !== 'undefined' && window.matchMedia) {
-        shouldBeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        shouldBeDark = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches;
       }
     }
 
@@ -85,11 +91,13 @@ useEffect(() => {
 ```
 
 **Why this works:**
+
 - Scripts in `<head>` execute synchronously before React hydration
 - Theme class is applied to `<html>` element before any rendering
 - No flash because the correct theme is active from the start
 
 **Updated ThemeToggle:**
+
 - Now syncs with the pre-initialized theme instead of initializing it
 - Prevents conflicts and ensures consistency
 
@@ -102,16 +110,26 @@ useEffect(() => {
 **Changes:**
 
 1. **Desktop Component** - Tracks persistence loading state:
+
 ```tsx
 const hasLoadedFromPersistence = useWindowStore(
-  (state) => state.hasLoadedFromPersistence
+  state => state.hasLoadedFromPersistence
 );
 
 // Apply 'loaded' class when persistence is ready
-<div className={cn('desktop', styles.desktop, hasLoadedFromPersistence && styles.loaded)}>
+<div
+  className={cn(
+    'desktop',
+    styles.desktop,
+    hasLoadedFromPersistence && styles.loaded
+  )}
+>
+  {/* Desktop content */}
+</div>;
 ```
 
 2. **CSS Transition** - Smooth fade-in:
+
 ```scss
 .desktop {
   opacity: 0;
@@ -124,6 +142,7 @@ const hasLoadedFromPersistence = useWindowStore(
 ```
 
 3. **Window Store** - Smart initialization:
+
 ```tsx
 // Check synchronously if there's saved state
 let initialHasLoadedFromPersistence = false;
@@ -144,6 +163,7 @@ if (typeof window !== 'undefined') {
 ```
 
 **Why this works:**
+
 - If no saved state exists → Desktop fades in immediately (no delay)
 - If saved state exists → Desktop waits for restoration → Fades in smoothly
 - 0.2s transition prevents jarring appearance
@@ -154,6 +174,7 @@ if (typeof window !== 'undefined') {
 **Location:** `src/hooks/use-window-persistence.ts`
 
 **Changes:**
+
 - Checks if persistence has already been loaded before attempting to load
 - Handles the case where no saved state exists (marks as loaded immediately)
 - Prevents double initialization
@@ -203,4 +224,3 @@ The fundamental issue was **timing**: React's `useEffect` runs after the first r
 ## Related Issues
 
 This fix also resolved a related issue where custom app windows (Terminal, Music Player, etc.) would show "No content available" on page refresh. The fix for that was in `initializeFromPersistence` to restore the full `config` object (including React component references) from the `apps` array, since component references are lost during JSON serialization.
-

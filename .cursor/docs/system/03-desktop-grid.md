@@ -17,6 +17,7 @@ The grid is calculated dynamically based on viewport size:
 - **Menu bar offset**: Grid starts below the 32px menu bar
 
 **Calculation:**
+
 ```
 availableWidth = viewportWidth - (padding * 2)
 availableHeight = viewportHeight - padding - menuBarHeight
@@ -29,10 +30,12 @@ startY = 20px + 32px (menu bar)
 ### Grid Coordinates
 
 Icons use grid coordinates (gridX, gridY) rather than pixel coordinates:
+
 - `gridX`: Column index (0-based)
 - `gridY`: Row index (0-based)
 
 **Conversion:**
+
 - Grid → Pixel: `pixelX = startX + (gridX * 100)`
 - Pixel → Grid: `gridX = round((pixelX - startX) / 100)`
 
@@ -43,6 +46,7 @@ Icons use grid coordinates (gridX, gridY) rather than pixel coordinates:
 The `store/icon/slice.ts` manages icon state:
 
 **State:**
+
 - `iconStates` - Array of icon positions (grid coordinates)
 - `selectedIconId` - Currently selected icon
 - `draggingIconId` - Icon being dragged
@@ -50,6 +54,7 @@ The `store/icon/slice.ts` manages icon state:
 - `hasLoadedFromPersistence` - Whether state has been restored
 
 **Actions:**
+
 - `updateIconPosition(id, position)` - Update icon grid position
 - `selectIcon(id)` - Select an icon
 - `deselectIcons()` - Clear selection
@@ -58,6 +63,7 @@ The `store/icon/slice.ts` manages icon state:
 ### Icon Configuration
 
 Icons are generated from `app-config.ts`:
+
 - Only apps with `desktopIcon` property appear as icons
 - Icon label defaults to app title if not specified
 - Icon can be a React component or image path
@@ -67,6 +73,7 @@ Icons are generated from `app-config.ts`:
 ### Initial Placement
 
 When icons are first created:
+
 - Placed in a grid pattern starting from top-left
 - Spread horizontally with spacing (at least 4 icons per row, or half of columns)
 - Automatically constrained to valid grid bounds
@@ -74,6 +81,7 @@ When icons are first created:
 ### Position Updates
 
 When an icon is moved:
+
 1. Pixel position is converted to grid coordinates
 2. Grid position is constrained to valid bounds
 3. Collision detection finds nearest free cell if target is occupied
@@ -85,6 +93,7 @@ When an icon is moved:
 ### Occupied Cells
 
 The system tracks occupied grid cells:
+
 - Format: `Set<string>` where each string is `"gridX,gridY"`
 - Updated when icons are moved
 - Used to prevent overlapping icons
@@ -92,6 +101,7 @@ The system tracks occupied grid cells:
 ### Finding Free Cells
 
 When placing an icon on an occupied cell:
+
 1. Check if target cell is free (excluding current icon's position)
 2. If occupied, search in expanding radius using Manhattan distance
 3. Return nearest free cell
@@ -143,6 +153,7 @@ When placing an icon on an occupied cell:
 ## Z-Index Management
 
 Icons have a fixed z-index:
+
 - **Icons**: z-index 1 (desktop surface, below windows)
 - **Dragging icon**: z-index 99 (above all windows, below menu bar)
 - **Windows**: z-index 10-98
@@ -151,6 +162,7 @@ Icons have a fixed z-index:
 ## Persistence
 
 Icon positions are persisted to `localStorage`:
+
 - Saves grid coordinates (not pixel positions)
 - Restores on page reload
 - Format: `{ [iconId]: { gridX: number, gridY: number } }`
@@ -176,4 +188,3 @@ The `icon-grid.ts` file provides utility functions:
 - `src/components/desktop-icon/index.tsx` - Individual icon component
 - `src/hooks/use-icon-drag.ts` - Icon dragging logic
 - `src/components/desktop-icons/utils.ts` - Grid calculation utilities
-

@@ -3,6 +3,7 @@
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "es5",
+  "arrowParens": "avoid",
   "printWidth": 80,
   "plugins": ["prettier-plugin-astro"],
   "overrides": [
@@ -14,5 +15,3 @@
     }
   ]
 }
-
-

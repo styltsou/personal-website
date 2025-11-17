@@ -201,23 +201,19 @@ A retro-styled music player component that integrates seamlessly with the existi
   - Provider wraps component internally (not at Desktop level)
   - Player unmounts when window is completely closed
   - Background playback continues when minimized
-  
 - ✅ **React Portal**: Replaced direct DOM manipulation with React Portal for YouTube player
   - YouTube player container now rendered via `createPortal` to `document.body`
   - Proper React lifecycle management
   - Cleaner, more maintainable code
-  
 - ✅ **Self-Contained Architecture**: Removed all Desktop-level dependencies
   - No `MusicPlayerProvider` wrapper in Desktop component
   - No `MusicPlayerWindowWatcher` component
   - Desktop component completely unaware of music player
   - All player logic contained within `music-player` directory
-  
 - ✅ **State Management**: Clean separation of concerns
   - Player state managed via React Context (within music-player directory)
   - Read-only access to main Zustand store (only to check window state)
   - No player-specific state in main Zustand store
-  
 - ✅ **Window Lifecycle**: Internal handling of window state changes
   - Automatically pauses playback when window closes
   - Continues playback when window is minimized
@@ -275,6 +271,7 @@ A retro-styled music player component that integrates seamlessly with the existi
 ### Configuration
 
 All settings are centralized in `CONFIG` object:
+
 - `spotifyFetchLimit`: Number of tracks to fetch from Spotify (40)
 - `maxTracksPerArtist`: Maximum tracks per artist (2)
 - `maxTracksToSave`: Total tracks to save (12)

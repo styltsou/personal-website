@@ -24,8 +24,8 @@ export function getDesktopIcons(): IconConfig[] {
 
   try {
     return apps
-      .filter((app) => app.desktopIcon)
-      .map((app) => ({
+      .filter(app => app.desktopIcon)
+      .map(app => ({
         id: app.id,
         label: app.desktopIcon!.label ?? app.title, // Use app title as fallback
         icon: app.desktopIcon!.icon,
@@ -38,12 +38,12 @@ export function getDesktopIcons(): IconConfig[] {
 }
 
 export default function DesktopIcons() {
-  const iconStates = useStore((state) => state.iconStates);
-  const selectedIconId = useStore((state) => state.selectedIconId);
-  const deselectIcons = useStore((state) => state.deselectIcons);
-  const updateIconPosition = useStore((state) => state.updateIconPosition);
-  const openWindow = useStore((state) => state.openWindow);
-  const unfocusWindow = useStore((state) => state.unfocusWindow);
+  const iconStates = useStore(state => state.iconStates);
+  const selectedIconId = useStore(state => state.selectedIconId);
+  const deselectIcons = useStore(state => state.deselectIcons);
+  const updateIconPosition = useStore(state => state.updateIconPosition);
+  const openWindow = useStore(state => state.openWindow);
+  const unfocusWindow = useStore(state => state.unfocusWindow);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Generate icons from apps config
@@ -55,7 +55,7 @@ export default function DesktopIcons() {
     const { columns } = calculateGridDimensions();
 
     icons.forEach((icon, index) => {
-      const existingState = iconStates.find((is) => is.id === icon.id);
+      const existingState = iconStates.find(is => is.id === icon.id);
       if (!existingState) {
         // Place icons in a grid pattern, starting from top-left
         // Spread them horizontally with spacing
@@ -90,7 +90,7 @@ export default function DesktopIcons() {
 
   // Get grid position for an icon (from store or default)
   const getIconGridPosition = (iconId: string): GridPosition => {
-    const iconState = iconStates.find((is) => is.id === iconId);
+    const iconState = iconStates.find(is => is.id === iconId);
     if (iconState) {
       return iconState.position;
     }
@@ -101,7 +101,7 @@ export default function DesktopIcons() {
   // Handle double-click on icon - open window if windowId is configured
   const handleIconDoubleClick = useCallback(
     (iconId: string) => {
-      const icon = icons.find((i) => i.id === iconId);
+      const icon = icons.find(i => i.id === iconId);
       if (icon?.windowId) {
         openWindow(icon.windowId);
       }
@@ -120,14 +120,14 @@ export default function DesktopIcons() {
         zIndex: ICON_Z_INDEX,
         pointerEvents: 'auto', // Container captures clicks for deselection
       }}
-      onClick={(e) => {
+      onClick={e => {
         // Only deselect if clicking directly on container (not on an icon)
         if (e.target === containerRef.current) {
           handleContainerClick(e);
         }
       }}
     >
-      {icons.map((icon) => {
+      {icons.map(icon => {
         const gridPosition = getIconGridPosition(icon.id);
         return (
           <DesktopIcon

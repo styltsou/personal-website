@@ -19,7 +19,7 @@ export function extractMainContent(html: string): string {
  * Get all content-based app configs
  */
 export function getContentApps(): AppConfig[] {
-  return apps.filter((app) => app.path && !app.component);
+  return apps.filter(app => app.path && !app.component);
 }
 
 /**
@@ -36,15 +36,14 @@ export interface ContentData {
 export function prepareContentData(): ContentData {
   const contentData: ContentData = {};
   const contentApps = getContentApps();
-  
+
   // This will be populated by the build process
   // For now, return empty object - content will be fetched client-side as fallback
-  contentApps.forEach((app) => {
+  contentApps.forEach(app => {
     if (app.path) {
       contentData[app.id] = ''; // Will be populated during build
     }
   });
-  
+
   return contentData;
 }
-

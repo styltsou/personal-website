@@ -12,4 +12,3 @@ export const MAX_WINDOW_Z_INDEX = 98; // Cap windows at 98 (dragging icon uses 9
 export const DRAGGING_ICON_Z_INDEX = 99; // Dragging icon z-index (above all windows, below menu bar)
 export const MENU_BAR_Z_INDEX = 100; // Menu bar z-index (always on top)
 export const ICON_Z_INDEX = 1; // Desktop icons z-index (desktop surface, below windows)
-

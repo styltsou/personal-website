@@ -52,7 +52,10 @@ const detectBrowser = (): string => {
 
   // Check for Brave first (it has navigator.brave object)
   // @ts-ignore - navigator.brave is a Brave-specific property
-  if (window.navigator.brave && typeof window.navigator.brave.isBrave === 'function') {
+  if (
+    window.navigator.brave &&
+    typeof window.navigator.brave.isBrave === 'function'
+  ) {
     return 'brave';
   }
 
@@ -99,7 +102,7 @@ export default function TerminalWindow() {
   const [hostname, setHostname] = useState<string>('website');
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
-  const closeWindow = useStore((state) => state.closeWindow);
+  const closeWindow = useStore(state => state.closeWindow);
 
   // Hardcoded username
   const username = USERNAME;
@@ -134,100 +137,110 @@ export default function TerminalWindow() {
   }, [lines]);
 
   // Execute a command (placeholder for future implementation)
-  const executeCommand = useCallback((command: string) => {
-    const trimmedCommand = command.trim();
-    if (!trimmedCommand) return;
+  const executeCommand = useCallback(
+    (command: string) => {
+      const trimmedCommand = command.trim();
+      if (!trimmedCommand) return;
 
-    // Add command to history
-    setHistory((prev) => [...prev, trimmedCommand]);
-    setHistoryIndex(-1);
+      // Add command to history
+      setHistory(prev => [...prev, trimmedCommand]);
+      setHistoryIndex(-1);
 
-    // Add command line to output
-    setLines((prev) => [
-      ...prev,
-      { type: 'command', content: trimmedCommand, timestamp: new Date() },
-    ]);
+      // Add command line to output
+      setLines(prev => [
+        ...prev,
+        { type: 'command', content: trimmedCommand, timestamp: new Date() },
+      ]);
 
-    // Parse and execute command
-    const [cmd, ...args] = trimmedCommand.split(' ');
+      // Parse and execute command
+      const [cmd, ...args] = trimmedCommand.split(' ');
 
-    // Placeholder command handlers
-    switch (cmd.toLowerCase()) {
-      case 'help':
-        setLines((prev) => [
-          ...prev,
-          { type: 'output', content: 'Available commands:' },
-          { type: 'output', content: '  help - Show this help message' },
-          { type: 'output', content: '  clear - Clear the terminal' },
-          { type: 'output', content: '  echo <text> - Echo text back' },
-          { type: 'output', content: '  exit - Close the terminal window' },
-          { type: 'output', content: '  pwd - Print working directory' },
-          { type: 'output', content: '  ls - List directory contents' },
-          { type: 'output', content: '  cd <directory> - Change directory' },
-        ]);
-        break;
-      case 'clear':
-        setLines([]);
-        break;
-      case 'echo':
-        setLines((prev) => [
-          ...prev,
-          { type: 'output', content: args.join(' ') || '' },
-        ]);
-        break;
-      case 'exit':
-        closeWindow('terminal');
-        break;
-      case 'pwd':
-        setLines((prev) => [
-          ...prev,
-          { type: 'output', content: currentDirectory },
-        ]);
-        break;
-      case 'cd':
-        const targetDir = args[0] || '~';
-        if (targetDir === '~' || targetDir === '') {
-          setCurrentDirectory('~');
+      // Placeholder command handlers
+      switch (cmd.toLowerCase()) {
+        case 'help':
+          setLines(prev => [
+            ...prev,
+            { type: 'output', content: 'Available commands:' },
+            { type: 'output', content: '  help - Show this help message' },
+            { type: 'output', content: '  clear - Clear the terminal' },
+            { type: 'output', content: '  echo <text> - Echo text back' },
+            { type: 'output', content: '  exit - Close the terminal window' },
+            { type: 'output', content: '  pwd - Print working directory' },
+            { type: 'output', content: '  ls - List directory contents' },
+            { type: 'output', content: '  cd <directory> - Change directory' },
+          ]);
           break;
-        }
-        // Handle relative paths
-        if (targetDir === '..') {
-          // Go up one level
-          if (currentDirectory === '~/desktop') {
+        case 'clear':
+          setLines([]);
+          break;
+        case 'echo':
+          setLines(prev => [
+            ...prev,
+            { type: 'output', content: args.join(' ') || '' },
+          ]);
+          break;
+        case 'exit':
+          closeWindow('terminal');
+          break;
+        case 'pwd':
+          setLines(prev => [
+            ...prev,
+            { type: 'output', content: currentDirectory },
+          ]);
+          break;
+        case 'cd':
+          const targetDir = args[0] || '~';
+          if (targetDir === '~' || targetDir === '') {
             setCurrentDirectory('~');
-          } else {
-            setCurrentDirectory('~');
+            break;
           }
-          break;
-        }
-        // Handle ~/desktop or desktop
-        if (targetDir === 'desktop' || targetDir === '~/desktop') {
-          setCurrentDirectory('~/desktop');
-          break;
-        }
-        // Check if directory exists in root
-        const validRootDirs = ['about', 'contact', 'projects', 'desktop'];
-        if (validRootDirs.includes(targetDir)) {
-          if (targetDir === 'desktop') {
-            setCurrentDirectory('~/desktop');
-          } else {
-            // For other root dirs, we could navigate to them, but for now just show error
-            // since they're not really directories
-            setLines((prev) => [
-              ...prev,
-              {
-                type: 'error',
-                content: `cd: ${targetDir}: Not a directory`,
-              },
-            ]);
+          // Handle relative paths
+          if (targetDir === '..') {
+            // Go up one level
+            if (currentDirectory === '~/desktop') {
+              setCurrentDirectory('~');
+            } else {
+              setCurrentDirectory('~');
+            }
+            break;
           }
-        } else if (targetDir.startsWith('~/')) {
-          // Handle absolute paths starting with ~/
-          const dirName = targetDir.substring(2);
-          if (dirName === 'desktop') {
+          // Handle ~/desktop or desktop
+          if (targetDir === 'desktop' || targetDir === '~/desktop') {
             setCurrentDirectory('~/desktop');
+            break;
+          }
+          // Check if directory exists in root
+          const validRootDirs = ['about', 'contact', 'projects', 'desktop'];
+          if (validRootDirs.includes(targetDir)) {
+            if (targetDir === 'desktop') {
+              setCurrentDirectory('~/desktop');
+            } else {
+              // For other root dirs, we could navigate to them, but for now just show error
+              // since they're not really directories
+              setLines(prev => [
+                ...prev,
+                {
+                  type: 'error',
+                  content: `cd: ${targetDir}: Not a directory`,
+                },
+              ]);
+            }
+          } else if (targetDir.startsWith('~/')) {
+            // Handle absolute paths starting with ~/
+            const dirName = targetDir.substring(2);
+            if (dirName === 'desktop') {
+              setCurrentDirectory('~/desktop');
+            } else {
+              setLines(prev => [
+                ...prev,
+                {
+                  type: 'error',
+                  content: `cd: ${targetDir}: No such file or directory`,
+                },
+              ]);
+            }
           } else {
-            setLines((prev) => [
+            setLines(prev => [
               ...prev,
               {
                 type: 'error',
@@ -235,46 +248,39 @@ export default function TerminalWindow() {
               },
             ]);
           }
-        } else {
-          setLines((prev) => [
+          break;
+        case 'ls':
+          // Get directory contents based on current directory
+          let lsContent = '';
+          if (
+            currentDirectory === '~/desktop' ||
+            currentDirectory === 'desktop'
+          ) {
+            // List desktop icons
+            const icons = getDesktopIcons();
+            const desktopItems = icons.map(icon => icon.label).join('  ');
+            lsContent = desktopItems || 'No items found';
+          } else if (currentDirectory === '~') {
+            // Root directory
+            lsContent = 'about  contact  desktop  projects';
+          } else {
+            // Other directories
+            lsContent = 'No items found';
+          }
+          setLines(prev => [...prev, { type: 'output', content: lsContent }]);
+          break;
+        default:
+          setLines(prev => [
             ...prev,
             {
               type: 'error',
-              content: `cd: ${targetDir}: No such file or directory`,
+              content: `Command not found: ${cmd}. Type "help" for available commands.`,
             },
           ]);
-        }
-        break;
-      case 'ls':
-        // Get directory contents based on current directory
-        let lsContent = '';
-        if (currentDirectory === '~/desktop' || currentDirectory === 'desktop') {
-          // List desktop icons
-          const icons = getDesktopIcons();
-          const desktopItems = icons.map((icon) => icon.label).join('  ');
-          lsContent = desktopItems || 'No items found';
-        } else if (currentDirectory === '~') {
-          // Root directory
-          lsContent = 'about  contact  desktop  projects';
-        } else {
-          // Other directories
-          lsContent = 'No items found';
-        }
-        setLines((prev) => [
-          ...prev,
-          { type: 'output', content: lsContent },
-        ]);
-        break;
-      default:
-        setLines((prev) => [
-          ...prev,
-          {
-            type: 'error',
-            content: `Command not found: ${cmd}. Type "help" for available commands.`,
-          },
-        ]);
-    }
-  }, [closeWindow, currentDirectory]);
+      }
+    },
+    [closeWindow, currentDirectory]
+  );
 
   // Handle input submission
   const handleSubmit = useCallback(
@@ -301,10 +307,13 @@ export default function TerminalWindow() {
   const findCommonPrefix = useCallback((strings: string[]): string => {
     if (strings.length === 0) return '';
     if (strings.length === 1) return strings[0];
-    
+
     let prefix = strings[0];
     for (let i = 1; i < strings.length; i++) {
-      while (!strings[i].toLowerCase().startsWith(prefix.toLowerCase()) && prefix.length > 0) {
+      while (
+        !strings[i].toLowerCase().startsWith(prefix.toLowerCase()) &&
+        prefix.length > 0
+      ) {
         prefix = prefix.slice(0, -1);
       }
     }
@@ -315,16 +324,16 @@ export default function TerminalWindow() {
   const handleAutocomplete = useCallback(() => {
     const trimmedInput = input.trim();
     const parts = trimmedInput.split(/\s+/);
-    
+
     if (parts.length === 0 || parts[0].toLowerCase() !== 'cd') {
       return; // Only autocomplete for cd command
     }
 
     const partialPath = parts[1] || '';
     const availableDirs = getAvailableDirectories();
-    
+
     // Filter directories that match the partial input (case-insensitive)
-    const matches = availableDirs.filter((dir) =>
+    const matches = availableDirs.filter(dir =>
       dir.toLowerCase().startsWith(partialPath.toLowerCase())
     );
 
@@ -343,7 +352,7 @@ export default function TerminalWindow() {
         setInput(`cd ${commonPrefix}`);
       } else {
         // Show all matches to user
-        setLines((prev) => [
+        setLines(prev => [
           ...prev,
           { type: 'output', content: matches.join('  ') },
         ]);
@@ -420,7 +429,7 @@ export default function TerminalWindow() {
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             className={styles.input}
             style={{ color: getInputColor() }}

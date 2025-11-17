@@ -21,16 +21,16 @@ export interface ScaleInfo {
 export function calculateScale(actualSize: GameSize): ScaleInfo {
   const scaleX = actualSize.width / BASE_WIDTH;
   const scaleY = actualSize.height / BASE_HEIGHT;
-  
+
   // Use uniform scale to maintain aspect ratio
   const scale = Math.min(scaleX, scaleY);
-  
+
   // Calculate offsets for centering (letterboxing/pillarboxing)
   const scaledWidth = BASE_WIDTH * scale;
   const scaledHeight = BASE_HEIGHT * scale;
   const offsetX = (actualSize.width - scaledWidth) / 2;
   const offsetY = (actualSize.height - scaledHeight) / 2;
-  
+
   return {
     scaleX,
     scaleY,
@@ -57,7 +57,11 @@ export function clamp(value: number, min: number, max: number): number {
 /**
  * Scale font size with clamping to prevent extreme sizes
  */
-export function scaleFontSize(baseSize: number, scale: number, minSize = 12, maxSize = 100): number {
+export function scaleFontSize(
+  baseSize: number,
+  scale: number,
+  minSize = 12,
+  maxSize = 100
+): number {
   return clamp(baseSize * scale, minSize, maxSize);
 }
-

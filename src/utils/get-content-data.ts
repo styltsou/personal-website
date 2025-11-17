@@ -21,17 +21,17 @@ export interface ContentData {
  */
 export async function getContentData(): Promise<ContentData> {
   const contentData: ContentData = {};
-  const contentApps = apps.filter((app) => app.path && !app.component);
+  const contentApps = apps.filter(app => app.path && !app.component);
 
   // For each content app, we'll need to render its page
   // Since we can't easily import and render Astro pages directly,
   // we'll use a different approach: the content will be available
   // via the prerendered pages, and we'll embed it in a script tag
-  
+
   // This function will be called from index.astro to prepare content
   // The actual content extraction happens client-side from embedded data
   // or we fetch it from the prerendered pages
-  
+
   return contentData;
 }
 
@@ -39,6 +39,5 @@ export async function getContentData(): Promise<ContentData> {
  * Get content apps that need content embedding
  */
 export function getContentApps(): AppConfig[] {
-  return apps.filter((app) => app.path && !app.component);
+  return apps.filter(app => app.path && !app.component);
 }
-

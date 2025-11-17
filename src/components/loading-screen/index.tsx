@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 
 export default function LoadingScreen() {
   const hasLoadedFromPersistence = useStore(
-    (state) => state.hasLoadedFromPersistence
+    state => state.hasLoadedFromPersistence
   );
   const [show, setShow] = useState(true);
 
@@ -37,4 +37,3 @@ export default function LoadingScreen() {
     </div>
   );
 }
-

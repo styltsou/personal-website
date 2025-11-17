@@ -18,9 +18,9 @@ const STORAGE_KEY = 'desktop-icons';
 
 export function useIconPersistence() {
   // Properly select from store with individual selectors
-  const iconStates = useStore((state) => state.iconStates);
+  const iconStates = useStore(state => state.iconStates);
   const initializeIconFromPersistence = useStore(
-    (state) => state.initializeIconFromPersistence
+    state => state.initializeIconFromPersistence
   );
 
   // Load from localStorage on mount
@@ -54,7 +54,7 @@ export function useIconPersistence() {
     try {
       // Convert IconState array to persisted format
       const stateToSave: PersistedIconState = {};
-      iconStates.forEach((iconState) => {
+      iconStates.forEach(iconState => {
         stateToSave[iconState.id] = {
           gridX: iconState.position.gridX,
           gridY: iconState.position.gridY,

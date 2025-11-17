@@ -62,4 +62,3 @@ export const COLORS = {
     overlay: 'rgba(0, 0, 0, 0.7)',
   },
 };
-

@@ -43,7 +43,10 @@ export function getMaxZIndex(
   windows: Array<{ zIndex: number }>,
   fallback: number = BASE_Z_INDEX - 1
 ): number {
-  return windows.reduce((max, window) => Math.max(max, window.zIndex), fallback);
+  return windows.reduce(
+    (max, window) => Math.max(max, window.zIndex),
+    fallback
+  );
 }
 
 /**
@@ -243,7 +246,8 @@ export function calculateCascadedPosition(
 ): WindowPosition {
   // Check if any visible window is at the default position
   const hasWindowAtDefaultPosition = visibleWindows.some(
-    (window) => !window.isMaximized && positionsEqual(window.position, defaultPosition)
+    window =>
+      !window.isMaximized && positionsEqual(window.position, defaultPosition)
   );
 
   // If no window is at default position, use default position

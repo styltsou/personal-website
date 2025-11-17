@@ -25,7 +25,7 @@ export default function TrackInfo({ track, audioState }: TrackInfoProps) {
           src={track.albumArt}
           alt={`${track.album} album cover`}
           className={styles.albumArt}
-          onError={(e) => {
+          onError={e => {
             // Fallback to placeholder on error
             const target = e.target as HTMLImageElement;
             target.src =

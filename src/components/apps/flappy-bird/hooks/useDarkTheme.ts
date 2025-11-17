@@ -45,4 +45,3 @@ export function useDarkTheme(): boolean {
 
   return isDarkTheme;
 }
-

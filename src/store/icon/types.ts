@@ -23,4 +23,3 @@ export interface IconSlice {
   initializeIconFromPersistence: (persistedStates: IconState[]) => void;
   getIconState: (iconId: string) => IconState | undefined;
 }
-

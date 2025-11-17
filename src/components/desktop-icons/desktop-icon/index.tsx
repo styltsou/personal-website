@@ -7,11 +7,7 @@ import { useCallback, useRef } from 'react';
 import { useIconDrag } from '@/hooks/use-icon-drag';
 import { useStore } from '@/store';
 import type { IconConfig, GridPosition } from '@/types/icon';
-import {
-  ICON_WIDTH,
-  ICON_HEIGHT,
-  ICON_IMAGE_SIZE,
-} from '../utils';
+import { ICON_WIDTH, ICON_HEIGHT, ICON_IMAGE_SIZE } from '../utils';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
@@ -26,10 +22,10 @@ export default function DesktopIcon({
   gridPosition,
   onDoubleClick,
 }: DesktopIconProps) {
-  const selectedIconId = useStore((state) => state.selectedIconId);
-  const selectIcon = useStore((state) => state.selectIcon);
-  const updateIconPosition = useStore((state) => state.updateIconPosition);
-  const unfocusWindow = useStore((state) => state.unfocusWindow);
+  const selectedIconId = useStore(state => state.selectedIconId);
+  const selectIcon = useStore(state => state.selectIcon);
+  const updateIconPosition = useStore(state => state.updateIconPosition);
+  const unfocusWindow = useStore(state => state.unfocusWindow);
   const doubleClickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSelected = selectedIconId === iconConfig.id;
@@ -117,7 +113,11 @@ export default function DesktopIcon({
       {/* Original position ghost (only visible while dragging) */}
       {isDragging && (
         <div
-          className={cn('desktop-icon', styles.desktopIcon, styles.desktopIconGhost)}
+          className={cn(
+            'desktop-icon',
+            styles.desktopIcon,
+            styles.desktopIconGhost
+          )}
           style={{
             position: 'absolute',
             left: `${initialPixelPosition.x}px`,
@@ -135,7 +135,11 @@ export default function DesktopIcon({
       {/* Preview position (where icon will snap to) - just the outline box */}
       {isDragging && previewPixelPosition && (
         <div
-          className={cn('desktop-icon', styles.desktopIcon, styles.desktopIconPreview)}
+          className={cn(
+            'desktop-icon',
+            styles.desktopIcon,
+            styles.desktopIconPreview
+          )}
           style={{
             position: 'absolute',
             left: `${previewPixelPosition.x}px`,
@@ -153,7 +157,11 @@ export default function DesktopIcon({
       {/* When dragging, hide the icon here - it will be rendered at Desktop level */}
       {!isDragging && (
         <div
-          className={cn('desktop-icon', styles.desktopIcon, isSelected && styles.desktopIconSelected)}
+          className={cn(
+            'desktop-icon',
+            styles.desktopIcon,
+            isSelected && styles.desktopIconSelected
+          )}
           style={{
             position: 'absolute',
             left: `${displayPosition.x}px`,

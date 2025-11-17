@@ -25,6 +25,7 @@ This document provides an overview of the project's file and folder structure, e
 ### Components (`src/components/`)
 
 **Core Desktop Components:**
+
 - `desktop/` - Main desktop container component
 - `window/` - Window component (draggable, resizable)
   - `title-bar/` - Window title bar with controls
@@ -41,6 +42,7 @@ This document provides an overview of the project's file and folder structure, e
 - `loading-progress-bar/` - Loading indicator for content windows
 
 **App Components (`src/components/apps/`):**
+
 - `cv/` - CV/Resume viewer app
 - `terminal/` - Terminal emulator
 - `wikipedia/` - Wikipedia viewer
@@ -49,6 +51,7 @@ This document provides an overview of the project's file and folder structure, e
 - `music-player/` - Music player app with Spotify/YouTube integration
 
 Each app directory typically contains:
+
 - `index.tsx` - Main app component
 - `icon.tsx` - Icon component for desktop
 - `styles.module.scss` - Component-specific styles
@@ -102,6 +105,7 @@ General-purpose utility functions:
 - `get-content-data.ts` - Content data utilities for build-time content embedding
 
 **Note**: Feature-specific utilities are colocated with their components:
+
 - Window utilities: `src/components/window/utils/`
 - Icon utilities: `src/components/desktop-icons/utils.ts`
 
@@ -141,7 +145,9 @@ Content configuration:
 ## Key Files
 
 ### `src/app-config.ts`
+
 Central registry of all apps. Defines:
+
 - App IDs, titles, paths
 - Custom React components
 - Desktop icon configuration
@@ -151,13 +157,17 @@ Central registry of all apps. Defines:
 **Note**: Type definitions are in `src/types/app.ts` and `src/types/window.ts`, not in this file.
 
 ### `src/constants.ts`
+
 Application-wide constants:
+
 - Layout constants (MENU_BAR_HEIGHT)
 - Z-index constants (BASE_Z_INDEX, MAX_WINDOW_Z_INDEX, etc.)
 - Other shared constants used across multiple modules
 
 ### `src/components/desktop/index.tsx`
+
 Main React island component. Orchestrates:
+
 - Window rendering
 - State management integration
 - Persistence hooks
@@ -165,7 +175,9 @@ Main React island component. Orchestrates:
 - Content loading
 
 ### `src/store/window/slice.ts`
+
 Zustand store slice managing all window state:
+
 - Open/closed windows
 - Positions and sizes
 - Z-index management
@@ -174,7 +186,9 @@ Zustand store slice managing all window state:
 - Persistence integration
 
 ### `src/store/icon/slice.ts`
+
 Zustand store slice managing icon state:
+
 - Icon positions (grid coordinates)
 - Selection state
 - Dragging state
@@ -204,4 +218,3 @@ Zustand store slice managing icon state:
 7. **Type safety**: TypeScript throughout
 8. **Separation of concerns**: Clear boundaries between UI, state, and logic
 9. **Path aliases**: Deep relative imports (`../../`) are avoided in favor of path aliases (`@/`)
-

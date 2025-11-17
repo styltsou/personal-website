@@ -49,7 +49,7 @@ export default function ControlsPanel({
               min="0"
               max="100"
               value={volume}
-              onChange={(e) => onVolumeChange(Number(e.target.value))}
+              onChange={e => onVolumeChange(Number(e.target.value))}
               className={styles.slider}
             />
             <span className={styles.value}>{volume}%</span>
@@ -84,7 +84,11 @@ export default function ControlsPanel({
         <div className={styles.controlGroup}>
           <label className={styles.label}>Sustain</label>
           <button
-            className={cn(styles.button, styles.toggleButton, sustain && styles.active)}
+            className={cn(
+              styles.button,
+              styles.toggleButton,
+              sustain && styles.active
+            )}
             onClick={() => onSustainChange(!sustain)}
             title="Hold notes after release"
           >
@@ -99,7 +103,7 @@ export default function ControlsPanel({
           <label className={styles.label}>Waveform</label>
           <select
             value={waveform}
-            onChange={(e) => onWaveformChange(e.target.value as OscillatorType)}
+            onChange={e => onWaveformChange(e.target.value as OscillatorType)}
             className={styles.select}
           >
             <option value="sine">Sine</option>
@@ -123,7 +127,8 @@ export default function ControlsPanel({
               </button>
               {midiDevices.length > 0 && (
                 <span className={styles.midiStatus}>
-                  {midiDevices.filter((d) => d.state === 'connected').length} connected
+                  {midiDevices.filter(d => d.state === 'connected').length}{' '}
+                  connected
                 </span>
               )}
             </div>
@@ -146,4 +151,3 @@ export default function ControlsPanel({
     </div>
   );
 }
-

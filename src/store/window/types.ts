@@ -38,4 +38,3 @@ export interface WindowSlice {
   ) => void;
   getWindowState: (windowId: string) => WindowState | undefined;
 }
-

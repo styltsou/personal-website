@@ -92,7 +92,7 @@ export function useSpotify(): UseSpotifyReturn {
   }, [fetchTracks, refreshTrigger]);
 
   const refresh = useCallback(() => {
-    setRefreshTrigger((prev) => prev + 1);
+    setRefreshTrigger(prev => prev + 1);
   }, []);
 
   return { tracks, loading, error, refresh };

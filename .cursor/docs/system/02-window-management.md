@@ -11,6 +11,7 @@ The window management system is built on Zustand for state management and provid
 ### Window State
 
 Each window has a `WindowState` that includes:
+
 - `id` - Unique identifier (matches app ID)
 - `config` - App configuration from `app-config.ts`
 - `position` - Current position (x, y)
@@ -26,6 +27,7 @@ Each window has a `WindowState` that includes:
 The `store/window/slice.ts` manages all window state using Zustand. It provides:
 
 **State:**
+
 - `windowStates` - Array of all open windows
 - `closedWindows` - Map of closed window states (for restoration)
 - `activeWindowId` - Currently focused window
@@ -33,6 +35,7 @@ The `store/window/slice.ts` manages all window state using Zustand. It provides:
 - `hasLoadedFromPersistence` - Whether state has been restored from sessionStorage
 
 **Actions:**
+
 - `openWindow(id)` - Open or restore a window
 - `closeWindow(id)` - Close a window (saves state for restoration)
 - `minimizeWindow(id)` - Minimize a window
@@ -62,6 +65,7 @@ The `store/window/slice.ts` manages all window state using Zustand. It provides:
 ### Window Restoration
 
 When reopening a closed window:
+
 - Restore exact position and size from `closedWindows`
 - Restore maximized state if it was maximized
 - Use cascading if no saved state exists
@@ -75,6 +79,7 @@ New windows are centered on screen with a slight vertical offset (15% of viewpor
 ### Cascading
 
 When multiple windows are open, new windows cascade:
+
 - First window: Centered
 - Subsequent windows: Offset by 40px right and 40px down
 - Prevents windows from stacking exactly on top of each other
@@ -88,12 +93,14 @@ When multiple windows are open, new windows cascade:
 ## Z-Index Management
 
 Simplified z-index system:
+
 - **Base**: Windows start at z-index 10
 - **Increment**: Each focus increments by 1
 - **Maximum**: Capped at 98 (leaves room for dragging icons at 99 and menu bar at 100)
 - **Active window**: Always has the highest z-index among windows
 
 When a window is focused:
+
 1. Find current maximum z-index
 2. Calculate next z-index (max + 1, capped at 98)
 3. Update window's z-index
@@ -120,6 +127,7 @@ When a window is focused:
 ### Snapping
 
 Windows can snap to screen edges:
+
 - **Left**: Takes up left half of screen
 - **Right**: Takes up right half of screen
 - **Top**: Takes up top portion of screen
@@ -129,6 +137,7 @@ Windows can snap to screen edges:
 ### Maximizing
 
 When maximized:
+
 - Window fills entire viewport (minus menu bar)
 - Actual position/size in store unchanged
 - Component overrides display size/position
@@ -139,6 +148,7 @@ When maximized:
 ### Content-Based Windows
 
 Windows with a `path` property (e.g., `/about`, `/projects`):
+
 - Content is loaded from the corresponding Astro page
 - HTML is fetched and parsed to extract `<main>` content
 - Content is cached to avoid re-fetching
@@ -147,11 +157,13 @@ Windows with a `path` property (e.g., `/about`, `/projects`):
 ### Component-Based Windows
 
 Windows with a `component` property:
+
 - Render the React component directly
 - No content loading needed
 - Examples: Terminal, Music Player, Piano
 
 **Minimized Window Behavior:**
+
 - When minimized, component-based windows still render their component (hidden with `display: none`)
 - This allows background processes (like music playback) to continue running
 - The component remains mounted, so state and processes persist
@@ -160,6 +172,7 @@ Windows with a `component` property:
 ## Persistence
 
 Window state is persisted to `sessionStorage`:
+
 - Saves on every state change
 - Restores on page reload
 - Includes position, size, z-index, minimized/maximized state
@@ -170,6 +183,7 @@ See `use-window-persistence.ts` for implementation details.
 ## URL Synchronization
 
 Window state is synchronized with browser URL:
+
 - Opening a window with a `path` updates URL
 - Browser back/forward navigation opens/closes windows
 - URL changes trigger window state updates
@@ -192,4 +206,3 @@ See `use-url-sync.ts` for implementation details.
 - `src/components/window/utils/window-utils.ts` - Positioning and calculation utilities
 - `src/components/window/utils/viewport-constraints.ts` - Viewport constraint utilities
 - `src/types/window.ts` - Window type definitions (`WindowPosition`, `WindowSize`, `WindowState`, etc.)
-

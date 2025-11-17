@@ -4,11 +4,7 @@
  */
 
 import { MENU_BAR_HEIGHT } from '@/constants';
-import type {
-  GridDimensions,
-  PixelPosition,
-  GridPosition,
-} from '@/types/icon';
+import type { GridDimensions, PixelPosition, GridPosition } from '@/types/icon';
 
 export const GRID_CELL_SIZE = 100; // Grid cell size in pixels (matches icon container size exactly)
 export const GRID_PADDING = 20; // Padding from edges in pixels
@@ -104,7 +100,7 @@ export function getOccupiedCells(
   iconPositions: Array<{ gridX: number; gridY: number }>
 ): Set<string> {
   const occupied = new Set<string>();
-  iconPositions.forEach((pos) => {
+  iconPositions.forEach(pos => {
     const key = `${pos.gridX},${pos.gridY}`;
     occupied.add(key);
   });

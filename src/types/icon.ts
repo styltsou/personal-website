@@ -57,4 +57,3 @@ export interface GridPosition {
   gridX: number;
   gridY: number;
 }
-

@@ -49,4 +49,3 @@ export const WikipediaIcon = (): ReactNode => (
     <rect x="22" y="46" width="20" height="2" rx="1" fill="#b8b8b8" />
   </svg>
 );
-

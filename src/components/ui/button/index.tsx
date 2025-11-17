@@ -26,7 +26,8 @@ export default function Button({
       className={cn(
         styles.button,
         variant === 'inset' && styles.variantInset,
-        size !== 'medium' && styles[`size${size.charAt(0).toUpperCase() + size.slice(1)}`],
+        size !== 'medium' &&
+          styles[`size${size.charAt(0).toUpperCase() + size.slice(1)}`],
         className
       )}
       {...props}
@@ -35,4 +36,3 @@ export default function Button({
     </button>
   );
 }
-

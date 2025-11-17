@@ -80,7 +80,7 @@ async function retryWithBackoff(fn, maxRetries = CONFIG.maxRetries) {
       if (attempt === maxRetries) throw error;
       const delay = CONFIG.retryDelay * attempt;
       console.warn(`⚠️  Attempt ${attempt} failed, retrying in ${delay}ms...`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 }
@@ -159,7 +159,7 @@ async function getTopSpotifyTracks(accessToken, numTracks = 10) {
   }
 
   // Transform tracks to match our Track interface and add Spotify URL
-  return data.items.map((track) => ({
+  return data.items.map(track => ({
     id: track.id,
     name: track.name,
     artist: track.artists?.[0]?.name || 'Unknown Artist',
@@ -196,7 +196,7 @@ function evaluateTrackNameMatch(title, trackName) {
   const trackWords = normalizedTrackName.split(/\s+/);
   // Filter very short words (1 char), but keep 2+ char words
   // This handles cases like "I Am" where "I" is dropped but "Am" is kept
-  const significantWords = trackWords.filter((w) => w.length > 1);
+  const significantWords = trackWords.filter(w => w.length > 1);
   if (significantWords.length === 0) {
     return { match: false, score: 0, exact: false };
   }
@@ -208,7 +208,7 @@ function evaluateTrackNameMatch(title, trackName) {
   if (significantWords.length === 1) {
     const trackWord = significantWords[0];
     const exactWordMatch = titleWords.some(
-      (titleWord) => titleWord === trackWord
+      titleWord => titleWord === trackWord
     );
     if (exactWordMatch) {
       return { match: true, score: 900, exact: true };
@@ -229,7 +229,10 @@ function evaluateTrackNameMatch(title, trackName) {
         // Exact word match - prefer this
         matchedInOrder++;
         trackWordIndex++;
-      } else if (titleWord.includes(trackWord) || trackWord.includes(titleWord)) {
+      } else if (
+        titleWord.includes(trackWord) ||
+        trackWord.includes(titleWord)
+      ) {
         // Substring match - only count if track word is at least 4 chars
         // This prevents "of" matching "off" or short words causing false matches
         if (trackWord.length >= 4 || titleWord.length <= trackWord.length + 2) {
@@ -247,8 +250,8 @@ function evaluateTrackNameMatch(title, trackName) {
 
   if (matchRatio >= minMatchRatio) {
     // Prefer exact matches - give bonus if all words matched exactly
-    const exactMatches = titleWords.filter((tw) =>
-      significantWords.some((sw) => tw === sw)
+    const exactMatches = titleWords.filter(tw =>
+      significantWords.some(sw => tw === sw)
     ).length;
     const exactBonus = exactMatches === significantWords.length ? 50 : 0;
     return {
@@ -289,9 +292,7 @@ function detectVideoVersionType(title, trackNameLower) {
   const normalizedTrackName = normalizeText(trackNameLower);
 
   // Split track name into words and remove them from title
-  const trackWords = normalizedTrackName
-    .split(/\s+/)
-    .filter((w) => w.length > 1);
+  const trackWords = normalizedTrackName.split(/\s+/).filter(w => w.length > 1);
   let remainingTitle = normalizedTitle;
 
   for (const trackWord of trackWords) {
@@ -330,10 +331,10 @@ function detectVideoVersionType(title, trackNameLower) {
     !remainingTitle.includes('official');
 
   return {
-    isLive: liveTerms.some((term) => remainingTitle.includes(term)),
-    isAcoustic: acousticTerms.some((term) => remainingTitle.includes(term)),
+    isLive: liveTerms.some(term => remainingTitle.includes(term)),
+    isAcoustic: acousticTerms.some(term => remainingTitle.includes(term)),
     isAlternative:
-      alternativeTerms.some((term) => remainingTitle.includes(term)) ||
+      alternativeTerms.some(term => remainingTitle.includes(term)) ||
       hasStandaloneVersion,
   };
 }
@@ -378,7 +379,7 @@ function calculateVideoScore(video, trackNameLower, artistNameLower) {
   let score = 0;
 
   const trackNameMatch = evaluateTrackNameMatch(title, trackNameLower);
-  
+
   // CRITICAL: Track name match is mandatory - heavily penalize if no match
   if (!trackNameMatch.match) {
     // If track name doesn't match at all, this is likely a different song
@@ -387,7 +388,7 @@ function calculateVideoScore(video, trackNameLower, artistNameLower) {
   } else {
     // Track name matches - apply base score
     score += trackNameMatch.score;
-    
+
     // Bonus for exact matches
     if (trackNameMatch.exact) {
       score += 200;
@@ -395,7 +396,7 @@ function calculateVideoScore(video, trackNameLower, artistNameLower) {
   }
 
   const channelMatchesArtist = isArtistChannel(channel, artistNameLower);
-  
+
   // Artist bonuses only apply if track name matches
   // This prevents wrong songs from scoring high just because they're from the same artist
   if (trackNameMatch.match) {
@@ -412,7 +413,7 @@ function calculateVideoScore(video, trackNameLower, artistNameLower) {
     title,
     trackNameLower
   );
-  
+
   // Version penalties only apply if track name matches
   if (trackNameMatch.match) {
     if (isLive) score += channelMatchesArtist ? -500 : -300;
@@ -509,7 +510,7 @@ async function findBestYouTubeVideo(trackName, artistName) {
     if (!results.length) return null;
 
     const scoredResults = results
-      .map((video) => ({
+      .map(video => ({
         video,
         score: calculateVideoScore(video, trackNameLower, artistNameLower),
       }))
@@ -584,7 +585,7 @@ async function enrichTracksWithYouTube(tracks) {
       track.youtubeScore = 0;
     }
 
-    await new Promise((resolve) =>
+    await new Promise(resolve =>
       setTimeout(resolve, CONFIG.youtubeSearchDelay)
     );
     enrichedTracks.push(track);
@@ -615,7 +616,7 @@ async function main() {
 
     // Filter by quality score
     const highQualityTracks = enrichedTracks.filter(
-      (track) => (track.youtubeScore || 0) >= CONFIG.minYouTubeScore
+      track => (track.youtubeScore || 0) >= CONFIG.minYouTubeScore
     );
 
     const lowScoreCount = enrichedTracks.length - highQualityTracks.length;
@@ -627,7 +628,7 @@ async function main() {
 
     // Filter by artist limit
     const artistCounts = new Map();
-    const uniqueTracks = highQualityTracks.filter((track) => {
+    const uniqueTracks = highQualityTracks.filter(track => {
       const artistLower = track.artist.toLowerCase();
       const count = artistCounts.get(artistLower) || 0;
       if (count >= CONFIG.maxTracksPerArtist) return false;

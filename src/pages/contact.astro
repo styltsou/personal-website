@@ -12,14 +12,18 @@ const canonicalURL = new URL('/contact', site);
   title="contact - styltsou"
   description="Get in touch with me through email, social media, or other channels. I'd love to hear from you!"
 >
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Contact - styltsou",
-    "description": "Get in touch with me through email, social media, or other channels. I'd love to hear from you!",
-    "url": canonicalURL.toString(),
-    "inLanguage": "en"
-  })} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Contact - styltsou',
+      description:
+        "Get in touch with me through email, social media, or other channels. I'd love to hear from you!",
+      url: canonicalURL.toString(),
+      inLanguage: 'en',
+    })}
+  />
   <main class="mx-auto max-w-4xl p-6">
     <h1 class="mb-4 text-3xl font-bold">Contact</h1>
     <div class="prose prose-lg">

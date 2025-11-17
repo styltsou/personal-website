@@ -12,14 +12,18 @@ const canonicalURL = new URL('/projects', site);
   title="projects - styltsou"
   description="Explore my featured projects, web applications, and creative work. See what I've built and the technologies I use."
 >
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Projects - styltsou",
-    "description": "Explore my featured projects, web applications, and creative work. See what I've built and the technologies I use.",
-    "url": canonicalURL.toString(),
-    "inLanguage": "en"
-  })} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Projects - styltsou',
+      description:
+        "Explore my featured projects, web applications, and creative work. See what I've built and the technologies I use.",
+      url: canonicalURL.toString(),
+      inLanguage: 'en',
+    })}
+  />
   <main class="mx-auto max-w-4xl p-6">
     <h1 class="mb-4 text-3xl font-bold">Projects</h1>
     <div class="prose prose-lg">

@@ -13,11 +13,5 @@ export interface InputProps
 }
 
 export default function Input({ className, ...props }: InputProps) {
-  return (
-    <input
-      className={cn(styles.input, className)}
-      {...props}
-    />
-  );
+  return <input className={cn(styles.input, className)} {...props} />;
 }
-

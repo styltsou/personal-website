@@ -61,12 +61,7 @@ export const AboutIcon = (): ReactNode => (
       strokeLinecap="round"
     />
     {/* Markdown list item (bullet) */}
-    <circle
-      cx="20"
-      cy="42"
-      r="2"
-      fill="#7da3d1"
-    />
+    <circle cx="20" cy="42" r="2" fill="#7da3d1" />
     <line
       x1="26"
       y1="42"
@@ -89,4 +84,3 @@ export const AboutIcon = (): ReactNode => (
     />
   </svg>
 );
-

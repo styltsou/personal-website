@@ -13,7 +13,7 @@ let birdImageLoaded = false;
 // Load bird SVG image
 function loadBirdImage() {
   if (birdImageLoaded || birdImage) return;
-  
+
   birdImage = new Image();
   birdImage.onload = () => {
     birdImageLoaded = true;
@@ -21,7 +21,7 @@ function loadBirdImage() {
   birdImage.onerror = () => {
     console.error('Failed to load bird SVG');
   };
-  
+
   // Load from public folder
   birdImage.src = '/bird.svg';
 }
@@ -126,7 +126,8 @@ function drawBird(
   colors: typeof COLORS.light
 ) {
   const birdX = Math.max(100, width * 0.15);
-  const birdRotation = Math.min(Math.max(birdVelocity * 3, -30), 30) * (Math.PI / 180);
+  const birdRotation =
+    Math.min(Math.max(birdVelocity * 3, -30), 30) * (Math.PI / 180);
 
   ctx.save();
   ctx.translate(birdX + BIRD_SIZE / 2, birdY + BIRD_SIZE / 2);
@@ -138,7 +139,7 @@ function drawBird(
     const svgAspectRatio = 840 / 859;
     const drawWidth = BIRD_SIZE;
     const drawHeight = BIRD_SIZE / svgAspectRatio;
-    
+
     ctx.drawImage(
       birdImage,
       -drawWidth / 2,
@@ -150,12 +151,12 @@ function drawBird(
     // Fallback: simple bird shape if image not loaded yet
     ctx.fillStyle = colors.birdHead;
     ctx.beginPath();
-    ctx.ellipse(0, 0, BIRD_SIZE / 2, BIRD_SIZE / 2 * 0.6, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, BIRD_SIZE / 2, (BIRD_SIZE / 2) * 0.6, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = colors.birdBorder;
     ctx.lineWidth = 2;
     ctx.stroke();
-    
+
     // Try to load the image
     if (typeof window !== 'undefined' && !birdImage) {
       loadBirdImage();
@@ -188,7 +189,11 @@ function drawScore(
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       if (i !== 0 || j !== 0) {
-        ctx.fillText(scoreText, width / 2 + i * shadowOffset, 20 + j * shadowOffset);
+        ctx.fillText(
+          scoreText,
+          width / 2 + i * shadowOffset,
+          20 + j * shadowOffset
+        );
       }
     }
   }
@@ -266,7 +271,7 @@ export function draw(
   drawBackground(ctx, width, height, colors);
 
   // Draw pipes
-  state.pipes.forEach((pipe) => {
+  state.pipes.forEach(pipe => {
     drawPipe(ctx, pipe, height, colors);
   });
 
@@ -281,4 +286,3 @@ export function draw(
     drawOverlay(ctx, state, width, height, colors, highScore);
   }
 }
-

@@ -11,6 +11,7 @@ Content-based windows (apps with a `path` property) load their HTML content from
 ### Content-Based Apps
 
 Apps with a `path` property:
+
 ```typescript
 {
   id: 'about',
@@ -20,6 +21,7 @@ Apps with a `path` property:
 ```
 
 **Characteristics:**
+
 - Content is static HTML from Astro pages
 - Loaded asynchronously when window opens
 - Cached after first load
@@ -28,6 +30,7 @@ Apps with a `path` property:
 ### Component-Based Apps
 
 Apps with a `component` property:
+
 ```typescript
 {
   id: 'terminal',
@@ -37,6 +40,7 @@ Apps with a `component` property:
 ```
 
 **Characteristics:**
+
 - React component rendered directly
 - No content loading needed
 - Full React capabilities
@@ -60,12 +64,14 @@ When a content-based window is opened:
 The system uses a two-tier approach for optimal performance and SEO:
 
 #### Tier 1: Embedded Content (Build Time)
+
 - Content is extracted from Astro pages at **build time**
 - Embedded directly in the initial HTML via `window.__CONTENT_DATA__`
 - **Instant access** - no network request needed
 - **SEO-friendly** - content is in initial HTML for search engines
 
 #### Tier 2: Fallback Fetching (Runtime)
+
 - If embedded content not available, falls back to fetching
 - Fetches from prerendered Astro pages
 - Same parsing and caching as before
@@ -79,6 +85,7 @@ loadWindowContent(windowId: string): Promise<string | null>
 ```
 
 **Process:**
+
 1. **Embedded Content Check**: Check `window.__CONTENT_DATA__` (loaded on mount)
 2. **Cache Check**: Check if content is already cached in memory
 3. **Loading Check**: Prevent duplicate requests if already loading
@@ -100,6 +107,7 @@ const content = main?.innerHTML || '';
 ```
 
 **Why extract `<main>`?**
+
 - Astro pages include full HTML structure (head, body, etc.)
 - Only the `<main>` content is needed in the window
 - Prevents duplicate head/body elements
@@ -115,6 +123,7 @@ Content is cached in memory to avoid re-fetching:
 - **Cache Invalidation**: Automatic on page reload
 
 **Benefits:**
+
 - Faster subsequent opens
 - Reduced network requests
 - Better performance
@@ -124,12 +133,14 @@ Content is cached in memory to avoid re-fetching:
 Content is rendered in the window component:
 
 ```tsx
-{windowState.content && (
-  <div
-    className={styles.htmlContent}
-    dangerouslySetInnerHTML={{ __html: windowState.content }}
-  />
-)}
+{
+  windowState.content && (
+    <div
+      className={styles.htmlContent}
+      dangerouslySetInnerHTML={{ __html: windowState.content }}
+    />
+  );
+}
 ```
 
 **Security Note**: `dangerouslySetInnerHTML` is used because content comes from trusted Astro pages, not user input.
@@ -139,6 +150,7 @@ Content is rendered in the window component:
 ### Loading Indicator
 
 While content is loading:
+
 - `isLoading(windowId)` returns `true`
 - Loading progress bar appears at top of window
 - Window shows loading state
@@ -153,6 +165,7 @@ While content is loading:
 ## Error Handling
 
 If content loading fails:
+
 - Error is logged to console
 - Loading state is cleared
 - Window shows "No content available" message
@@ -163,12 +176,14 @@ If content loading fails:
 ### 1. Build-Time Content Embedding
 
 Content is extracted and embedded at build time:
+
 - **Zero network requests** for embedded content
 - **Instant window opening** - content available immediately
 - **SEO-friendly** - content in initial HTML
 - Only applies to path-based apps (about, projects, contact)
 
 **Implementation:**
+
 - Content components in `src/components/content/`
 - Extracted in `src/pages/index.astro` at build time
 - Embedded via `window.__CONTENT_DATA__` script tag
@@ -176,6 +191,7 @@ Content is extracted and embedded at build time:
 ### 2. Content Caching
 
 Content is cached after first load:
+
 - Embedded content loaded on mount (no fetch needed)
 - Fetched content cached in memory
 - Subsequent opens are instant
@@ -184,6 +200,7 @@ Content is cached after first load:
 ### 3. Loading Prevention
 
 Duplicate requests are prevented:
+
 - Loading state tracked per window
 - If already loading, return early
 - Prevents race conditions
@@ -191,6 +208,7 @@ Duplicate requests are prevented:
 ### 4. Selective Loading
 
 Only content-based windows load content:
+
 - Component-based windows skip loading
 - Check: `if (!ws.config.path) return;`
 - Reduces unnecessary work
@@ -198,6 +216,7 @@ Only content-based windows load content:
 ### 5. React Island Optimization
 
 Desktop component uses `client:idle` hydration:
+
 - React loads after browser is idle
 - Faster initial page load
 - Better Core Web Vitals scores
@@ -210,13 +229,13 @@ The Desktop component orchestrates content loading:
 
 ```typescript
 useEffect(() => {
-  windowStates.forEach((ws) => {
+  windowStates.forEach(ws => {
     // Skip component-based windows
     if (!ws.config.path) return;
-    
+
     // Load if needed
     if (!ws.content && !isLoading(ws.id)) {
-      loadWindowContent(ws.id).then((content) => {
+      loadWindowContent(ws.id).then(content => {
         if (content) {
           updateWindowContent(ws.id, content);
         }
@@ -254,6 +273,7 @@ if (!isLoading(windowState.id)) {
 Content is organized using shared components for reusability:
 
 **Structure:**
+
 ```
 src/components/content/
   ├── about-content.astro
@@ -262,11 +282,13 @@ src/components/content/
 ```
 
 **Benefits:**
+
 - Content can be used in both Astro pages and embedded for windows
 - Single source of truth for content
 - Easier maintenance
 
 **Example content component:**
+
 ```astro
 ---
 // src/components/content/about-content.astro
@@ -281,6 +303,7 @@ src/components/content/
 ```
 
 **Example Astro page using component:**
+
 ```astro
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -325,19 +348,23 @@ For content-based windows to work, Astro pages should:
 Content pages include structured data for better SEO:
 
 ```astro
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "About Me - styltsou",
-  "description": "Learn more about my background...",
-  "url": canonicalURL.toString(),
-  "inLanguage": "en"
-})} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'About Me - styltsou',
+    description: 'Learn more about my background...',
+    url: canonicalURL.toString(),
+    inLanguage: 'en',
+  })}
+/>
 ```
 
 ### Static Generation
 
 All content pages are marked for static generation:
+
 - `export const prerender = true` in each page
 - Pre-rendered at build time for optimal performance
 - Content available in initial HTML for search engines
@@ -345,6 +372,7 @@ All content pages are marked for static generation:
 ### Content Embedding
 
 Content is embedded in initial HTML:
+
 - Available immediately for search engine crawlers
 - No JavaScript required to see content
 - Better Core Web Vitals scores
@@ -359,10 +387,10 @@ Content is embedded in initial HTML:
 ## Future Enhancements
 
 Potential improvements:
+
 - Persistent cache (localStorage) for fetched content
 - Prefetching for faster loads
 - Streaming content loading
 - Error retry mechanism
 - Content versioning
 - More granular structured data (Person schema, Project schema, etc.)
-

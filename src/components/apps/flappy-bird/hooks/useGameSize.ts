@@ -13,7 +13,10 @@ export function useGameSize(
   containerRef: RefObject<HTMLDivElement | null>,
   canvasRef: RefObject<HTMLCanvasElement | null>
 ): GameSize {
-  const [gameSize, setGameSize] = useState<GameSize>({ width: 600, height: 400 });
+  const [gameSize, setGameSize] = useState<GameSize>({
+    width: 600,
+    height: 400,
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -37,4 +40,3 @@ export function useGameSize(
 
   return gameSize;
 }
-

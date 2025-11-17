@@ -64,12 +64,12 @@ export function useKeyboardInput(): UseKeyboardInputReturn {
       // Handle octave shifting
       if (event.shiftKey && key === 'z') {
         // Shift + Z: decrease octave
-        setOctaveState((prev) => Math.max(MIN_OCTAVE, prev - 1));
+        setOctaveState(prev => Math.max(MIN_OCTAVE, prev - 1));
         return;
       }
       if (event.shiftKey && key === 'x') {
         // Shift + X: increase octave
-        setOctaveState((prev) => Math.min(MAX_OCTAVE, prev + 1));
+        setOctaveState(prev => Math.min(MAX_OCTAVE, prev + 1));
         return;
       }
 
@@ -125,7 +125,7 @@ export function useKeyboardInput(): UseKeyboardInputReturn {
     const handleBlur = () => {
       if (enabledRef.current && currentlyPressedRef.current.size > 0) {
         const keysToRelease = Array.from(currentlyPressedRef.current);
-        keysToRelease.forEach((key) => {
+        keysToRelease.forEach(key => {
           const mapping = KEYBOARD_MAPPING[key];
           if (mapping && onKeyReleaseRef.current) {
             const note = keyToNote(key, octave);
@@ -171,7 +171,7 @@ export function useKeyboardInput(): UseKeyboardInputReturn {
       enabledRef.current = newEnabled;
       // Release all pressed keys when disabled
       if (!newEnabled) {
-        currentlyPressedRef.current.forEach((key) => {
+        currentlyPressedRef.current.forEach(key => {
           const mapping = KEYBOARD_MAPPING[key];
           if (mapping && onKeyReleaseRef.current) {
             const note = keyToNote(key, octave);

@@ -16,12 +16,12 @@ export const createIconSlice = (set: any, get: () => Store): IconSlice => ({
 
   // Update icon position
   updateIconPosition: (iconId: string, position: IconPosition) => {
-    set((state) => {
-      const existing = state.iconStates.find((is) => is.id === iconId);
+    set(state => {
+      const existing = state.iconStates.find(is => is.id === iconId);
       if (existing) {
         // Update existing icon position
         return {
-          iconStates: state.iconStates.map((is) =>
+          iconStates: state.iconStates.map(is =>
             is.id === iconId ? { ...is, position } : is
           ),
         };
@@ -72,7 +72,6 @@ export const createIconSlice = (set: any, get: () => Store): IconSlice => ({
 
   // Get icon state by ID
   getIconState: (iconId: string) => {
-    return get().iconStates.find((is) => is.id === iconId);
+    return get().iconStates.find(is => is.id === iconId);
   },
 });
-

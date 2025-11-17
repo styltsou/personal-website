@@ -39,4 +39,3 @@ export interface KeyboardMapping {
     isBlackKey: boolean;
   };
 }
-

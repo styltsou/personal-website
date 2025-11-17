@@ -22,13 +22,13 @@ export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
 
   // Zustand store - clean and simple!
-  const windows = useStore((state) => state.windows);
+  const windows = useStore(state => state.windows);
   const hasLoadedFromPersistence = useStore(
-    (state) => state.hasLoadedFromPersistence
+    state => state.hasLoadedFromPersistence
   );
 
   // Only need updateWindowContent for content loading
-  const updateWindowContent = useStore((state) => state.updateWindowContent);
+  const updateWindowContent = useStore(state => state.updateWindowContent);
 
   // Handle URL synchronization
   const { updateURL } = useURLSync();
@@ -39,12 +39,12 @@ export default function Desktop() {
 
   // Load content for newly opened windows (skip windows with custom components - those with empty path)
   useEffect(() => {
-    windows.forEach((window) => {
+    windows.forEach(window => {
       // Skip windows with custom components (no path means they use custom React components)
       if (!window.config.path) return;
 
       if (!window.content && !isLoading(window.id)) {
-        loadWindowContent(window.id).then((content) => {
+        loadWindowContent(window.id).then(content => {
           if (content) {
             updateWindowContent(window.id, content);
           }
@@ -54,7 +54,7 @@ export default function Desktop() {
   }, [windows, loadWindowContent, isLoading, updateWindowContent]);
 
   // Update URL when active window changes
-  const activeWindowId = useStore((state) => state.activeWindowId);
+  const activeWindowId = useStore(state => state.activeWindowId);
   useEffect(() => {
     updateURL(activeWindowId);
   }, [activeWindowId, updateURL]);
@@ -73,8 +73,8 @@ export default function Desktop() {
         <DraggingIcon />
         {/* Render all open windows */}
         {windows
-          .filter((window) => !window.isMinimized)
-          .map((windowState) => (
+          .filter(window => !window.isMinimized)
+          .map(windowState => (
             <Window
               key={windowState.id}
               id={windowState.id}

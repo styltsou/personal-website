@@ -3,7 +3,14 @@
  */
 
 import type { Pipe, GameState, GameSize } from './types';
-import { GRAVITY, PIPE_SPEED, PIPE_WIDTH, PIPE_SPACING, BIRD_SIZE, GAP_SIZE } from './constants';
+import {
+  GRAVITY,
+  PIPE_SPEED,
+  PIPE_WIDTH,
+  PIPE_SPACING,
+  BIRD_SIZE,
+  GAP_SIZE,
+} from './constants';
 
 /**
  * Generate initial pipes for the game
@@ -16,7 +23,8 @@ export function generateInitialPipes(size: GameSize): Pipe[] {
   const maxTopHeight = size.height - groundHeight - GAP_SIZE - 80;
 
   for (let i = 0; i < 3; i++) {
-    const topHeight = Math.random() * (maxTopHeight - minTopHeight) + minTopHeight;
+    const topHeight =
+      Math.random() * (maxTopHeight - minTopHeight) + minTopHeight;
     initialPipes.push({
       x: startX + i * PIPE_SPACING,
       topHeight: topHeight,
@@ -63,11 +71,11 @@ export function updatePipes(
   gameOver: boolean
 ): Pipe[] {
   let newPipes = pipes
-    .map((pipe) => ({
+    .map(pipe => ({
       ...pipe,
       x: pipe.x - PIPE_SPEED,
     }))
-    .filter((pipe) => pipe.x + PIPE_WIDTH > 0);
+    .filter(pipe => pipe.x + PIPE_WIDTH > 0);
 
   // If no pipes exist, initialize them
   if (!gameOver && newPipes.length === 0) {
@@ -152,17 +160,18 @@ export function updateGameState(
   size: GameSize
 ): GameState {
   // Update bird
-  const { newY, newVelocity, gameOver: birdGameOver } = updateBird(
-    currentState.birdY,
-    currentState.birdVelocity,
-    size
-  );
+  const {
+    newY,
+    newVelocity,
+    gameOver: birdGameOver,
+  } = updateBird(currentState.birdY, currentState.birdVelocity, size);
 
   // Update pipes
   const newPipes = updatePipes(currentState.pipes, size, birdGameOver);
 
   // Check collisions
-  const collisionGameOver = birdGameOver || checkCollisions(newY, newPipes, size);
+  const collisionGameOver =
+    birdGameOver || checkCollisions(newY, newPipes, size);
 
   // Update score
   const newScore = collisionGameOver
@@ -178,4 +187,3 @@ export function updateGameState(
     gameOver: collisionGameOver || currentState.gameOver,
   };
 }
-

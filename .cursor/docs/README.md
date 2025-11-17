@@ -24,11 +24,13 @@ This directory contains all project documentation organized by category.
 ## Categories
 
 ### Progress Documentation
+
 Component-specific progress tracking files documenting the development and features of individual components.
 
 ### Technical Documentation
+
 Technical deep-dives, bug fixes, and architectural decisions. These documents explain the "why" and "how" of technical implementations.
 
 ### Setup Documentation
-Guides for setting up external integrations, APIs, and development environments.
 
+Guides for setting up external integrations, APIs, and development environments.

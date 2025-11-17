@@ -30,11 +30,7 @@ export const ProjectsIcon = (): ReactNode => (
       strokeLinejoin="round"
     />
     {/* Tab highlight */}
-    <path
-      d="M 12 14 L 28 14 L 32 20 L 12 20 Z"
-      fill="#ffd966"
-      opacity="0.6"
-    />
+    <path d="M 12 14 L 28 14 L 32 20 L 12 20 Z" fill="#ffd966" opacity="0.6" />
     {/* Document lines inside folder */}
     <line
       x1="18"
@@ -65,4 +61,3 @@ export const ProjectsIcon = (): ReactNode => (
     />
   </svg>
 );
-

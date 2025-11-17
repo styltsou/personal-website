@@ -17,17 +17,15 @@ import iconStyles from '../desktop-icon/styles.module.scss';
 import styles from './styles.module.scss';
 
 export default function DraggingIcon() {
-  const draggingIconId = useStore((state) => state.draggingIconId);
-  const draggingIconPosition = useStore(
-    (state) => state.draggingIconPosition
-  );
+  const draggingIconId = useStore(state => state.draggingIconId);
+  const draggingIconPosition = useStore(state => state.draggingIconPosition);
 
   if (!draggingIconId || !draggingIconPosition) {
     return null;
   }
 
   const icons = getDesktopIcons();
-  const iconConfig = icons.find((icon) => icon.id === draggingIconId) as
+  const iconConfig = icons.find(icon => icon.id === draggingIconId) as
     | IconConfig
     | undefined;
   if (!iconConfig) {

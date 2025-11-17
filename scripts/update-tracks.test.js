@@ -12,7 +12,7 @@ describe('Track Matching Algorithm', () => {
   // Test normalizeText function
   describe('normalizeText', () => {
     it('should remove punctuation and normalize spaces', () => {
-      const normalizeText = (str) =>
+      const normalizeText = str =>
         str
           .replace(/[^\w\s]/g, ' ')
           .replace(/\s+/g, ' ')
@@ -26,7 +26,7 @@ describe('Track Matching Algorithm', () => {
 
   // Test evaluateTrackNameMatch function
   describe('evaluateTrackNameMatch', () => {
-    const normalizeText = (str) =>
+    const normalizeText = str =>
       str
         .replace(/[^\w\s]/g, ' ')
         .replace(/\s+/g, ' ')
@@ -45,7 +45,7 @@ describe('Track Matching Algorithm', () => {
       }
 
       const trackWords = normalizedTrackName.split(/\s+/);
-      const significantWords = trackWords.filter((w) => w.length > 1);
+      const significantWords = trackWords.filter(w => w.length > 1);
       if (significantWords.length === 0) {
         return { match: false, score: 0 };
       }
@@ -154,7 +154,7 @@ describe('Track Matching Algorithm', () => {
 
   // Test detectVideoVersionType function
   describe('detectVideoVersionType', () => {
-    const normalizeText = (str) =>
+    const normalizeText = str =>
       str
         .replace(/[^\w\s]/g, ' ')
         .replace(/\s+/g, ' ')
@@ -167,7 +167,7 @@ describe('Track Matching Algorithm', () => {
 
       const trackWords = normalizedTrackName
         .split(/\s+/)
-        .filter((w) => w.length > 1);
+        .filter(w => w.length > 1);
       let remainingTitle = normalizedTitle;
 
       for (const trackWord of trackWords) {
@@ -205,10 +205,10 @@ describe('Track Matching Algorithm', () => {
         !remainingTitle.includes('official');
 
       return {
-        isLive: liveTerms.some((term) => remainingTitle.includes(term)),
-        isAcoustic: acousticTerms.some((term) => remainingTitle.includes(term)),
+        isLive: liveTerms.some(term => remainingTitle.includes(term)),
+        isAcoustic: acousticTerms.some(term => remainingTitle.includes(term)),
         isAlternative:
-          alternativeTerms.some((term) => remainingTitle.includes(term)) ||
+          alternativeTerms.some(term => remainingTitle.includes(term)) ||
           hasStandaloneVersion,
       };
     };
@@ -243,7 +243,7 @@ describe('Track Matching Algorithm', () => {
 
   // Test validateVideoId function
   describe('validateVideoId', () => {
-    const validateVideoId = (videoId) => {
+    const validateVideoId = videoId => {
       if (!videoId || typeof videoId !== 'string') return false;
       return /^[a-zA-Z0-9_-]{11}$/.test(videoId);
     };

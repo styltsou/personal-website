@@ -18,14 +18,14 @@ const STORAGE_KEY = 'desktop-windows';
 
 export function useWindowPersistence() {
   // Properly select from store with individual selectors
-  const windows = useStore((state) => state.windows);
-  const closedWindows = useStore((state) => state.closedWindows);
-  const nextZIndex = useStore((state) => state.nextZIndex);
+  const windows = useStore(state => state.windows);
+  const closedWindows = useStore(state => state.closedWindows);
+  const nextZIndex = useStore(state => state.nextZIndex);
   const initializeFromPersistence = useStore(
-    (state) => state.initializeFromPersistence
+    state => state.initializeFromPersistence
   );
   const hasLoadedFromPersistence = useStore(
-    (state) => state.hasLoadedFromPersistence
+    state => state.hasLoadedFromPersistence
   );
 
   // Load from sessionStorage on mount

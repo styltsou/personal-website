@@ -21,7 +21,7 @@ export default function PianoWindow() {
   const mousePressedRef = useRef<boolean>(false);
 
   // Check if this window is active/focused
-  const activeWindowId = useStore((state) => state.activeWindowId);
+  const activeWindowId = useStore(state => state.activeWindowId);
   const isWindowActive = activeWindowId === 'piano';
 
   // Audio hook (simplified - no MIDI, no advanced features)
@@ -47,7 +47,7 @@ export default function PianoWindow() {
       if (isMousePress) {
         mousePressedRef.current = true;
       }
-      setPressedNotes((prev) => {
+      setPressedNotes(prev => {
         const next = new Set(prev);
         next.add(note);
         return next;
@@ -60,7 +60,7 @@ export default function PianoWindow() {
   // Handle note release
   const handleNoteRelease = useCallback(
     (note: string) => {
-      setPressedNotes((prev) => {
+      setPressedNotes(prev => {
         const next = new Set(prev);
         next.delete(note);
         // Reset mouse press flag if this was the last note
@@ -83,7 +83,12 @@ export default function PianoWindow() {
     setKeyboardNoteRelease((note: string) => {
       handleNoteRelease(note);
     });
-  }, [setKeyboardNoteOn, setKeyboardNoteRelease, handleNotePress, handleNoteRelease]);
+  }, [
+    setKeyboardNoteOn,
+    setKeyboardNoteRelease,
+    handleNotePress,
+    handleNoteRelease,
+  ]);
 
   // Enable/disable keyboard input based on window focus
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function PianoWindow() {
     // If window becomes inactive, release all pressed notes
     if (!isWindowActive) {
       const notesToRelease = Array.from(pressedNotes);
-      notesToRelease.forEach((note) => {
+      notesToRelease.forEach(note => {
         stopAudioNote(note);
       });
       setPressedNotes(new Set());
@@ -106,7 +111,7 @@ export default function PianoWindow() {
       if (mousePressedRef.current) {
         mousePressedRef.current = false;
         const notesToRelease = Array.from(pressedNotes);
-        notesToRelease.forEach((note) => {
+        notesToRelease.forEach(note => {
           stopAudioNote(note);
         });
         setPressedNotes(new Set());
@@ -158,7 +163,7 @@ export default function PianoWindow() {
                 min="0"
                 max="100"
                 value={volume}
-                onChange={(e) => setVolume(Number(e.target.value))}
+                onChange={e => setVolume(Number(e.target.value))}
                 className={styles.slider}
               />
               <span className={styles.value}>{volume}%</span>
@@ -170,7 +175,8 @@ export default function PianoWindow() {
       {/* Instructions */}
       <div className={styles.instructions}>
         <p className={styles.instructionText}>
-          <strong>Demo:</strong> Click keys or use keyboard: A-S-D-F-G-H-J-K-L-;-' (white), W-E-T-Y-U-I-O (black)
+          <strong>Demo:</strong> Click keys or use keyboard:
+          A-S-D-F-G-H-J-K-L-;-' (white), W-E-T-Y-U-I-O (black)
         </p>
         <p className={styles.instructionText}>
           <a
@@ -179,12 +185,11 @@ export default function PianoWindow() {
             rel="noopener noreferrer"
             className={styles.link}
           >
-            Try the full version with MIDI support, multiple octaves, and more features →
+            Try the full version with MIDI support, multiple octaves, and more
+            features →
           </a>
         </p>
       </div>
     </div>
   );
 }
-
-

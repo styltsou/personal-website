@@ -190,7 +190,7 @@ export function useYouTubePlayer(
           rel: 0,
         },
         events: {
-          onReady: (event) => {
+          onReady: event => {
             playerRef.current = event.target;
             event.target.setVolume(volumeRef.current);
             // Set to lowest quality since video is hidden anyway
@@ -215,7 +215,7 @@ export function useYouTubePlayer(
                 setIsBuffering(true);
                 // Load video but don't auto-play - user must click play
                 event.target.loadVideoById(videoId);
-                
+
                 // Add a fallback timeout to clear buffering if state changes don't fire properly
                 // This ensures buffering clears even if CUED state doesn't fire
                 // Clear any existing timeout first
@@ -228,7 +228,10 @@ export function useYouTubePlayer(
                       const playerState = playerRef.current.getPlayerState();
                       const YTState = window.YT.PlayerState;
                       // If video is cued or paused, clear buffering
-                      if (playerState === YTState.CUED || playerState === YTState.PAUSED) {
+                      if (
+                        playerState === YTState.CUED ||
+                        playerState === YTState.PAUSED
+                      ) {
                         setIsBuffering(false);
                         setIsPlaying(false);
                         setIsPaused(true);
@@ -245,7 +248,7 @@ export function useYouTubePlayer(
                   }
                   clearBufferingTimeoutRef.current = null;
                 }, 2000); // 2 second fallback
-                
+
                 // Ensure it's paused after loading
                 setTimeout(() => {
                   if (playerRef.current) {
@@ -264,7 +267,7 @@ export function useYouTubePlayer(
               }
             }
           },
-          onStateChange: (event) => {
+          onStateChange: event => {
             const state = event.data;
             const YTState = window.YT.PlayerState;
 
@@ -364,7 +367,7 @@ export function useYouTubePlayer(
                     clearTimeout(clearBufferingTimeoutRef.current);
                     clearBufferingTimeoutRef.current = null;
                   }
-                  
+
                   const duration = playerRef.current.getDuration();
                   if (duration && duration > 0) {
                     setDuration(duration);
@@ -396,7 +399,7 @@ export function useYouTubePlayer(
               }
             }
           },
-          onError: (event) => {
+          onError: event => {
             console.error('YouTube player error:', event.data);
             setIsPlaying(false);
             setIsPaused(false);
@@ -532,47 +535,54 @@ export function useYouTubePlayer(
     }
   }, []);
 
-  const seek = useCallback((time: number) => {
-    if (playerRef.current) {
-      // Set seeking ref to prevent time update interval from overwriting
-      // This keeps the seek bar at the target position while buffering
-      seekingTimeRef.current = time;
-      setCurrentTime(time);
-      setIsBuffering(true); // Show buffering when seeking
-      
-      // Check current player state before seeking
-      let wasPaused = false;
-      try {
-        const currentState = playerRef.current.getPlayerState();
-        const YTState = window.YT.PlayerState;
-        wasPaused = currentState === YTState.PAUSED || currentState === YTState.CUED;
-      } catch {
-        // If we can't check state, assume we might be paused
-        wasPaused = !isPlaying;
-      }
-      
-      playerRef.current.seekTo(time, true);
-      
-      // Clear buffering after a short delay if we were paused
-      // This handles the case where seeking while paused doesn't trigger a state change
-      if (wasPaused) {
-        setTimeout(() => {
-          if (playerRef.current) {
-            try {
-              const playerState = playerRef.current.getPlayerState();
-              const YTState = window.YT.PlayerState;
-              // If we're still paused or cued after seeking, clear buffering
-              if (playerState === YTState.PAUSED || playerState === YTState.CUED) {
-                setIsBuffering(false);
+  const seek = useCallback(
+    (time: number) => {
+      if (playerRef.current) {
+        // Set seeking ref to prevent time update interval from overwriting
+        // This keeps the seek bar at the target position while buffering
+        seekingTimeRef.current = time;
+        setCurrentTime(time);
+        setIsBuffering(true); // Show buffering when seeking
+
+        // Check current player state before seeking
+        let wasPaused = false;
+        try {
+          const currentState = playerRef.current.getPlayerState();
+          const YTState = window.YT.PlayerState;
+          wasPaused =
+            currentState === YTState.PAUSED || currentState === YTState.CUED;
+        } catch {
+          // If we can't check state, assume we might be paused
+          wasPaused = !isPlaying;
+        }
+
+        playerRef.current.seekTo(time, true);
+
+        // Clear buffering after a short delay if we were paused
+        // This handles the case where seeking while paused doesn't trigger a state change
+        if (wasPaused) {
+          setTimeout(() => {
+            if (playerRef.current) {
+              try {
+                const playerState = playerRef.current.getPlayerState();
+                const YTState = window.YT.PlayerState;
+                // If we're still paused or cued after seeking, clear buffering
+                if (
+                  playerState === YTState.PAUSED ||
+                  playerState === YTState.CUED
+                ) {
+                  setIsBuffering(false);
+                }
+              } catch {
+                // Ignore errors, buffering will clear on next state change
               }
-            } catch {
-              // Ignore errors, buffering will clear on next state change
             }
-          }
-        }, 500);
+          }, 500);
+        }
       }
-    }
-  }, [isPlaying]);
+    },
+    [isPlaying]
+  );
 
   const setVolume = useCallback((newVolume: number) => {
     const clampedVolume = Math.max(0, Math.min(100, newVolume));
@@ -602,7 +612,7 @@ export function useYouTubePlayer(
       createPortal(
         <div
           id="youtube-player-container"
-          ref={(el) => {
+          ref={el => {
             if (el) {
               containerRef.current = el;
               // Apply hidden styles
