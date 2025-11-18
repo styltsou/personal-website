@@ -52,10 +52,7 @@ export const PhotosIcon = (): ReactNode => (
       stroke="#d4c4b0"
       strokeWidth="1.5"
     />
-    <path
-      d="M 50 26 L 54 26 L 54 30 L 50 30 Z"
-      fill="#7da3d1"
-    />
+    <path d="M 50 26 L 54 26 L 54 30 L 50 30 Z" fill="#7da3d1" />
   </svg>
 );
 
@@ -88,5 +85,3 @@ export const ImageFileIcon = (): ReactNode => (
     />
   </FileIcon>
 );
-
-

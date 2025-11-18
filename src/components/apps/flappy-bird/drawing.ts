@@ -2,7 +2,7 @@
  * Canvas drawing functions for Flappy Bird game
  */
 
-import type { GameState, GameSize } from './types';
+import type { GameState } from './types';
 import { COLORS } from './constants';
 import { PIPE_WIDTH, BIRD_SIZE } from './constants';
 

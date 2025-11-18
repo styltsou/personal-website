@@ -36,7 +36,8 @@ export function useMIDIInput(): UseMIDIInputReturn {
   }, []);
 
   // Convert MIDI note number to note name (e.g., 60 -> "C4")
-  const midiToNoteName = useCallback((midiNumber: number): string => {
+
+  const _midiToNoteName = useCallback((midiNumber: number): string => {
     const octave = Math.floor((midiNumber - 12) / 12);
     const noteIndex = (midiNumber - 12) % 12;
     const noteNames = [

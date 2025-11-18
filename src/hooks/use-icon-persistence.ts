@@ -46,7 +46,6 @@ export function useIconPersistence() {
     } catch (error) {
       console.warn('Failed to load icon positions from localStorage:', error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
   // Save to localStorage whenever states change

@@ -7,7 +7,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import styles from './styles.module.scss';
-import { useDarkTheme } from '../flappy-bird/hooks/useDarkTheme';
 import Button from '@/components/ui/button';
 
 export { PhotosIcon, ImageFileIcon } from './icon';
@@ -18,7 +17,11 @@ export interface PhotosProps {
   images?: string[]; // Gallery mode - array of image paths
 }
 
-export default function PhotosWindow({ filePath, imagePath, images }: PhotosProps) {
+export default function PhotosWindow({
+  filePath,
+  imagePath,
+  images,
+}: PhotosProps) {
   // Determine which image(s) to display
   // Priority: filePath (from file) > imagePath (legacy) > images (gallery)
   const imageToDisplay = filePath || imagePath;
@@ -28,7 +31,6 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
   const [rotation, setRotation] = useState(0);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDarkTheme = useDarkTheme();
   const currentImage = galleryImages[currentIndex];
 
   // Reset rotation when image changes
@@ -44,7 +46,8 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
     const container = containerRef.current;
 
     const updateScale = () => {
-      if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) return;
+      if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0)
+        return;
 
       const normalizedRotation = ((rotation % 360) + 360) % 360;
       const wrapper = img.parentElement;
@@ -99,7 +102,6 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
     };
   }, [rotation, currentImage]);
 
-
   const handleRotateCounterclockwise = () => {
     setRotation(prev => (prev - 90) % 360);
   };
@@ -122,14 +124,9 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
   // Single image mode (opened from file or with single imagePath)
   if (galleryImages.length === 1) {
     return (
-      <div 
-        ref={containerRef}
-        className={styles.photosContainer}
-      >
+      <div ref={containerRef} className={styles.photosContainer}>
         <div className={styles.photosContent}>
-          <div 
-            className={styles.imageWrapper}
-          >
+          <div className={styles.imageWrapper}>
             <img
               ref={imageRef}
               src={currentImage}
@@ -154,10 +151,7 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
           >
             ↺
           </Button>
-          <Button
-            onClick={handleRotateClockwise}
-            aria-label="Rotate clockwise"
-          >
+          <Button onClick={handleRotateClockwise} aria-label="Rotate clockwise">
             ↻
           </Button>
         </div>
@@ -175,26 +169,23 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className={styles.photosContainer}
-    >
+    <div ref={containerRef} className={styles.photosContainer}>
       <div className={styles.photosContent}>
-          <img
-            ref={imageRef}
-            src={currentImage}
-            alt={`Photo ${currentIndex + 1} of ${galleryImages.length}`}
-            className={styles.photosImage}
-            onError={e => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const errorDiv = document.createElement('div');
-              errorDiv.className = styles.photosError;
-                errorDiv.textContent = `Failed to load image: ${currentImage}`;
-                target.parentElement?.appendChild(errorDiv);
-                console.error('Failed to load image:', currentImage);
-              }}
-          />
+        <img
+          ref={imageRef}
+          src={currentImage}
+          alt={`Photo ${currentIndex + 1} of ${galleryImages.length}`}
+          className={styles.photosImage}
+          onError={e => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = styles.photosError;
+            errorDiv.textContent = `Failed to load image: ${currentImage}`;
+            target.parentElement?.appendChild(errorDiv);
+            console.error('Failed to load image:', currentImage);
+          }}
+        />
         {/* Gallery navigation */}
         <div className={styles.galleryControls}>
           <button
@@ -235,4 +226,3 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
     </div>
   );
 }
-

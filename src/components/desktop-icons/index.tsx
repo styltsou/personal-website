@@ -7,8 +7,7 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { apps } from '@/app-config';
 import DesktopIcon from './desktop-icon';
 import { useStore } from '@/store';
-import { calculateGridDimensions, gridToPixel } from './utils';
-import { BASE_Z_INDEX } from '@/constants';
+import { calculateGridDimensions } from './utils';
 import type { GridPosition, IconConfig } from '@/types/icon';
 import styles from './styles.module.scss';
 
@@ -52,7 +51,6 @@ export function getDesktopIcons(): IconConfig[] {
 
 export default function DesktopIcons() {
   const iconStates = useStore(state => state.iconStates);
-  const selectedIconId = useStore(state => state.selectedIconId);
   const deselectIcons = useStore(state => state.deselectIcons);
   const updateIconPosition = useStore(state => state.updateIconPosition);
   const openWindow = useStore(state => state.openWindow);

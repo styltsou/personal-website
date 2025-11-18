@@ -12,10 +12,10 @@ export const fileAssociations: Record<string, string> = {
   '.webp': 'photos',
   '.svg': 'photos',
   '.bmp': 'photos',
-  
+
   // PDF files
   '.pdf': 'pdf-viewer',
-  
+
   // Text files
   '.txt': 'notepad',
   '.md': 'notepad',
@@ -26,10 +26,8 @@ export const fileAssociations: Record<string, string> = {
  * Get the app ID associated with a file extension
  */
 export function getAppForFile(filePath: string): string | null {
-  const extension = filePath
-    .toLowerCase()
-    .substring(filePath.lastIndexOf('.'));
-  
+  const extension = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
+
   return fileAssociations[extension] || null;
 }
 
@@ -37,8 +35,5 @@ export function getAppForFile(filePath: string): string | null {
  * Get file extension from file path
  */
 export function getFileExtension(filePath: string): string {
-  return filePath
-    .toLowerCase()
-    .substring(filePath.lastIndexOf('.'));
+  return filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
 }
-

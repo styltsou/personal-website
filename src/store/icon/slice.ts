@@ -2,11 +2,15 @@
  * Icon Slice Implementation
  */
 
+import type { StateCreator } from 'zustand';
 import type { IconPosition, IconState } from '@/types/icon';
 import type { IconSlice } from './types';
 import type { Store } from '../index';
 
-export const createIconSlice = (set: any, get: () => Store): IconSlice => ({
+export const createIconSlice: StateCreator<Store, [], [], IconSlice> = (
+  set,
+  get
+) => ({
   // Initial state
   iconStates: [],
   selectedIconId: null,

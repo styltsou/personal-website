@@ -51,7 +51,6 @@ export function useWindowPersistence() {
       // Mark as loaded even on error to prevent infinite loading
       initializeFromPersistence([], BASE_Z_INDEX, {});
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
   // Save to sessionStorage whenever states change

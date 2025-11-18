@@ -89,26 +89,30 @@ export default function MenuBar() {
     });
 
     // Get open windows - both app windows and file windows
-    const openWindows = windows.map(windowState => {
-      // Check if this is a direct app window (window ID matches app ID)
-      const app = apps.find(a => a.type === 'app' && a.id === windowState.id);
-      if (app) {
-        return { type: 'app' as const, app, windowState };
-      }
-
-      // Check if this is a file window (window ID starts with app ID + '-')
-      // Extract base app ID from file window IDs like "photos-me.jpg" -> "photos"
-      const fileWindowMatch = windowState.id.match(/^([^-]+)-/);
-      if (fileWindowMatch) {
-        const baseAppId = fileWindowMatch[1];
-        const baseApp = apps.find(a => a.type === 'app' && a.id === baseAppId);
-        if (baseApp) {
-          return { type: 'file' as const, app: baseApp, windowState };
+    const openWindows = windows
+      .map(windowState => {
+        // Check if this is a direct app window (window ID matches app ID)
+        const app = apps.find(a => a.type === 'app' && a.id === windowState.id);
+        if (app) {
+          return { type: 'app' as const, app, windowState };
         }
-      }
 
-      return null;
-    }).filter((item): item is NonNullable<typeof item> => item !== null);
+        // Check if this is a file window (window ID starts with app ID + '-')
+        // Extract base app ID from file window IDs like "photos-me.jpg" -> "photos"
+        const fileWindowMatch = windowState.id.match(/^([^-]+)-/);
+        if (fileWindowMatch) {
+          const baseAppId = fileWindowMatch[1];
+          const baseApp = apps.find(
+            a => a.type === 'app' && a.id === baseAppId
+          );
+          if (baseApp) {
+            return { type: 'file' as const, app: baseApp, windowState };
+          }
+        }
+
+        return null;
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
 
     // Separate app windows and file windows
     const openAppWindows = openWindows
@@ -121,7 +125,9 @@ export default function MenuBar() {
     // then file windows (in windows array order)
     // Remove duplicates (if a pinned app is also open, it appears in openAppWindows)
     const pinnedIds = new Set(pinnedApps.map(app => app.id));
-    const openAppsNotPinned = openAppWindows.filter(app => !pinnedIds.has(app.id));
+    const openAppsNotPinned = openAppWindows.filter(
+      app => !pinnedIds.has(app.id)
+    );
 
     // For file windows, create menu bar entries using the window's own config
     const fileWindowEntries = openFileWindows.map(item => ({
@@ -130,11 +136,7 @@ export default function MenuBar() {
       windowState: item.windowState,
     }));
 
-    return [
-      ...pinnedApps,
-      ...openAppsNotPinned,
-      ...fileWindowEntries,
-    ];
+    return [...pinnedApps, ...openAppsNotPinned, ...fileWindowEntries];
   }, [windows]);
 
   return (
@@ -145,7 +147,7 @@ export default function MenuBar() {
           const state = getWindowButtonState(window.id);
           // Check if this is a file window (has windowState property) or an app window
           const isFileWindow = 'windowState' in window;
-          
+
           const handleClick = () => {
             if (isFileWindow || state.exists) {
               // Window already exists (file window or open app window) - focus it

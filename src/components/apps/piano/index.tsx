@@ -35,7 +35,6 @@ export default function PianoWindow() {
   // Keyboard input hook - only enable when window is active
   const {
     octave,
-    setOctave,
     setOnKeyPress: setKeyboardNoteOn,
     setOnKeyRelease: setKeyboardNoteRelease,
     setEnabled: setKeyboardEnabled,

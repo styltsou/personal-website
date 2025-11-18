@@ -27,10 +27,10 @@ interface AppConfig<TProps = Record<string, any>> {
   type: 'app' | 'file'; // Distinguishes between apps and files
   id: string; // Unique identifier
   title: string; // Window title or file name
-  
+
   // File-specific fields (only for type: 'file')
   filePath?: string; // Path to the file (required for type: 'file')
-  
+
   // App-specific fields (only for type: 'app')
   path?: string; // Optional: URL path for content-based apps
   icon?: string; // Optional: Icon path (for menu bar)
@@ -41,7 +41,7 @@ interface AppConfig<TProps = Record<string, any>> {
   component?: ComponentType<TProps>; // Optional: Custom React component
   props?: TProps; // Optional props to pass to the component
   keepMountedWhenMinimized?: boolean; // Whether to keep component mounted when minimized (default: false)
-  
+
   // Desktop icon configuration (for both apps and files)
   desktopIcon?: {
     label?: string; // Icon label (defaults to title)
@@ -51,6 +51,7 @@ interface AppConfig<TProps = Record<string, any>> {
 ```
 
 **Key Points:**
+
 - The `type` field determines whether an entry is an app or a file
 - Files use `filePath` to specify the file location
 - Apps use `component`, `path`, and other app-specific fields
@@ -125,12 +126,14 @@ To add a file to the desktop:
 ```
 
 **How it works:**
+
 - Files appear as desktop icons (if `desktopIcon` is set)
 - When double-clicked, the file opens in its associated app (determined by file extension)
 - The file path is passed to the app component via the `filePath` prop
 - Each file instance gets a unique window ID based on the file path
 
 **File Paths:**
+
 - Files in the `public/` directory are served at the root
 - Example: `public/images/me.jpg` → `/images/me.jpg`
 - Use absolute paths starting with `/` in the config
@@ -222,7 +225,8 @@ Apps can specify a custom initial window size when opening for the first time. I
 }
 ```
 
-**Note**: 
+**Note**:
+
 - `minSize` defaults to global minimum if not specified
 - `initialSize` defaults to global default size if not specified
 - When a window is restored from a previous session, it uses the saved size (not `initialSize`)
@@ -241,6 +245,7 @@ Apps with `pinned: true` appear in the menu bar, even when the window is closed:
 ```
 
 **Behavior:**
+
 - Pinned windows appear in the menu bar at all times (when open or closed)
 - Unpinned windows only appear in the menu bar when they are open
 - File windows also appear in the menu bar when open (extracted from window ID)
@@ -262,6 +267,7 @@ Apps can opt-in to stay mounted when minimized by setting `keepMountedWhenMinimi
 ```
 
 **Behavior:**
+
 - Default is `false` - windows unmount when minimized (saves memory)
 - Set to `true` to keep component mounted when minimized (allows background processes)
 - Component is hidden with `display: none` but remains in React tree

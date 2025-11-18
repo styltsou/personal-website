@@ -39,34 +39,31 @@ export function useImageCache() {
    * Cache an image URL
    * Returns the cached URL (blob URL) or original URL if caching fails
    */
-  const cacheImage = useCallback(
-    async (imageUrl: string): Promise<string> => {
-      // Already cached
-      if (imageCache.has(imageUrl)) {
-        return imageCache.get(imageUrl)!;
-      }
+  const cacheImage = useCallback(async (imageUrl: string): Promise<string> => {
+    // Already cached
+    if (imageCache.has(imageUrl)) {
+      return imageCache.get(imageUrl)!;
+    }
 
-      // Already loading
-      if (loadingRef.current.has(imageUrl)) {
-        return imageUrl;
-      }
+    // Already loading
+    if (loadingRef.current.has(imageUrl)) {
+      return imageUrl;
+    }
 
-      // Mark as loading
-      loadingRef.current.add(imageUrl);
+    // Mark as loading
+    loadingRef.current.add(imageUrl);
 
-      try {
-        const blobUrl = await imageToBlobUrl(imageUrl);
-        imageCache.set(imageUrl, blobUrl);
-        return blobUrl;
-      } catch (error) {
-        console.error('Failed to cache image:', error);
-        return imageUrl;
-      } finally {
-        loadingRef.current.delete(imageUrl);
-      }
-    },
-    []
-  );
+    try {
+      const blobUrl = await imageToBlobUrl(imageUrl);
+      imageCache.set(imageUrl, blobUrl);
+      return blobUrl;
+    } catch (error) {
+      console.error('Failed to cache image:', error);
+      return imageUrl;
+    } finally {
+      loadingRef.current.delete(imageUrl);
+    }
+  }, []);
 
   /**
    * Preload and cache an image
@@ -96,4 +93,3 @@ export function useImageCache() {
     preloadImage,
   };
 }
-

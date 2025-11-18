@@ -3,10 +3,8 @@
  * This extracts content from Astro pages at build time for SEO and performance
  */
 
-import { render } from 'astro/runtime/server/index.js';
 import { apps } from '@/app-config';
 import type { AppConfig } from '@/types/app';
-import { extractMainContent } from './content-extractor';
 
 /**
  * Content data structure
@@ -21,7 +19,8 @@ export interface ContentData {
  */
 export async function getContentData(): Promise<ContentData> {
   const contentData: ContentData = {};
-  const contentApps = apps.filter(app => app.path && !app.component);
+  // Filter content apps (apps with paths but no components)
+  apps.filter(app => app.path && !app.component);
 
   // For each content app, we'll need to render its page
   // Since we can't easily import and render Astro pages directly,

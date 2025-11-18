@@ -20,7 +20,7 @@ export const fileAssociations: Record<string, string> = {
   '.webp': 'photos',
   '.svg': 'photos',
   '.bmp': 'photos',
-  
+
   // Text files
   '.txt': 'notepad',
   '.md': 'notepad',
@@ -86,6 +86,7 @@ const windowId = `${appId}-${filePath.replace(/[^a-zA-Z0-9]/g, '-')}`;
 ```
 
 This ensures:
+
 - Multiple files can be open at once
 - Each file window is tracked separately
 - Window state (position, size) is preserved per file
@@ -105,7 +106,7 @@ export default function MyApp({ filePath }: MyAppProps) {
     // Handle file mode
     return <FileViewer filePath={filePath} />;
   }
-  
+
   // Handle app mode (opened directly)
   return <AppInterface />;
 }
@@ -138,6 +139,7 @@ export default function PhotosWindow({ filePath, imagePath, images }: PhotosProp
 ```
 
 **Key Points:**
+
 - `filePath` prop is passed when file is opened via `openFile()`
 - App can distinguish between file mode and app mode
 - App can handle both single files and multiple files (gallery mode)
@@ -190,6 +192,7 @@ if (icon.filePath) {
 ```
 
 **Behavior:**
+
 - **App icons**: Double-click opens the app directly
 - **File icons**: Double-click opens the file in its associated app
 - Both appear on desktop if `desktopIcon` is configured
@@ -203,9 +206,9 @@ When a file is opened, the window title shows both the filename and app name:
 // Window title format depends on app:
 // Photos app: {appTitle} - {filename} (e.g., "Photos - me.jpg")
 // Other apps: {filename} - {appTitle} (e.g., "document.txt - Notepad")
-title: appId === 'photos' 
+title: appId === 'photos'
   ? `${appTitle} - ${fileName}`
-  : `${fileName} - ${appTitle}`
+  : `${fileName} - ${appTitle}`;
 ```
 
 This makes it clear which file is open and in which app.
@@ -330,4 +333,3 @@ To add support for a new file type (e.g., PDF viewer):
 4. **Props**: Use optional `filePath` prop to distinguish file mode from app mode
 5. **Type Safety**: Define typed props interfaces for app components
 6. **File Associations**: Keep file associations organized by category (images, documents, etc.)
-

@@ -4,7 +4,7 @@
  */
 
 import { useRef, useCallback, useEffect, useState } from 'react';
-import type { ActiveNote, PianoState } from '../types';
+import type { ActiveNote } from '../types';
 import {
   ADSR_ENVELOPE,
   DEFAULT_VOLUME,
@@ -48,7 +48,9 @@ export function usePianoAudio(): UsePianoAudioReturn {
 
     try {
       const AudioContextClass =
-        window.AudioContext || (window as any).webkitAudioContext;
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       const ctx = new AudioContextClass();
       audioContextRef.current = ctx;
 
@@ -159,24 +161,24 @@ export function usePianoAudio(): UsePianoAudioReturn {
             existingNote.oscillators.forEach(osc => {
               try {
                 osc.stop(now + 0.01);
-              } catch (error) {
+              } catch {
                 // Oscillator might already be stopped
               }
             });
             // Remove immediately to allow retrigger
             activeNotesRef.current.delete(note);
             setActiveNotes(new Map(activeNotesRef.current));
-          } catch (error) {
+          } catch {
             // If there's an error, force cleanup
             try {
               existingNote.oscillators.forEach(osc => {
                 try {
                   osc.stop();
-                } catch (e) {
+                } catch {
                   // Ignore
                 }
               });
-            } catch (e) {
+            } catch {
               // Ignore
             }
             activeNotesRef.current.delete(note);
@@ -311,7 +313,7 @@ export function usePianoAudio(): UsePianoAudioReturn {
         activeNote.oscillators.forEach(osc => {
           try {
             osc.stop(now);
-          } catch (error) {
+          } catch {
             // Ignore
           }
         });
@@ -330,7 +332,7 @@ export function usePianoAudio(): UsePianoAudioReturn {
         activeNote.oscillators.forEach(osc => {
           try {
             osc.stop(stopTime);
-          } catch (error) {
+          } catch {
             // Oscillator might already be stopped - ignore
           }
         });
@@ -347,11 +349,11 @@ export function usePianoAudio(): UsePianoAudioReturn {
         activeNote.oscillators.forEach(osc => {
           try {
             osc.stop();
-          } catch (e) {
+          } catch {
             // Ignore
           }
         });
-      } catch (e) {
+      } catch {
         // Ignore
       }
       activeNotesRef.current.delete(note);
@@ -367,7 +369,7 @@ export function usePianoAudio(): UsePianoAudioReturn {
     const now = ctx.currentTime;
     const notesToStop = Array.from(activeNotesRef.current.entries());
 
-    notesToStop.forEach(([note, activeNote]) => {
+    notesToStop.forEach(([_note, activeNote]) => {
       try {
         activeNote.gainNode.gain.cancelScheduledValues(now);
         const currentGain = activeNote.gainNode.gain.value;

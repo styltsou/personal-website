@@ -19,14 +19,13 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [zoom, setZoom] = useState(1.0);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const [containerHeight, setContainerHeight] = useState<number | null>(null);
   const [PdfComponents, setPdfComponents] = useState<{
-    Document: any;
-    Page: any;
+    Document: React.ComponentType<Record<string, unknown>>;
+    Page: React.ComponentType<Record<string, unknown>>;
   } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -40,16 +39,17 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
         import('react-pdf'),
         import('react-pdf/dist/esm/Page/AnnotationLayer.css'),
         import('react-pdf/dist/esm/Page/TextLayer.css'),
-      ]).then(([pdfModule]) => {
-        const { Document, Page, pdfjs } = pdfModule;
-        // Set up PDF.js worker - use unpkg CDN (more reliable than cdnjs)
-        pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-        setPdfComponents({ Document, Page });
-      }).catch((err) => {
-        console.error('Failed to load react-pdf:', err);
-        setError('Failed to load PDF viewer');
-        setLoading(false);
-      });
+      ])
+        .then(([pdfModule]) => {
+          const { Document, Page, pdfjs } = pdfModule;
+          // Set up PDF.js worker - use unpkg CDN (more reliable than cdnjs)
+          pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+          setPdfComponents({ Document, Page });
+        })
+        .catch(err => {
+          console.error('Failed to load react-pdf:', err);
+          setError('Failed to load PDF viewer');
+        });
     }
   }, []);
 
@@ -58,7 +58,6 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
     setPageNumber(1);
     setZoom(1.0);
     setError(null);
-    setLoading(true);
   }, [filePath]);
 
   // Calculate container dimensions for fitting PDF at 100% zoom
@@ -85,14 +84,12 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-    setLoading(false);
     setError(null);
   };
 
   const onDocumentLoadError = (error: Error) => {
     console.error('Failed to load PDF:', error);
     setError(`Failed to load PDF: ${error.message}`);
-    setLoading(false);
   };
 
   const handlePrevious = () => {
@@ -148,8 +145,12 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
             <div className={styles.pageWrapper}>
               <Page
                 pageNumber={pageNumber}
-                width={zoom === 1.0 && containerWidth ? containerWidth : undefined}
-                height={zoom === 1.0 && containerHeight ? containerHeight : undefined}
+                width={
+                  zoom === 1.0 && containerWidth ? containerWidth : undefined
+                }
+                height={
+                  zoom === 1.0 && containerHeight ? containerHeight : undefined
+                }
                 scale={zoom !== 1.0 ? zoom : undefined}
                 className={styles.pdfPage}
               />
@@ -209,4 +210,3 @@ export default function PdfViewerWindow({ filePath }: PdfViewerProps) {
     </div>
   );
 }
-

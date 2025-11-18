@@ -11,6 +11,7 @@ The site uses a hybrid approach combining Astro's static generation capabilities
 ### 1. Hybrid Output Mode
 
 **Configuration:** `astro.config.mjs`
+
 ```javascript
 export default defineConfig({
   output: 'hybrid', // Enable static generation
@@ -19,34 +20,40 @@ export default defineConfig({
 ```
 
 **Benefits:**
+
 - Static pages are pre-rendered at build time
 - Faster page loads (no server processing needed)
 - Better caching (CDN-friendly)
 - Lower server costs
 
 **What Gets Prerendered:**
+
 - All content pages (about, projects, contact) - marked with `export const prerender = true`
 - Home page (index.astro)
 
 ### 2. React Island Hydration Strategy
 
 **Before:** `client:load` - React loads immediately
+
 ```astro
 <Desktop client:load />
 ```
 
 **After:** `client:idle` - React loads when browser is idle
+
 ```astro
 <Desktop client:idle />
 ```
 
 **Benefits:**
+
 - Faster initial page load
 - Better Core Web Vitals (LCP, FID)
 - Content visible before React hydrates
 - Progressive enhancement
 
 **How It Works:**
+
 - Browser loads HTML and CSS first
 - Content is immediately visible
 - React loads after browser idle time
@@ -71,18 +78,21 @@ const contentData: Record<string, string> = {};
 ```
 
 **Benefits:**
+
 - **Zero network requests** for embedded content
 - **Instant window opening** - content available immediately
 - **SEO-friendly** - content in initial HTML
 - **Better UX** - no loading spinner for embedded content
 
 **What Gets Embedded:**
+
 - Only path-based apps (about, projects, contact)
 - Component-based apps (terminal, CV, etc.) are NOT embedded (not needed for SEO)
 
 ### 4. Shared Content Components
 
 **Structure:**
+
 ```
 src/components/content/
   ├── about-content.astro
@@ -91,12 +101,14 @@ src/components/content/
 ```
 
 **Benefits:**
+
 - Single source of truth for content
 - Reusable in both Astro pages and embedded data
 - Easier maintenance
 - Consistent content structure
 
 **Usage:**
+
 ```astro
 ---
 // In Astro pages
@@ -121,6 +133,7 @@ export const prerender = true; // Static generation
 ```
 
 **Benefits:**
+
 - Content available in initial HTML
 - Search engines can crawl immediately
 - No JavaScript required to see content
@@ -131,17 +144,21 @@ export const prerender = true; // Static generation
 All content pages include structured data:
 
 ```astro
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "About Me - styltsou",
-  "description": "Learn more about my background...",
-  "url": canonicalURL.toString(),
-  "inLanguage": "en"
-})} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'About Me - styltsou',
+    description: 'Learn more about my background...',
+    url: canonicalURL.toString(),
+    inLanguage: 'en',
+  })}
+/>
 ```
 
 **Benefits:**
+
 - Helps search engines understand page content
 - Can enable rich snippets in search results
 - Better semantic understanding
@@ -161,11 +178,13 @@ All pages include comprehensive meta tags via `BaseLayout.astro`:
 Content is embedded in the initial HTML:
 
 **Before (Client-Side Fetching):**
+
 - Content fetched after React loads
 - Not visible to search engines initially
 - Requires JavaScript
 
 **After (Build-Time Embedding):**
+
 - Content in initial HTML
 - Visible to search engines immediately
 - Works without JavaScript (progressive enhancement)
@@ -175,6 +194,7 @@ Content is embedded in the initial HTML:
 Sitemap is automatically generated via `@astrojs/sitemap`:
 
 **Configuration:** `astro.config.mjs`
+
 ```javascript
 import sitemap from '@astrojs/sitemap';
 
@@ -187,6 +207,7 @@ export default defineConfig({
 ```
 
 **Benefits:**
+
 - Helps search engines discover all pages
 - Automatically updated on build
 - Includes all prerendered pages
@@ -196,11 +217,13 @@ export default defineConfig({
 ### Path-Based Apps (SEO-Optimized)
 
 These apps get full SEO treatment:
+
 - ✅ `about` - About Me page
 - ✅ `projects` - Projects page
 - ✅ `contact` - Contact page
 
 **Optimizations Applied:**
+
 - Static generation
 - Content embedding
 - Structured data
@@ -209,6 +232,7 @@ These apps get full SEO treatment:
 ### Component-Based Apps (Not SEO-Optimized)
 
 These apps are client-side only (no SEO needed):
+
 - ❌ `terminal` - Interactive terminal
 - ❌ `cv` - PDF viewer
 - ❌ `wikipedia` - Wikipedia viewer
@@ -217,6 +241,7 @@ These apps are client-side only (no SEO needed):
 - ❌ `music-player` - Music player
 
 **Why Not SEO:**
+
 - These are interactive applications
 - Not meant to be indexed by search engines
 - Content is dynamic/interactive
@@ -253,6 +278,7 @@ These apps are client-side only (no SEO needed):
 ### Adding New Content Pages
 
 1. **Create shared content component:**
+
    ```astro
    // src/components/content/new-page-content.astro
    <main>
@@ -261,22 +287,24 @@ These apps are client-side only (no SEO needed):
    ```
 
 2. **Create Astro page:**
+
    ```astro
-   // src/pages/new-page.astro
-   ---
-   import BaseLayout from '../layouts/BaseLayout.astro';
-   import NewPageContent from '../components/content/new-page-content.astro';
-   
-   export const prerender = true;
-   ---
-   
+   // src/pages/new-page.astro import BaseLayout from
+   '../layouts/BaseLayout.astro'; import NewPageContent from
+   '../components/content/new-page-content.astro'; export const prerender =
+   true;
+
    <BaseLayout title="..." description="...">
-     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+     <script
+       type="application/ld+json"
+       set:html={JSON.stringify(structuredData)}
+     />
      <NewPageContent />
    </BaseLayout>
    ```
 
 3. **Add to apps config:**
+
    ```typescript
    // src/app-config.ts
    { id: 'new-page', title: 'New Page', path: '/new-page', pinned: true }
@@ -284,9 +312,9 @@ These apps are client-side only (no SEO needed):
 
 4. **Add to content extraction:**
    ```astro
-   // src/pages/index.astro
-   import NewPageContent from '../components/content/new-page-content.astro';
-   // Add to contentComponents mapping
+   // src/pages/index.astro import NewPageContent from
+   '../components/content/new-page-content.astro'; // Add to contentComponents
+   mapping
    ```
 
 ### Performance Monitoring
@@ -299,6 +327,7 @@ These apps are client-side only (no SEO needed):
 ## Future Enhancements
 
 Potential improvements:
+
 - Image optimization (Astro Image component)
 - Font optimization (font-display: swap)
 - Service worker for offline support
@@ -307,4 +336,3 @@ Potential improvements:
 - Breadcrumb navigation schema
 - Person schema for about page
 - Project schema for projects page
-

@@ -45,4 +45,3 @@ export const FileIcon = ({ children }: FileIconProps): ReactNode => (
     {children}
   </svg>
 );
-
