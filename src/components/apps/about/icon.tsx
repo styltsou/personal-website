@@ -4,83 +4,17 @@
  */
 
 import type { ReactNode } from 'react';
+import { FileIcon } from '@/components/ui/file-icon';
 
 export const AboutIcon = (): ReactNode => (
-  <svg
-    width="64"
-    height="64"
-    viewBox="0 0 64 64"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Paper/document shape */}
-    <rect
-      x="12"
-      y="8"
-      width="40"
-      height="52"
-      rx="2"
-      fill="#f8f5ed"
-      stroke="#d4c4b0"
-      strokeWidth="2"
-    />
-    {/* Folded corner */}
-    <path
-      d="M 44 8 L 52 8 L 52 16 L 44 8 Z"
-      fill="#d4c4b0"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-    />
-    {/* Markdown header line (h1 style) */}
-    <line
-      x1="18"
-      y1="20"
-      x2="42"
-      y2="20"
-      stroke="#7da3d1"
-      strokeWidth="3"
-      strokeLinecap="round"
-    />
-    {/* Markdown text lines */}
-    <line
-      x1="18"
-      y1="28"
-      x2="42"
-      y2="28"
-      stroke="#7da3d1"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <line
-      x1="18"
-      y1="34"
-      x2="38"
-      y2="34"
-      stroke="#7da3d1"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    {/* Markdown list item (bullet) */}
-    <circle cx="20" cy="42" r="2" fill="#7da3d1" />
-    <line
-      x1="26"
-      y1="42"
-      x2="42"
-      y2="42"
-      stroke="#7da3d1"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    {/* Code block indicator */}
-    <rect
-      x="18"
-      y="48"
-      width="24"
-      height="8"
-      rx="1"
-      fill="#e8e8e8"
-      stroke="#7da3d1"
-      strokeWidth="1"
-    />
-  </svg>
+  <FileIcon>
+    {/* Markdown logo - official SVG logo, normalized and centered */}
+    <g transform="translate(32, 34) scale(0.5, -0.5) translate(-24.4, -24)">
+      {/* Official markdown logo path - normalized from 500x500 to 50x50 */}
+      <path
+        d="M1.2 38.8 c-1.7 -1.7 -1.7 -27.9 0 -29.6 1.7 -1.7 45.9 -1.7 47.6 0 1.7 1.7 1.7 27.9 0 29.6 -1.7 1.7 -45.9 1.7 -47.6 0z m13.2 -10 l2.6 -3.3 2.6 3.3 c1.4 1.7 3.4 3.2 4.5 3.2 1.7 0 1.9 -0.8 1.9 -8 0 -7.3 -0.2 -8 -2 -8 -1.7 0 -2 0.7 -2 5.3 l0 5.2 -2.5 -3 -2.5 -3 -2.5 3 -2.5 3 0 -5.2 c0 -4.6 -0.3 -5.3 -2 -5.3 -1.8 0 -2 0.7 -2 8 0 7.2 0.2 8 1.9 8 1.1 0 3.1 -1.5 4.5 -3.2z m24.6 -0.8 c0 -3.7 0.2 -4 2.7 -4 l2.8 0 -3.8 -3.7 -3.7 -3.8 -3.7 3.8 -3.8 3.7 2.8 0 c2.5 0 2.7 0.3 2.7 4 0 3.3 0.3 4 2 4 1.7 0 2 -0.7 2 -4z"
+        fill="#7da3d1"
+      />
+    </g>
+  </FileIcon>
 );

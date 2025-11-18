@@ -4,6 +4,7 @@
  */
 
 import type { ReactNode } from 'react';
+import { FileIcon } from '@/components/ui/file-icon';
 
 /**
  * Photos app icon - camera icon
@@ -62,39 +63,15 @@ export const PhotosIcon = (): ReactNode => (
  * Image file icon - photo frame icon for image files on desktop
  */
 export const ImageFileIcon = (): ReactNode => (
-  <svg
-    width="64"
-    height="64"
-    viewBox="0 0 64 64"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Photo frame/paper */}
-    <rect
-      x="12"
-      y="10"
-      width="40"
-      height="44"
-      rx="2"
-      fill="#f8f5ed"
-      stroke="#d4c4b0"
-      strokeWidth="2"
-    />
-    {/* Folded corner (like a photo) */}
-    <path
-      d="M 44 10 L 52 10 L 52 18 L 44 10 Z"
-      fill="#d4c4b0"
-      stroke="#d4c4b0"
-      strokeWidth="1"
-    />
+  <FileIcon>
     {/* Image representation - simple landscape scene */}
     {/* Sky */}
-    <rect x="16" y="16" width="32" height="20" fill="#7da3d1" />
+    <rect x="16" y="14" width="32" height="20" fill="#7da3d1" />
     {/* Sun */}
-    <circle cx="40" cy="22" r="4" fill="#ffd700" />
+    <circle cx="40" cy="20" r="4" fill="#ffd700" />
     {/* Ground/hills */}
     <path
-      d="M 16 36 L 20 38 L 24 36 L 28 40 L 32 36 L 36 38 L 40 36 L 44 40 L 48 36 Z"
+      d="M 16 34 L 20 36 L 24 34 L 28 38 L 32 34 L 36 36 L 40 34 L 44 38 L 48 34 Z"
       fill="#8b9a6b"
       stroke="#6b7a5b"
       strokeWidth="1"
@@ -102,14 +79,14 @@ export const ImageFileIcon = (): ReactNode => (
     {/* Photo border inside */}
     <rect
       x="18"
-      y="18"
+      y="16"
       width="28"
       height="20"
       fill="none"
       stroke="#d4c4b0"
       strokeWidth="1"
     />
-  </svg>
+  </FileIcon>
 );
 
 

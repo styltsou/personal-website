@@ -190,11 +190,11 @@ export const createWindowSlice: StateCreator<Store, [], [], WindowSlice> = (
     // Extract filename for window title
     const fileName = filePath.split('/').pop() || filePath;
 
-    // For photos app, show "Photos - filename", for others show "filename - appname"
+    // For photos and pdf-viewer apps, show "App / filename", for others show "filename / appname"
     const title =
-      config.id === 'photos'
-        ? `${config.title} - ${fileName}`
-        : `${fileName} - ${config.title}`;
+      config.id === 'photos' || config.id === 'pdf-viewer'
+        ? `${config.title} / ${fileName.toLowerCase()}`
+        : `${fileName.toLowerCase()} / ${config.title}`;
 
     openWindowWithConfig(windowId, config, set, get, {
       title,

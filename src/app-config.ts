@@ -17,6 +17,7 @@ import PhotosWindow, {
   PhotosIcon,
   ImageFileIcon,
 } from './components/apps/photos';
+import PdfViewerWindow, { PdfFileIcon } from './components/apps/pdf-viewer';
 import { AboutIcon } from './components/apps/about/icon';
 import { ProjectsIcon } from './components/apps/projects/icon';
 import { ContactIcon } from './components/apps/contact/icon';
@@ -124,6 +125,14 @@ export const apps: AppConfig[] = [
       icon: PhotosIcon,
     },
   },
+  {
+    type: 'app',
+    id: 'pdf-viewer',
+    title: 'PDF Viewer',
+    component: PdfViewerWindow,
+    keepMountedWhenMinimized: true, // Keep mounted to prevent PDF reload
+    // PDF viewer only opens via file associations, no desktop icon
+  },
 
   // Files
   // Example: Image file that opens in Photos app
@@ -135,6 +144,16 @@ export const apps: AppConfig[] = [
     desktopIcon: {
       label: 'me.jpg',
       icon: ImageFileIcon, // Use SVG icon for retro aesthetic
+    },
+  },
+  {
+    type: 'file',
+    id: 'pop-gtr-chords',
+    title: 'pop-gtr-chords.pdf',
+    filePath: '/pdfs/pop-gtr-chords.pdf',
+    desktopIcon: {
+      label: 'pop-gtr-chords.pdf',
+      icon: PdfFileIcon, // Use SVG icon for retro aesthetic
     },
   },
   // Example: Text file that opens in Notepad app (when you create it)

@@ -59,42 +59,7 @@
   padding: 1.2rem; /* 12px - was 0.75rem (12px) */
   gap: 0.8rem; /* 8px - was 0.5rem (8px) */
   background-color: var(--window-bg);
-
-  // Custom scrollbar styling - retro aesthetic
-  &::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--button-bg);
-    border-left: 1px solid var(--window-border-dark);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--window-border-dark);
-    border-top: 1px solid var(--button-border-light);
-    border-left: 1px solid var(--button-border-light);
-    border-right: 1px solid var(--window-border-dark);
-    border-bottom: 1px solid var(--window-border-dark);
-    border-radius: 2px;
-    box-shadow: 1px 1px 2px var(--shadow-soft);
-
-    &:hover {
-      background-color: var(--accent);
-    }
-
-    &:active {
-      border-top: 1px solid var(--window-border-dark);
-      border-left: 1px solid var(--window-border-dark);
-      border-right: 1px solid var(--button-border-light);
-      border-bottom: 1px solid var(--button-border-light);
-      box-shadow: inset 1px 1px 1px var(--shadow-soft);
-    }
-  }
-
-  // Firefox scrollbar styling
-  scrollbar-width: thin;
-  scrollbar-color: var(--window-border-dark) var(--button-bg);
+  // Scrollbar styling is now global - see src/styles/_base.scss
 }
 
 .trackItem {

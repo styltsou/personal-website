@@ -13,6 +13,9 @@ export const fileAssociations: Record<string, string> = {
   '.svg': 'photos',
   '.bmp': 'photos',
   
+  // PDF files
+  '.pdf': 'pdf-viewer',
+  
   // Text files
   '.txt': 'notepad',
   '.md': 'notepad',

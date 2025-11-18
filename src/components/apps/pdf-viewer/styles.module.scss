@@ -1,0 +1,83 @@
+.pdfContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--window-bg);
+  // Use window background color instead of hardcoded white/black to prevent flash
+}
+
+.pdfContent {
+  position: absolute;
+  top: 60px; // Start below control bar
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: 0 1.6rem;
+  box-sizing: border-box;
+}
+
+.pageWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.pdfPage {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: white;
+}
+
+.pdfError {
+  color: #ff4444;
+  font-size: 1.4rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+// Top control bar
+.controlBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 1.2rem;
+  background: var(--window-bg);
+  border-bottom: 2px solid var(--window-border-dark);
+  border-top: 2px solid var(--window-border-light);
+  box-shadow: 
+    0 2px 4px var(--shadow-soft),
+    inset 0 1px 0 var(--window-border-light);
+  gap: 2rem;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pageCounter {
+  font-size: 1.4rem;
+  color: var(--text);
+  min-width: 7rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 0 0.2rem;
+}
+
+.zoomLevel {
+  font-size: 1.4rem;
+  color: var(--text);
+  min-width: 5rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 0 0.4rem;
+}
+
