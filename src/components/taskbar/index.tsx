@@ -1,6 +1,6 @@
 /**
- * Menu Bar Component
- * Top system menu bar with window buttons, clock, date, and theme toggle
+ * Taskbar Component
+ * Top system taskbar with window buttons, clock, date, and theme toggle
  */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -13,7 +13,7 @@ import { formatDate, formatTime } from '@/utils/date-time';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
-export default function MenuBar() {
+export default function Taskbar() {
   const windows = useStore(state => state.windows);
   const activeWindowId = useStore(state => state.activeWindowId);
   const openWindow = useStore(state => state.openWindow);
@@ -41,11 +41,11 @@ export default function MenuBar() {
 
   const getButtonClasses = (state: ReturnType<typeof getWindowButtonState>) => {
     return cn(
-      styles.menuBarButton,
+      styles.taskbarButton,
       'focus-ring',
-      state.isOpen && styles.menuBarButtonOpen,
-      state.exists && state.isMinimized && styles.menuBarButtonMinimized,
-      state.isActive && styles.menuBarButtonFocused,
+      state.isOpen && styles.taskbarButtonOpen,
+      state.exists && state.isMinimized && styles.taskbarButtonMinimized,
+      state.isActive && styles.taskbarButtonFocused,
       state.isActive && styles.active,
       state.hasState && !state.isActive && styles.hasState
     );
@@ -79,7 +79,7 @@ export default function MenuBar() {
 
   // Show pinned windows (even when closed) and open windows
   // Use windows array order - most recently opened appears at the end (since we append to array)
-  const menuBarWindows = useMemo(() => {
+  const taskbarWindows = useMemo(() => {
     // Get all apps that are either pinned or currently open
     const pinnedApps = apps.filter(app => {
       if (app.type !== 'app') return false;
@@ -129,7 +129,7 @@ export default function MenuBar() {
       app => !pinnedIds.has(app.id)
     );
 
-    // For file windows, create menu bar entries using the window's own config
+    // For file windows, create taskbar entries using the window's own config
     const fileWindowEntries = openFileWindows.map(item => ({
       id: item.windowState.id,
       title: item.windowState.config.title,
@@ -140,10 +140,10 @@ export default function MenuBar() {
   }, [windows]);
 
   return (
-    <div className={styles.menuBar}>
-      <div className={styles.menuBarLeft}>
-        <span className={styles.menuBarLogo}>styltsou</span>
-        {menuBarWindows.map(window => {
+    <div className={styles.taskbar}>
+      <div className={styles.taskbarLeft}>
+        <span className={styles.taskbarLogo}>styltsou</span>
+        {taskbarWindows.map(window => {
           const state = getWindowButtonState(window.id);
           // Check if this is a file window (has windowState property) or an app window
           const isFileWindow = 'windowState' in window;
@@ -168,7 +168,7 @@ export default function MenuBar() {
             >
               {state.exists && (
                 <span
-                  className={styles.menuBarButtonCloseIcon}
+                  className={styles.taskbarButtonCloseIcon}
                   onClick={e => handleCloseClick(window.id, e)}
                   onKeyDown={e => handleCloseKeyDown(window.id, e)}
                   role="button"
@@ -183,10 +183,10 @@ export default function MenuBar() {
           );
         })}
       </div>
-      <div className={styles.menuBarRight}>
-        <div className={styles.menuBarTime}>
-          <span className={styles.menuBarDate}>{formatDate(currentTime)}</span>
-          <span className={styles.menuBarClock}>{formatTime(currentTime)}</span>
+      <div className={styles.taskbarRight}>
+        <div className={styles.taskbarTime}>
+          <span className={styles.taskbarDate}>{formatDate(currentTime)}</span>
+          <span className={styles.taskbarClock}>{formatTime(currentTime)}</span>
         </div>
         <ThemeToggle />
       </div>

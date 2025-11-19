@@ -33,7 +33,7 @@
   box-shadow:
     4px 4px 12px var(--shadow),
     0 0 0 1px var(--shadow-soft);
-  z-index: 99; /* Above all windows (10-98) but below menu bar (100) */
+  z-index: 99; /* Above all windows (10-98) but below taskbar (100) */
 }
 
 /* Desktop Icon - Selected State */

@@ -3,7 +3,7 @@
  * Handles grid calculation, snap-to-grid positioning, and collision detection
  */
 
-import { MENU_BAR_HEIGHT } from '@/constants';
+import { TASKBAR_HEIGHT } from '@/constants';
 import type { GridDimensions, PixelPosition, GridPosition } from '@/types/icon';
 
 export const GRID_CELL_SIZE = 100; // Grid cell size in pixels (matches icon container size exactly)
@@ -22,24 +22,24 @@ export function calculateGridDimensions(): GridDimensions {
       columns: 10,
       rows: 10,
       startX: GRID_PADDING,
-      startY: GRID_PADDING + MENU_BAR_HEIGHT,
+      startY: GRID_PADDING + TASKBAR_HEIGHT,
     };
   }
 
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
 
-  // Calculate available space (viewport minus padding and menu bar)
+  // Calculate available space (viewport minus padding and taskbar)
   const availableWidth = viewportWidth - GRID_PADDING * 2;
-  const availableHeight = viewportHeight - GRID_PADDING - MENU_BAR_HEIGHT;
+  const availableHeight = viewportHeight - GRID_PADDING - TASKBAR_HEIGHT;
 
   // Calculate grid columns and rows
   const columns = Math.floor(availableWidth / GRID_CELL_SIZE);
   const rows = Math.floor(availableHeight / GRID_CELL_SIZE);
 
-  // Starting position (accounting for padding and menu bar)
+  // Starting position (accounting for padding and taskbar)
   const startX = GRID_PADDING;
-  const startY = GRID_PADDING + MENU_BAR_HEIGHT;
+  const startY = GRID_PADDING + TASKBAR_HEIGHT;
 
   return {
     columns: Math.max(1, columns), // At least 1 column
@@ -178,7 +178,7 @@ export function findNearestFreeCell(
 }
 
 /**
- * Constrain pixel position to viewport bounds (accounting for grid padding and menu bar)
+ * Constrain pixel position to viewport bounds (accounting for grid padding and taskbar)
  */
 export function constrainToViewport(position: PixelPosition): PixelPosition {
   // Return position as-is during SSR

@@ -6,7 +6,7 @@
 
 import { useEffect } from 'react';
 import Window from '../window';
-import MenuBar from '../menu-bar';
+import Taskbar from '../taskbar';
 import DesktopIcons from '../desktop-icons';
 import DraggingIcon from '../desktop-icons/dragging-icon';
 import LoadingScreen from '../loading-screen';
@@ -68,7 +68,7 @@ export default function Desktop() {
           hasLoadedFromPersistence && styles.loaded
         )}
       >
-        <MenuBar />
+        <Taskbar />
         <DesktopIcons />
         <DraggingIcon />
         {/* Render windows - keep mounted when minimized only if keepMountedWhenMinimized is true (default: false) */}

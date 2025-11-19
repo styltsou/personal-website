@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 import React from 'react';
-import { MENU_BAR_HEIGHT } from '@/constants';
+import { TASKBAR_HEIGHT } from '@/constants';
 import { getSnappedPreview, getMinWindowSize } from './utils/window-utils';
 import { useWindowDrag } from '@/hooks/use-window-drag';
 import { useWindowResize } from '@/hooks/use-window-resize';
@@ -139,7 +139,7 @@ export default function Window({ id, isLoading }: WindowProps) {
     // Check if window is available (client-side only)
     if (typeof window !== 'undefined') {
       windowWidth = window.innerWidth;
-      windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+      windowHeight = window.innerHeight - TASKBAR_HEIGHT;
     } else {
       // Fallback for SSR
       windowWidth = size.width;
@@ -150,7 +150,7 @@ export default function Window({ id, isLoading }: WindowProps) {
       // Keep maximized size but use drag position for smooth transition
       displayPosition = position; // position from drag hook
     } else {
-      displayPosition = { x: 0, y: MENU_BAR_HEIGHT };
+      displayPosition = { x: 0, y: TASKBAR_HEIGHT };
     }
   } else if (snapSide) {
     // When snapped, show snapped size/position visually

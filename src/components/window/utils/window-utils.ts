@@ -4,7 +4,7 @@
  */
 
 import type { WindowPosition, WindowSize } from '@/types/window';
-import { BASE_Z_INDEX, MAX_WINDOW_Z_INDEX, MENU_BAR_HEIGHT } from '@/constants';
+import { BASE_Z_INDEX, MAX_WINDOW_Z_INDEX, TASKBAR_HEIGHT } from '@/constants';
 
 const DEFAULT_WINDOW_WIDTH = 1100;
 const DEFAULT_WINDOW_HEIGHT = 800;
@@ -29,7 +29,7 @@ export function calculateCenteredPosition(
   const centeredX = Math.max(0, (viewportWidth - width) / 2);
   const verticalOffset = viewportHeight * VERTICAL_OFFSET_RATIO;
   const centeredY = Math.max(
-    MENU_BAR_HEIGHT,
+    TASKBAR_HEIGHT,
     (viewportHeight - height) / 2 - verticalOffset
   );
 
@@ -58,7 +58,7 @@ export function calculateNextZIndex(
   nextZIndex: number = BASE_Z_INDEX
 ): number {
   const calculated = Math.max(currentMaxZIndex + Z_INDEX_INCREMENT, nextZIndex);
-  // Cap at MAX_WINDOW_Z_INDEX to leave room for dragging icons (99) and menu bar (100)
+  // Cap at MAX_WINDOW_Z_INDEX to leave room for dragging icons (99) and taskbar (100)
   return Math.min(calculated, MAX_WINDOW_Z_INDEX);
 }
 
@@ -94,22 +94,22 @@ export function constrainWindowSize(size: WindowSize): WindowSize {
 }
 
 /**
- * Get maximized window size (accounting for menu bar)
+ * Get maximized window size (accounting for taskbar)
  */
 export function getMaximizedWindowSize(): WindowSize {
   return {
     width: window.innerWidth,
-    height: window.innerHeight - MENU_BAR_HEIGHT,
+    height: window.innerHeight - TASKBAR_HEIGHT,
   };
 }
 
 /**
- * Get maximized window position (below menu bar)
+ * Get maximized window position (below taskbar)
  */
 export function getMaximizedWindowPosition(): WindowPosition {
   return {
     x: 0,
-    y: MENU_BAR_HEIGHT,
+    y: TASKBAR_HEIGHT,
   };
 }
 
@@ -148,16 +148,16 @@ export function detectSnapSide(
   const nearRight =
     position.x + size.width >= viewportWidth - SNAP_THRESHOLD &&
     position.x + size.width <= viewportWidth + SNAP_THRESHOLD;
-  // Check top edge (positioned right at menu bar height)
+  // Check top edge (positioned right at taskbar height)
   const nearTop =
-    position.y <= MENU_BAR_HEIGHT + SNAP_THRESHOLD &&
-    position.y >= MENU_BAR_HEIGHT - SNAP_THRESHOLD;
+    position.y <= TASKBAR_HEIGHT + SNAP_THRESHOLD &&
+    position.y >= TASKBAR_HEIGHT - SNAP_THRESHOLD;
 
   // Detect edge snaps (top takes priority if both horizontal and vertical are detected)
   if (
     nearTop &&
     size.width === viewportWidth &&
-    size.height === window.innerHeight - MENU_BAR_HEIGHT
+    size.height === window.innerHeight - TASKBAR_HEIGHT
   ) {
     // Only consider it top-snapped if it's also maximized (full width and height)
     return 'top';
@@ -183,9 +183,9 @@ export function detectSnapSideFromMouse(
   // Check if mouse is near right edge
   const nearRight =
     mouseX >= viewportWidth - SNAP_THRESHOLD && mouseX <= viewportWidth;
-  // Check if mouse is near top edge (below menu bar)
+  // Check if mouse is near top edge (below taskbar)
   const nearTop =
-    mouseY >= MENU_BAR_HEIGHT && mouseY <= MENU_BAR_HEIGHT + SNAP_THRESHOLD;
+    mouseY >= TASKBAR_HEIGHT && mouseY <= TASKBAR_HEIGHT + SNAP_THRESHOLD;
 
   // Detect edge snaps (top takes priority if both horizontal and vertical are detected)
   if (nearTop) return 'top';
@@ -210,24 +210,24 @@ export function getSnappedPreview(snapSide: 'left' | 'right' | 'top'): {
   let snappedSize: WindowSize;
 
   if (snapSide === 'top') {
-    // Top snap = maximize (full width, full height minus menu bar)
-    snappedPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    // Top snap = maximize (full width, full height minus taskbar)
+    snappedPosition = { x: 0, y: TASKBAR_HEIGHT };
     snappedSize = {
       width: viewportWidth,
-      height: viewportHeight - MENU_BAR_HEIGHT,
+      height: viewportHeight - TASKBAR_HEIGHT,
     };
   } else if (snapSide === 'left') {
-    snappedPosition = { x: 0, y: MENU_BAR_HEIGHT };
+    snappedPosition = { x: 0, y: TASKBAR_HEIGHT };
     snappedSize = {
       width: halfWidth,
-      height: viewportHeight - MENU_BAR_HEIGHT,
+      height: viewportHeight - TASKBAR_HEIGHT,
     };
   } else {
     // snapSide === 'right'
-    snappedPosition = { x: halfWidth, y: MENU_BAR_HEIGHT };
+    snappedPosition = { x: halfWidth, y: TASKBAR_HEIGHT };
     snappedSize = {
       width: halfWidth,
-      height: viewportHeight - MENU_BAR_HEIGHT,
+      height: viewportHeight - TASKBAR_HEIGHT,
     };
   }
 
@@ -265,7 +265,7 @@ export function calculateCascadedPosition(
 
   const constrainedX = Math.max(0, Math.min(cascadedX, viewportWidth - width));
   const constrainedY = Math.max(
-    MENU_BAR_HEIGHT,
+    TASKBAR_HEIGHT,
     Math.min(cascadedY, viewportHeight - height)
   );
 

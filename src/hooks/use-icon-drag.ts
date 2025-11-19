@@ -17,7 +17,7 @@ import {
   type GridPosition,
 } from '../components/desktop-icons/utils';
 import { useStore } from '../store';
-import { MENU_BAR_HEIGHT } from '../constants';
+import { TASKBAR_HEIGHT } from '../constants';
 import { getSnappedPreview } from '../components/window/utils/window-utils';
 
 export interface UseIconDragOptions {
@@ -84,9 +84,9 @@ export function useIconDrag({
 
         if (windowState.isMaximized) {
           windowX = 0;
-          windowY = MENU_BAR_HEIGHT;
+          windowY = TASKBAR_HEIGHT;
           windowWidth = window.innerWidth;
-          windowHeight = window.innerHeight - MENU_BAR_HEIGHT;
+          windowHeight = window.innerHeight - TASKBAR_HEIGHT;
         } else if (windowState.snapSide) {
           const snapped = getSnappedPreview(windowState.snapSide);
           windowX = snapped.position.x;

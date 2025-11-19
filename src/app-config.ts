@@ -9,9 +9,7 @@ import CvWindow, { CvIcon } from './components/apps/cv';
 import TerminalWindow, { TerminalIcon } from './components/apps/terminal';
 import WikipediaWindow, { WikipediaIcon } from './components/apps/wikipedia';
 import PianoWindow, { PianoIcon } from './components/apps/piano';
-import FlappyBirdWindow, {
-  FlappyBirdIcon,
-} from './components/apps/flappy-bird';
+import SnakeWindow, { SnakeIcon } from './components/apps/snake-game';
 import MusicPlayer, { MusicPlayerIcon } from './components/apps/music-player';
 import PhotosWindow, {
   PhotosIcon,
@@ -82,11 +80,12 @@ export const apps: AppConfig[] = [
   },
   {
     type: 'app',
-    id: 'flappy-bird',
-    title: 'Flappy Bird',
-    component: FlappyBirdWindow,
+    id: 'snake',
+    title: 'Snake Game',
+    component: SnakeWindow,
     desktopIcon: {
-      icon: FlappyBirdIcon,
+      label: 'Snake Game',
+      icon: SnakeIcon,
     },
   },
   {

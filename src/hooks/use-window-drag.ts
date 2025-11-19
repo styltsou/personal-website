@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { constrainPositionToViewport } from '@/components/window/utils/viewport-constraints';
-import { MENU_BAR_HEIGHT } from '@/constants';
+import { TASKBAR_HEIGHT } from '@/constants';
 import { detectSnapSideFromMouse } from '@/components/window/utils/window-utils';
 import type { WindowPosition, WindowSize, SnapSide } from '@/types/window';
 
@@ -136,7 +136,7 @@ export function useWindowDrag({
 
       if (isMaximized) {
         // Maximized - start from maximized position (top-left, full width)
-        startPosition = { x: 0, y: MENU_BAR_HEIGHT };
+        startPosition = { x: 0, y: TASKBAR_HEIGHT };
         setPosition(startPosition);
         currentSizeRef.current = initialSize;
       } else if (snapSide) {
@@ -148,16 +148,16 @@ export function useWindowDrag({
 
         if (snapSide === 'top') {
           // Top-snapped (maximized) - full width
-          startPosition = { x: 0, y: MENU_BAR_HEIGHT };
+          startPosition = { x: 0, y: TASKBAR_HEIGHT };
           snappedWidth = viewportWidth;
           // For top snapping, we don't need edge tracking (no left/right resize logic needed)
           snapStartMouseEdgeRef.current = null;
         } else if (snapSide === 'left') {
-          startPosition = { x: 0, y: MENU_BAR_HEIGHT };
+          startPosition = { x: 0, y: TASKBAR_HEIGHT };
           snappedWidth = halfWidth;
         } else {
           // snapSide === 'right'
-          startPosition = { x: halfWidth, y: MENU_BAR_HEIGHT };
+          startPosition = { x: halfWidth, y: TASKBAR_HEIGHT };
           snappedWidth = halfWidth;
         }
 

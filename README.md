@@ -17,7 +17,7 @@ The project follows modern React conventions with kebab-case naming for all file
 │   │   │   │   ├── icon.tsx
 │   │   │   │   └── styles.module.scss
 │   │   │   ├── piano/
-│   │   │   ├── flappy-bird/
+│   │   │   ├── snake-game/
 │   │   │   ├── wikipedia/
 │   │   │   └── cv/
 │   │   ├── desktop/
@@ -30,7 +30,7 @@ The project follows modern React conventions with kebab-case naming for all file
 │   │   │   │   └── window-controls/
 │   │   │   ├── resize-handles/
 │   │   │   └── utils/
-│   │   ├── menu-bar/
+│   │   ├── taskbar/
 │   │   └── music-player/
 │   ├── store/            # Zustand store (kebab-case naming)
 │   │   ├── window/

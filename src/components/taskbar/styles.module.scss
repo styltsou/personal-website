@@ -1,11 +1,11 @@
 /**
- * Menu Bar Component Styles
+ * Taskbar Component Styles
  */
 
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.menuBar {
+.taskbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,14 +22,14 @@
   box-shadow: 0 1px 3px var(--shadow-soft);
 }
 
-.menuBarLeft {
+.taskbarLeft {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.menuBarLogo {
+.taskbarLogo {
   font-weight: 700;
   font-size: 13px;
   color: var(--text);
@@ -38,7 +38,7 @@
   letter-spacing: 0.5px;
 }
 
-.menuBarButton {
+.taskbarButton {
   @include button;
   border-radius: 2px;
   padding: 0 8px;
@@ -55,27 +55,27 @@
 }
 
 /* Open window button - pressed/inverted style */
-.menuBarButtonOpen {
+.taskbarButtonOpen {
   @include inset-3d;
 }
 
 /* Minimized window button - pressed style but slightly dimmed */
-.menuBarButtonMinimized {
+.taskbarButtonMinimized {
   @include inset-3d;
   opacity: 0.85;
 }
 
 /* Focused/Active window button */
-.menuBarButtonFocused {
+.taskbarButtonFocused {
   /* Color animation handled by motion */
 }
 
 /* Combine minimized + focused states */
-.menuBarButtonMinimized.menuBarButtonFocused {
+.taskbarButtonMinimized.taskbarButtonFocused {
   opacity: 1;
 }
 
-.menuBarButtonCloseIcon {
+.taskbarButtonCloseIcon {
   margin-right: 4px;
   font-size: 14px;
   line-height: 1;
@@ -97,13 +97,13 @@
   }
 }
 
-.menuBarRight {
+.taskbarRight {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.menuBarTime {
+.taskbarTime {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -112,12 +112,12 @@
   color: var(--text);
 }
 
-.menuBarDate {
+.taskbarDate {
   color: var(--text-light);
   margin-right: 4px;
 }
 
-.menuBarClock {
+.taskbarClock {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -135,7 +135,7 @@
   color: #2a2a2a !important; // Dark text for good contrast on accent background in both themes
 
   // Ensure close icon is also dark
-  :global(.menu-bar-button-close-icon) {
+  :global(.taskbar-button-close-icon) {
     color: #2a2a2a !important;
   }
 

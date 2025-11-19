@@ -1,33 +1,30 @@
 /**
- * Flappy Bird Game Window Component
- * Classic Flappy Bird game with spacebar controls
+ * Snake Game Window Component
+ * Classic Snake game with arrow key controls
  * Canvas-based implementation for optimal performance
  */
 
-export { FlappyBirdIcon } from './icon';
+export { SnakeIcon } from './icon';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 import type { GameState } from './types';
-import { JUMP_STRENGTH } from './constants';
-import { generateInitialPipes, updateGameState } from './game-logic';
+import { Direction } from './types';
+import { GAME_SPEED } from './constants';
+import {
+  createInitialState,
+  updateGameState,
+  isValidDirectionChange,
+} from './game-logic';
 import { draw } from './drawing';
 import { useDarkTheme } from './hooks/useDarkTheme';
 import { useGameSize } from './hooks/useGameSize';
 
-const HIGH_SCORE_KEY = 'flappy-bird-high-score';
+const HIGH_SCORE_KEY = 'snake-high-score';
 
-export default function FlappyBirdWindow() {
-  const [gameState, setGameState] = useState<GameState>({
-    birdY: 200,
-    birdVelocity: 0,
-    pipes: [],
-    score: 0,
-    gameOver: false,
-    started: false,
-  });
-
+export default function SnakeWindow() {
+  const [gameState, setGameState] = useState<GameState>(createInitialState());
   const [highScore, setHighScore] = useState<number>(0);
 
   const isDarkTheme = useDarkTheme();
@@ -36,6 +33,7 @@ export default function FlappyBirdWindow() {
   const gameSize = useGameSize(containerRef, canvasRef);
 
   const gameLoopRef = useRef<number | undefined>(undefined);
+  const gameIntervalRef = useRef<number | undefined>(undefined);
   const gameStateRef = useRef<GameState>(gameState);
   const gameSizeRef = useRef(gameSize);
   const highScoreRef = useRef<number>(0);
@@ -87,36 +85,14 @@ export default function FlappyBirdWindow() {
     gameSizeRef.current = gameSize;
   }, [gameSize]);
 
-  // Reset bird position when size changes
-  useEffect(() => {
-    setGameState(prev => ({
-      ...prev,
-      birdY: gameSize.height / 2,
-    }));
-  }, [gameSize.height]);
-
-  // Initialize pipes when game starts
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (!gameState.started || gameState.gameOver) return;
-    if (gameState.pipes.length > 0) return; // Don't reinitialize if pipes already exist
-
-    const initialPipes = generateInitialPipes(gameSize);
-    setGameState(prev => {
-      const newState = {
-        ...prev,
-        pipes: initialPipes,
-      };
-      // Update ref immediately
-      gameStateRef.current = newState;
-      return newState;
-    });
-  }, [gameState.started, gameState.gameOver, gameState.pipes.length, gameSize]);
-
-  // Game loop - updates state and draws directly
+  // Game loop - updates state at fixed intervals
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!gameState.started || gameState.gameOver) {
+      if (gameIntervalRef.current) {
+        clearInterval(gameIntervalRef.current);
+        gameIntervalRef.current = undefined;
+      }
       if (gameLoopRef.current) {
         cancelAnimationFrame(gameLoopRef.current);
       }
@@ -127,48 +103,53 @@ export default function FlappyBirdWindow() {
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
-    const gameLoop = () => {
-      // Use refs to get latest state (avoids stale closures)
+    // Game update interval (only when not paused)
+    gameIntervalRef.current = window.setInterval(() => {
+      const currentState = gameStateRef.current;
+      // Don't update game state if paused
+      if (currentState.paused) {
+        return;
+      }
+      const newState = updateGameState(currentState);
+      gameStateRef.current = newState;
+      setGameState(newState);
+    }, GAME_SPEED);
+
+    // Animation loop for drawing
+    const animate = () => {
       const currentState = gameStateRef.current;
       const currentSize = gameSizeRef.current;
-
-      // Update game state
-      const newState = updateGameState(currentState, currentSize);
-
-      // Update ref immediately
-      gameStateRef.current = newState;
-
-      // Update React state (for UI updates outside game loop)
-      setGameState(newState);
-
-      // Draw directly without waiting for React state update
-      // Use ref to get latest high score (avoids stale closures)
       const currentHighScore =
-        newState.score > highScoreRef.current
-          ? newState.score
+        currentState.score > highScoreRef.current
+          ? currentState.score
           : highScoreRef.current;
+
       draw(
         ctx,
         currentSize.width,
         currentSize.height,
-        newState,
+        currentState,
         isDarkTheme,
         currentHighScore
       );
 
-      if (!newState.gameOver) {
-        gameLoopRef.current = requestAnimationFrame(gameLoop);
+      // Continue animation even when paused (to show pause overlay)
+      if (currentState.started && !currentState.gameOver) {
+        gameLoopRef.current = requestAnimationFrame(animate);
       }
     };
 
-    gameLoopRef.current = requestAnimationFrame(gameLoop);
+    gameLoopRef.current = requestAnimationFrame(animate);
 
     return () => {
+      if (gameIntervalRef.current) {
+        clearInterval(gameIntervalRef.current);
+      }
       if (gameLoopRef.current) {
         cancelAnimationFrame(gameLoopRef.current);
       }
     };
-  }, [gameState.started, gameState.gameOver, isDarkTheme]);
+  }, [gameState.started, gameState.gameOver, gameState.paused, isDarkTheme]);
 
   // Rendering effect - draws on canvas whenever state or size changes
   useEffect(() => {
@@ -192,53 +173,95 @@ export default function FlappyBirdWindow() {
     );
   }, [gameState, gameSize, isDarkTheme, highScore]);
 
-  // Handle jump/spacebar
-  const handleJump = useCallback(() => {
-    if (gameState.gameOver) {
-      // Reset game
-      setGameState({
-        birdY: gameSize.height / 2,
-        birdVelocity: 0,
-        pipes: [],
-        score: 0,
-        gameOver: false,
-        started: false,
-      });
+  // Handle direction change (only works during active gameplay)
+  const handleDirectionChange = useCallback((newDirection: Direction) => {
+    const currentState = gameStateRef.current;
+
+    // Only allow direction changes when game is started, not paused, and not over
+    if (!currentState.started || currentState.paused || currentState.gameOver) {
       return;
     }
 
-    if (!gameState.started) {
-      setGameState(prev => ({ ...prev, started: true }));
+    // Update direction if valid
+    if (isValidDirectionChange(currentState.direction, newDirection)) {
+      const newState = {
+        ...gameStateRef.current,
+        nextDirection: newDirection,
+      };
+      setGameState(newState);
+      gameStateRef.current = newState;
+    }
+  }, []);
+
+  // Handle pause/resume toggle and game start
+  const handlePauseToggle = useCallback(() => {
+    const currentState = gameStateRef.current;
+    
+    // If game hasn't started, start it
+    if (!currentState.started) {
+      const newState = { ...currentState, started: true, paused: false };
+      setGameState(newState);
+      gameStateRef.current = newState;
+      return;
     }
 
-    setGameState(prev => ({
-      ...prev,
-      birdVelocity: JUMP_STRENGTH,
-    }));
-  }, [gameState.gameOver, gameState.started, gameSize.height]);
+    // If game is over, restart it
+    if (currentState.gameOver) {
+      const initialState = createInitialState();
+      const newState = { ...initialState, started: true, paused: false };
+      setGameState(newState);
+      gameStateRef.current = newState;
+      return;
+    }
+
+    // Otherwise, toggle pause
+    const newState = {
+      ...currentState,
+      paused: !currentState.paused,
+    };
+    setGameState(newState);
+    gameStateRef.current = newState;
+  }, []);
 
   // Keyboard event listener
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        handleJump();
+      switch (e.key) {
+        case 'ArrowUp':
+          e.preventDefault();
+          handleDirectionChange(Direction.Up);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          handleDirectionChange(Direction.Down);
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          handleDirectionChange(Direction.Left);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          handleDirectionChange(Direction.Right);
+          break;
+        case ' ':
+          e.preventDefault();
+          handlePauseToggle();
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleJump]);
+  }, [handleDirectionChange, handlePauseToggle]);
 
   return (
-    <div className={cn('flappy-bird-window', styles.game)}>
+    <div className={cn('snake-window', styles.game)}>
       <div className={styles.gameContainer}>
         <div
           ref={containerRef}
           className={styles.gameArea}
-          onClick={handleJump}
           style={{ width: '100%', height: '100%' }}
         >
           <canvas

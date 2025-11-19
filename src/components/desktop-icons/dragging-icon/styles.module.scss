@@ -6,7 +6,7 @@
 .draggingIcon {
   position: absolute;
   transition: none; // No transitions - instant snap like real OS
-  z-index: 99; // Above all windows (10-98) but below menu bar (100)
+  z-index: 99; // Above all windows (10-98) but below taskbar (100)
   pointer-events: none; // Don't block interactions
 }
 

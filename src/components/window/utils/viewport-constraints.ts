@@ -2,7 +2,7 @@
  * Helper functions for constraining window positions and sizes to viewport
  */
 
-import { MENU_BAR_HEIGHT } from '@/constants';
+import { TASKBAR_HEIGHT } from '@/constants';
 import type { WindowPosition, WindowSize } from '@/types/window';
 
 const DRAG_TOLERANCE = 100; // Allow dragging off-screen but keep some visible
@@ -15,7 +15,7 @@ export function constrainPositionToViewport(
   size: WindowSize
 ): WindowPosition {
   const minX = -(size.width - DRAG_TOLERANCE);
-  const minY = MENU_BAR_HEIGHT;
+  const minY = TASKBAR_HEIGHT;
   const maxX = window.innerWidth - DRAG_TOLERANCE;
   const maxY = window.innerHeight - DRAG_TOLERANCE;
 
