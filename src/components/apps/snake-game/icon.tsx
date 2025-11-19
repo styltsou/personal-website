@@ -108,14 +108,14 @@ export const SnakeIcon = (): ReactNode => (
       strokeWidth="0.5"
       opacity="0.5"
     />
-    {/* Snake body segments - retro teal */}
+    {/* Snake body segments - using accent color */}
     <rect
       x="14"
       y="30"
       width="6"
       height="6"
-      fill="#4a9b8a"
-      stroke="#2d6d5d"
+      fill="#f09c7c"
+      stroke="#d87a5a"
       strokeWidth="0.5"
       rx="0.5"
     />
@@ -124,8 +124,8 @@ export const SnakeIcon = (): ReactNode => (
       y="30"
       width="6"
       height="6"
-      fill="#4a9b8a"
-      stroke="#2d6d5d"
+      fill="#f09c7c"
+      stroke="#d87a5a"
       strokeWidth="0.5"
       rx="0.5"
     />
@@ -134,19 +134,19 @@ export const SnakeIcon = (): ReactNode => (
       y="30"
       width="6"
       height="6"
-      fill="#4a9b8a"
-      stroke="#2d6d5d"
+      fill="#f09c7c"
+      stroke="#d87a5a"
       strokeWidth="0.5"
       rx="0.5"
     />
-    {/* Snake head - darker teal */}
+    {/* Snake head - darker accent color */}
     <rect
       x="38"
       y="30"
       width="6"
       height="6"
-      fill="#2d6d5d"
-      stroke="#1a4d45"
+      fill="#d87a5a"
+      stroke="#c05a3a"
       strokeWidth="0.5"
       rx="0.5"
     />

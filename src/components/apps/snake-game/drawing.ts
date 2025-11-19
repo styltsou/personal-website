@@ -3,7 +3,6 @@
  */
 
 import type { GameState } from './types';
-import { COLORS } from './constants';
 import { GRID_SIZE } from './constants';
 import { getThemeColors } from './utils/get-theme-colors';
 
@@ -280,7 +279,7 @@ export function draw(
 ) {
   // Get theme colors from CSS variables
   const themeColors = getThemeColors(isDarkTheme);
-  const gameColors = isDarkTheme ? COLORS.dark : COLORS.light;
+  const overlay = 'rgba(0, 0, 0, 0.7)';
 
   // Clear canvas
   ctx.clearRect(0, 0, width, height);
@@ -304,7 +303,7 @@ export function draw(
     themeColors.text,
     themeColors.cardBackground,
     themeColors.cardBorder,
-    gameColors.overlay,
+    overlay,
     highScore
   );
 }
