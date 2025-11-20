@@ -1,7 +1,7 @@
 /**
  * Loading Indicator Component
  * Reusable loading indicator with animated dots
- * Used for content windows, Wikipedia app, and other loading states
+ * Used for content windows and other loading states
  */
 
 import { cn } from '@/utils/cn';

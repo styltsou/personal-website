@@ -55,7 +55,6 @@ export default function Window({ id, isLoading }: WindowProps) {
 
   const title = config.title;
   const isActive = activeWindowId === id;
-  const hideOverflow = id === 'wikipedia';
   const resizable = config.resizable ?? true; // Default to true if not specified
   const minSize = config.minSize ?? getMinWindowSize(); // Default to global minimum if not specified
   // Determine if window is loading (only for content-based windows)
@@ -230,7 +229,7 @@ export default function Window({ id, isLoading }: WindowProps) {
           onClose={() => closeWindow(id)}
         />
         {/* Window Content */}
-        <div className={cn(styles.content, hideOverflow && styles.noOverflow)}>
+        <div className={styles.content}>
           {(() => {
             // Try to get custom component from config first
             if (windowState.config.component) {

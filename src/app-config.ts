@@ -7,7 +7,6 @@ import type { AppConfig } from './types/app';
 
 import CvWindow, { CvIcon } from './components/apps/cv';
 import TerminalWindow, { TerminalIcon } from './components/apps/terminal';
-import WikipediaWindow, { WikipediaIcon } from './components/apps/wikipedia';
 import PianoWindow, { PianoIcon } from './components/apps/piano';
 import SnakeWindow, { SnakeIcon } from './components/apps/snake-game';
 import MusicPlayer, { MusicPlayerIcon } from './components/apps/music-player';
@@ -67,15 +66,6 @@ export const apps: AppConfig[] = [
     component: TerminalWindow,
     desktopIcon: {
       icon: TerminalIcon,
-    },
-  },
-  {
-    type: 'app',
-    id: 'wikipedia',
-    title: 'Wikipedia',
-    component: WikipediaWindow,
-    desktopIcon: {
-      icon: WikipediaIcon,
     },
   },
   {
