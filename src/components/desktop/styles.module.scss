@@ -7,21 +7,7 @@
 
 .desktop {
   background-color: var(--bg);
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      var(--desktop-pattern) 2px,
-      var(--desktop-pattern) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      var(--desktop-pattern) 2px,
-      var(--desktop-pattern) 4px
-    );
+  // Background pattern is applied via inline styles from settings
   min-height: 100vh;
   width: 100%;
   padding-top: 32px; /* Space for taskbar */

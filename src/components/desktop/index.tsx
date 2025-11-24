@@ -14,18 +14,30 @@ import { useStore } from '@/store';
 import { useWindowContent } from '@/hooks/use-window-content';
 import { useWindowPersistence } from '@/hooks/use-window-persistence';
 import { useIconPersistence } from '@/hooks/use-icon-persistence';
+import { useSettingsPersistence } from '@/hooks/use-settings-persistence';
 import { useURLSync } from '@/hooks/use-url-sync';
+import { BACKGROUND_PATTERNS } from '@/utils/settings';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
 
 export default function Desktop() {
   const { loadWindowContent, isLoading } = useWindowContent();
+  const settings = useStore(state => state.settings);
 
   // Zustand store - clean and simple!
   const windows = useStore(state => state.windows);
   const hasLoadedFromPersistence = useStore(
     state => state.hasLoadedFromPersistence
   );
+
+  // Get background pattern CSS
+  const backgroundPattern = BACKGROUND_PATTERNS.find(
+    p => p.id === settings.backgroundPattern
+  ) || BACKGROUND_PATTERNS[0];
+
+  // Determine background size based on pattern type
+  const backgroundSize =
+    backgroundPattern.id === 'dots' ? '12px 12px' : 'auto';
 
   // Only need updateWindowContent for content loading
   const updateWindowContent = useStore(state => state.updateWindowContent);
@@ -36,6 +48,7 @@ export default function Desktop() {
   // Handle persistence
   useWindowPersistence();
   useIconPersistence();
+  useSettingsPersistence();
 
   // Load content for newly opened windows (skip windows with custom components - those with empty path)
   useEffect(() => {
@@ -67,6 +80,10 @@ export default function Desktop() {
           styles.desktop,
           hasLoadedFromPersistence && styles.loaded
         )}
+        style={{
+          backgroundImage: backgroundPattern.cssValue,
+          backgroundSize: backgroundSize,
+        }}
       >
         <Taskbar />
         <DesktopIcons />

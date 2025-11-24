@@ -2,7 +2,6 @@
  * SeekBar Component Styles
  */
 
-@use 'sass:color';
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
@@ -20,25 +19,23 @@
   overflow: visible;
   display: flex;
   align-items: center;
-  padding: 0 9px; // Account for thumb width so it aligns at 0%
-  margin: 0 -9px; // Compensate for padding to maintain width
 
   &.buffering {
     .stripesOverlay {
       position: absolute;
-      top: 0;
+      top: 50%;
       left: 0;
-      width: 100%;
+      right: 0;
       height: 8px;
+      transform: translateY(-50%);
       // Use accent color for one stripe, darker less vibrant for the other
-      $accent-color: #f09c7c; // --accent value (orange)
-      $darker-color: color.adjust($accent-color, $lightness: -15%, $saturation: -20%);
+      // Using CSS color-mix() for runtime color manipulation (supports dynamic accent color)
       background: repeating-linear-gradient(
         -45deg,
-        $accent-color 0px,
-        $accent-color 10px,
-        $darker-color 10px,
-        $darker-color 20px
+        var(--accent) 0px,
+        var(--accent) 10px,
+        color-mix(in srgb, var(--accent) 85%, black) 10px,
+        color-mix(in srgb, var(--accent) 85%, black) 20px
       );
       background-size: 28px 28px;
       animation: loading-stripes 1s linear infinite;
@@ -52,17 +49,16 @@
   }
 }
 
-// Dark theme variant for loading stripes
+// Dark theme variant for loading stripes (darker variant for better contrast)
 :global(.dark-theme) {
   .sliderWrapper.buffering .stripesOverlay {
-    $accent-color: #f09c7c; // --accent value (orange)
-    $darker-color: color.adjust($accent-color, $lightness: -25%, $saturation: -20%);
+    // Darker variant for dark theme using CSS color-mix()
     background: repeating-linear-gradient(
       -45deg,
-      $accent-color 0px,
-      $accent-color 10px,
-      $darker-color 10px,
-      $darker-color 20px
+      var(--accent) 0px,
+      var(--accent) 10px,
+      color-mix(in srgb, var(--accent) 75%, black) 10px,
+      color-mix(in srgb, var(--accent) 75%, black) 20px
     );
   }
 }
@@ -78,120 +74,64 @@
 }
 
 .slider {
+  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
+  height: 8px;
+  touch-action: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.track {
+  position: relative;
+  flex: 1;
   height: 8px;
   background-color: var(--button-bg);
   @include inset-3d;
   border-radius: 4px;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  padding: 0;
+  overflow: hidden;
+}
+
+.range {
+  position: absolute;
+  height: 100%;
+  background-color: var(--accent);
+  border-radius: 4px;
+  width: var(--progress, 0%);
+}
+
+.thumb {
   display: block;
+  width: 18px;
+  height: 18px;
+  background-color: var(--accent);
+  @include outset-3d;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  outline: none;
 
-  &.buffering {
-    position: relative;
-    background-color: transparent;
+  &:hover {
+    transform: scale(1.1);
   }
 
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    background-color: var(--accent);
-    @include outset-3d;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    margin-top: -5px;
-    border: 1px solid var(--accent);
-    position: relative;
-
-    &:hover {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      opacity: 0.9;
-      transform: scale(1.1);
-    }
-
-    &:active {
-      @include inset-3d;
-      transform: scale(0.95);
-    }
-  }
-
-  &::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    background-color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.15s ease;
-
-    &:hover {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      opacity: 0.9;
-      transform: scale(1.1);
-    }
-
-    &:active {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      opacity: 0.9;
-      transform: scale(0.95);
-    }
-  }
-
-  &::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 8px;
-    background: linear-gradient(to right,
-        var(--accent) 0%,
-        var(--accent) var(--progress, 0%),
-        var(--button-bg) var(--progress, 0%),
-        var(--button-bg) 100%);
+  &:active {
     @include inset-3d;
-    border-radius: 4px;
-    margin: 0;
-    padding: 0;
+    transform: scale(0.95);
   }
 
-  &::-moz-range-track {
-    width: 100%;
-    height: 8px;
-    background: linear-gradient(to right,
-        var(--accent) 0%,
-        var(--accent) var(--progress, 0%),
-        var(--button-bg) var(--progress, 0%),
-        var(--button-bg) 100%);
-    border-radius: 4px;
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
+}
 
-  &.buffering {
-    &::-webkit-slider-runnable-track {
-      background: linear-gradient(to right,
-          var(--accent) 0%,
-          var(--accent) var(--progress, 0%),
-          transparent var(--progress, 0%),
-          transparent 100%);
-    }
-
-    &::-moz-range-track {
-      background: linear-gradient(to right,
-          var(--accent) 0%,
-          var(--accent) var(--progress, 0%),
-          transparent var(--progress, 0%),
-          transparent 100%);
-    }
-  }
-
+.sliderWrapper.buffering .track {
+  background-color: transparent;
 }
 
 @keyframes loading-stripes {

@@ -10,21 +10,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--bg);
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      var(--desktop-pattern) 2px,
-      var(--desktop-pattern) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      var(--desktop-pattern) 2px,
-      var(--desktop-pattern) 4px
-    );
+  // Background pattern is applied via inline styles from settings
   display: flex;
   align-items: center;
   justify-content: center;

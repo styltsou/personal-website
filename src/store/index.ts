@@ -1,24 +1,26 @@
 /**
  * Combined Zustand store using slices pattern
- * Manages both window and icon state in a single store
  */
 
 import { create } from 'zustand';
-import { createWindowSlice } from './window/slice';
-import { createIconSlice } from './icon/slice';
+
 import type { WindowSlice } from './window/types';
 import type { IconSlice } from './icon/types';
+import type { SettingsSlice } from './settings/types';
 
-// Combined Store Type
-export type Store = WindowSlice & IconSlice;
+import { createWindowSlice } from './window/slice';
+import { createIconSlice } from './icon/slice';
+import { createSettingsSlice } from './settings/slice';
 
-// Create combined store
-export const useStore = create<Store>((set, get) => ({
-  ...createWindowSlice(set, get),
-  ...createIconSlice(set, get),
+export type Store = WindowSlice & IconSlice & SettingsSlice;
+
+export const useStore = create<Store>((...args) => ({
+  ...createWindowSlice(...args),
+  ...createIconSlice(...args),
+  ...createSettingsSlice(...args),
 }));
 
-// Window Selectors (for backward compatibility)
+// TODO: Need to remove this backward compatibility bloat
 export const useWindows = () => useStore(state => state.windows);
 export const useActiveWindowId = () => useStore(state => state.activeWindowId);
 export const useWindowActions = () =>
@@ -35,8 +37,6 @@ export const useWindowActions = () =>
     unsnapWindow: state.unsnapWindow,
     closeAllWindows: state.closeAllWindows,
   }));
-
-// Icon Selectors (for backward compatibility)
 export const useIconStates = () => useStore(state => state.iconStates);
 export const useSelectedIconId = () => useStore(state => state.selectedIconId);
 export const useIconActions = () =>

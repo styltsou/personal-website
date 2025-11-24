@@ -24,6 +24,8 @@ import type { WindowSlice } from './types';
 import type { Store } from '../index';
 import type { StateCreator } from 'zustand';
 
+// TODO: The following lines of code up until the store creation look weird na bloated, i need to check on them
+
 // Check if we should initialize from persistence synchronously (only on client)
 let initialHasLoadedFromPersistence = false;
 if (typeof window !== 'undefined') {
@@ -153,14 +155,12 @@ export const createWindowSlice: StateCreator<Store, [], [], WindowSlice> = (
   set,
   get
 ) => ({
-  // Initial state
   windows: [],
   closedWindows: {},
   activeWindowId: null,
   nextZIndex: BASE_Z_INDEX,
   hasLoadedFromPersistence: initialHasLoadedFromPersistence,
 
-  // Open a window
   openWindow: (windowId: string) => {
     const config = apps.find(w => w.id === windowId && w.type === 'app');
     if (!config) return;
@@ -205,6 +205,7 @@ export const createWindowSlice: StateCreator<Store, [], [], WindowSlice> = (
   },
 
   // Close a window - save its state before closing
+  // TODO: Something tells me that this closedWindowState is dogshit state architecture
   closeWindow: (windowId: string) => {
     set(state => {
       const windowToClose = state.windows.find(
@@ -246,6 +247,7 @@ export const createWindowSlice: StateCreator<Store, [], [], WindowSlice> = (
   },
 
   // Maximize/Restore a window
+  // TODO: Maybe rename this to maximizeOrRestoreWindow
   maximizeWindow: (windowId: string) => {
     set((state: Store) => {
       const maxZIndex = getMaxZIndex(state.windows);

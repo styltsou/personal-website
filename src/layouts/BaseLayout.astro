@@ -56,33 +56,86 @@ const canonicalURL = new URL(
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL.toString()} />
 
-    <!-- Initialize theme before React renders to prevent flash -->
+    <!-- Initialize settings before React renders to prevent flash -->
     <script define:inline>
       (function () {
-        const THEME_STORAGE_KEY = 'retro-theme-preference';
+        const SETTINGS_STORAGE_KEY = 'retro-settings';
 
-        // Check localStorage first
-        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-        let shouldBeDark = false;
+        // Accent color definitions with light and dark variants
+        const accentColors = {
+          peach: { light: '#ff9f7f', dark: '#ffbf9f' },
+          coral: { light: '#d85a5a', dark: '#ff8a8a' },
+          sky: { light: '#5a9fff', dark: '#8fc5ff' },
+          mint: { light: '#4aaf6a', dark: '#9fffbf' },
+          lavender: { light: '#9f7fff', dark: '#c4aaff' },
+          rose: { light: '#ff7f9f', dark: '#ffb3cf' },
+          butter: { light: '#ffbf5a', dark: '#ffdf9f' },
+          turquoise: { light: '#5fcfdf', dark: '#9fefef' },
+        };
 
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          // Use saved preference
-          shouldBeDark = savedTheme === 'dark';
-        } else {
-          // No saved preference, use system preference
-          if (typeof window !== 'undefined' && window.matchMedia) {
-            shouldBeDark = window.matchMedia(
-              '(prefers-color-scheme: dark)'
-            ).matches;
+        // Default settings
+        const defaultSettings = {
+          theme: 'light',
+          accentColorId: 'peach',
+          backgroundPattern: 'grid',
+        };
+
+        // Load settings from localStorage
+        let settings = defaultSettings;
+        try {
+          const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            settings = { ...defaultSettings, ...parsed };
+          } else {
+            // No saved preference, use system preference
+            if (window.matchMedia) {
+              settings.theme = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+              ).matches
+                ? 'dark'
+                : 'light';
+            }
           }
+        } catch (error) {
+          console.warn('Failed to load settings:', error);
         }
 
-        // Apply theme class immediately (before React renders)
-        if (shouldBeDark) {
+        // Apply theme class
+        if (settings.theme === 'dark') {
           document.documentElement.classList.add('dark-theme');
         } else {
           document.documentElement.classList.remove('dark-theme');
         }
+
+        // Calculate relative luminance of a color (for contrast calculation)
+        function getLuminance(hex) {
+          const cleanHex = hex.replace('#', '');
+          const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
+          const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
+          const b = parseInt(cleanHex.substr(4, 2), 16) / 255;
+          const toLinear = (c) => {
+            return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+          };
+          return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+        }
+
+        // Get appropriate text color for accent background
+        function getAccentTextColor(accentColor) {
+          const luminance = getLuminance(accentColor);
+          return luminance > 0.5 ? '#2a2a2a' : '#ffffff';
+        }
+
+        // Apply accent color based on current theme
+        const accentColorId = settings.accentColorId || defaultSettings.accentColorId;
+        const accentColor = accentColors[accentColorId] 
+          ? (settings.theme === 'dark' ? accentColors[accentColorId].dark : accentColors[accentColorId].light)
+          : accentColors.peach.light;
+        document.documentElement.style.setProperty('--accent', accentColor);
+        
+        // Apply appropriate text color for accent background based on contrast
+        const accentTextColor = getAccentTextColor(accentColor);
+        document.documentElement.style.setProperty('--titlebar-text', accentTextColor);
       })();
     </script>
 

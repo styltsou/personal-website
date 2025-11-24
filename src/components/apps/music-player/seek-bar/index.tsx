@@ -3,6 +3,7 @@
  * Progress bar with time display and seek functionality
  */
 
+import * as Slider from '@radix-ui/react-slider';
 import styles from './seek-bar.module.scss';
 
 interface SeekBarProps {
@@ -32,18 +33,13 @@ export default function SeekBar({
   const percentage = safeDuration > 0 ? (currentTime / safeDuration) * 100 : 0;
   const safeCurrentTime = Math.min(currentTime, safeDuration);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+  const handleValueChange = (values: number[]) => {
+    const value = values[0];
     // Only seek if duration is valid
     if (duration > 0) {
       onSeek(value);
     }
   };
-
-  // Debug: log buffering state
-  if (isBuffering) {
-    console.log('SeekBar: isBuffering = true');
-  }
 
   return (
     <div className={styles.container}>
@@ -51,18 +47,24 @@ export default function SeekBar({
       <div
         className={`${styles.sliderWrapper} ${isBuffering ? styles.buffering : ''}`}
       >
-        <input
-          type="range"
-          min="0"
+        <Slider.Root
+          className={styles.slider}
+          min={0}
           max={safeDuration}
-          step="0.1"
-          value={safeCurrentTime}
-          onChange={handleChange}
-          className={`${styles.slider} ${isBuffering ? styles.buffering : ''}`}
-          style={{ '--progress': `${percentage}%` } as React.CSSProperties}
-          aria-label="Seek through track"
+          step={0.1}
+          value={[safeCurrentTime]}
+          onValueChange={handleValueChange}
           disabled={duration <= 0}
-        />
+          style={{ '--progress': `${percentage}%` } as React.CSSProperties}
+        >
+          <Slider.Track className={styles.track}>
+            <Slider.Range className={styles.range} />
+          </Slider.Track>
+          <Slider.Thumb
+            className={styles.thumb}
+            aria-label="Seek through track"
+          />
+        </Slider.Root>
         {isBuffering && (
           <div
             className={styles.stripesOverlay}

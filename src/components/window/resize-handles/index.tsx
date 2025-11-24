@@ -9,86 +9,62 @@ import styles from './styles.module.scss';
 
 export interface ResizeHandlesProps {
   onResizeStart: (e: React.MouseEvent, handle: string) => void;
-  resizable?: boolean; // Whether window can be resized (default: true)
 }
 
-export default function ResizeHandles({
-  onResizeStart,
-  resizable = true,
-}: ResizeHandlesProps) {
-  // Don't render any handles if resizing is disabled
-  if (!resizable) {
-    return null;
-  }
-
-  // Check if an icon is being dragged
-  const draggingIconId = useStore(state => state.draggingIconId);
-  const isIconDragging = draggingIconId !== null;
-
+export default function ResizeHandles({ onResizeStart }: ResizeHandlesProps) {
   // When dragging an icon, use grabbing cursor instead of resize cursors
-  const getCursor = (resizeCursor: string) => {
-    if (isIconDragging) {
-      return 'grabbing'; // Icon is being dragged, show grabbing cursor
-    }
-    return resizeCursor; // Normal resize cursor
-  };
+  // TODO: Here instead of chekcing to change the grab cursor, we can put
+  // that a level higher on the conditional rendering (and maybe we dont even need that)
+  const draggingIconId = useStore(s => s.draggingIconId);
+  const getCursor = (resizeCursor: string) =>
+    !draggingIconId ? 'grabbing' : resizeCursor;
 
-  // Show all handles when resizable is true
-  const showCornerHandles = true;
-  const showEdgeHandles = true;
+  // TODO: See if I can place resize logic directly here and not as a callback
 
   return (
     <>
-      {/* Corner handles - always shown */}
-      {showCornerHandles && (
-        <>
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleNw)}
-            onMouseDown={e => onResizeStart(e, 'nw')}
-            style={{ cursor: getCursor('nwse-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleNe)}
-            onMouseDown={e => onResizeStart(e, 'ne')}
-            style={{ cursor: getCursor('nesw-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleSw)}
-            onMouseDown={e => onResizeStart(e, 'sw')}
-            style={{ cursor: getCursor('nesw-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleSe)}
-            onMouseDown={e => onResizeStart(e, 'se')}
-            style={{ cursor: getCursor('nwse-resize') }}
-          />
-        </>
-      )}
-      {/* Edge handles - hidden when constraint is 'diagonal' */}
-      {showEdgeHandles && (
-        <>
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleN)}
-            onMouseDown={e => onResizeStart(e, 'n')}
-            style={{ cursor: getCursor('ns-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleS)}
-            onMouseDown={e => onResizeStart(e, 's')}
-            style={{ cursor: getCursor('ns-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleW)}
-            onMouseDown={e => onResizeStart(e, 'w')}
-            style={{ cursor: getCursor('ew-resize') }}
-          />
-          <div
-            className={cn(styles.resizeHandle, styles.resizeHandleE)}
-            onMouseDown={e => onResizeStart(e, 'e')}
-            style={{ cursor: getCursor('ew-resize') }}
-          />
-        </>
-      )}
+      {/* Corner handles */}
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleNw)}
+        onMouseDown={e => onResizeStart(e, 'nw')}
+        style={{ cursor: getCursor('nwse-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleNe)}
+        onMouseDown={e => onResizeStart(e, 'ne')}
+        style={{ cursor: getCursor('nesw-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleSw)}
+        onMouseDown={e => onResizeStart(e, 'sw')}
+        style={{ cursor: getCursor('nesw-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleSe)}
+        onMouseDown={e => onResizeStart(e, 'se')}
+        style={{ cursor: getCursor('nwse-resize') }}
+      />
+      {/* Edge handles */}
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleN)}
+        onMouseDown={e => onResizeStart(e, 'n')}
+        style={{ cursor: getCursor('ns-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleS)}
+        onMouseDown={e => onResizeStart(e, 's')}
+        style={{ cursor: getCursor('ns-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleW)}
+        onMouseDown={e => onResizeStart(e, 'w')}
+        style={{ cursor: getCursor('ew-resize') }}
+      />
+      <div
+        className={cn(styles.resizeHandle, styles.resizeHandleE)}
+        onMouseDown={e => onResizeStart(e, 'e')}
+        style={{ cursor: getCursor('ew-resize') }}
+      />
     </>
   );
 }

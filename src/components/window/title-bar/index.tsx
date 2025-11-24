@@ -5,38 +5,32 @@
 
 import React from 'react';
 import { cn } from '@/utils/cn';
-import WindowControls from './window-controls';
+import { useStore } from '@/store';
 import styles from './styles.module.scss';
 
 export interface TitleBarProps {
   id: string;
   title: string;
-  isMaximized: boolean;
-  // position: { x: number; y: number };
   isDragging?: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  onMinimize?: () => void;
-  onMaximize?: () => void;
-  onClose?: () => void;
-  // onFocus?: () => void;
-  // onPositionChange?: (position: { x: number; y: number }) => void;
 }
 
 export default function TitleBar({
   id,
   title,
-  isMaximized,
-  // position,
   isDragging = false,
   onMouseDown,
-  onKeyDown,
-  onMinimize,
-  onMaximize,
-  onClose,
-  // onFocus,
-  // onPositionChange,
 }: TitleBarProps) {
+  // Get window state and actions directly from store
+  const windowState = useStore(state =>
+    state.windows.find(window => window.id === id)
+  );
+  const isMaximized = windowState?.isMaximized ?? false;
+  const closeWindow = useStore(state => state.closeWindow);
+  const minimizeWindow = useStore(state => state.minimizeWindow);
+  const maximizeWindow = useStore(state => state.maximizeWindow);
+  const focusWindow = useStore(state => state.focusWindow);
+
   const handleDoubleClick = (e: React.MouseEvent) => {
     // Don't maximize/restore if clicking on buttons
     const target = e.target as HTMLElement;
@@ -45,8 +39,16 @@ export default function TitleBar({
     }
 
     // Toggle maximize/restore
-    if (onMaximize) {
-      onMaximize();
+    maximizeWindow(id);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      focusWindow(id);
+    }
+    if (e.key === 'Escape') {
+      closeWindow(id);
     }
   };
 
@@ -55,7 +57,7 @@ export default function TitleBar({
       className={cn('titlebar', styles.titleBar, isDragging && styles.dragging)}
       onMouseDown={onMouseDown}
       onDoubleClick={handleDoubleClick}
-      onKeyDown={onKeyDown}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
       aria-label={`${title} window title bar`}
@@ -63,13 +65,48 @@ export default function TitleBar({
       <span id={`window-title-${id}`} className={styles.titleBarText}>
         {title}
       </span>
-      <WindowControls
-        title={title}
-        isMaximized={isMaximized}
-        onMinimize={onMinimize}
-        onMaximize={onMaximize}
-        onClose={onClose}
-      />
+      <div
+        className={cn('titlebar-controls', styles.titleBarControls)}
+        onClick={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
+      >
+        {/* Minimize Button */}
+        <button
+          type="button"
+          className={styles.windowControl}
+          onClick={e => {
+            e.stopPropagation();
+            minimizeWindow(id);
+          }}
+          aria-label={`Minimize ${title} window`}
+        >
+          _
+        </button>
+        {/* Maximize/Restore Button */}
+        <button
+          type="button"
+          className={styles.windowControl}
+          onClick={e => {
+            e.stopPropagation();
+            maximizeWindow(id);
+          }}
+          aria-label={`${isMaximized ? 'Restore' : 'Maximize'} ${title} window`}
+        >
+          {isMaximized ? '❐' : '□'}
+        </button>
+        {/* Close Button */}
+        <button
+          type="button"
+          className={styles.windowControl}
+          onClick={e => {
+            e.stopPropagation();
+            closeWindow(id);
+          }}
+          aria-label={`Close ${title} window`}
+        >
+          ×
+        </button>
+      </div>
     </div>
   );
 }

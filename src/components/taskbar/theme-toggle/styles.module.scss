@@ -30,5 +30,7 @@
   &:active {
     @include inset-3d;
   }
+
+  @include focus-ring;
 }
 

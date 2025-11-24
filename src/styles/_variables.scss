@@ -1,6 +1,12 @@
 /**
- * CSS Variables for 80s Nostalgic Theme
- * Light and Dark theme variables
+ * Theme Variables for 80s Nostalgic Theme
+ * 
+ * All colors are defined as CSS variables to support:
+ * - Runtime theme switching (light/dark)
+ * - Dynamic accent color selection (future feature)
+ * 
+ * Color manipulation is done with CSS color-mix() instead of SCSS functions
+ * to maintain runtime flexibility.
  */
 
 /* Light Theme */
@@ -8,7 +14,7 @@
   /* Background Colors - Warm Beige/Tan */
   --bg: #eaddcf;
   --window-bg: #f8f5ed;
-  --desktop-pattern: rgba(0, 0, 0, 0.02);
+  --desktop-pattern: rgba(0, 0, 0, 0.025);
 
   /* Border Colors - Softer, Warmer */
   --window-border-light: #ffffff;
@@ -30,6 +36,7 @@
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
+  /* Can be changed dynamically at runtime for accent color selection */
   /* Previous blue accent: #7da3d1 */
   --accent: #f09c7c;
   --titlebar-text: #ffffff;
@@ -45,7 +52,7 @@
   /* Background Colors - Very Dark Gray */
   --bg: #0f0f0f;
   --window-bg: #1a1a1a;
-  --desktop-pattern: rgba(255, 255, 255, 0.02);
+  --desktop-pattern: rgba(255, 255, 255, 0.04);
 
   /* Border Colors - Darker Gray */
   --window-border-light: #2a2a2a;
@@ -67,7 +74,7 @@
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
-  /* Previous blue accent: #7da3d1 */
+  /* Can be changed dynamically at runtime for accent color selection */
   --accent: #f09c7c;
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.5);

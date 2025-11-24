@@ -30,10 +30,8 @@ export default function Window({ id, isLoading }: WindowProps) {
   const activeWindowId = useStore(state => state.activeWindowId);
 
   // Get actions from store
-  const closeWindow = useStore(state => state.closeWindow);
-  const minimizeWindow = useStore(state => state.minimizeWindow);
-  const maximizeWindow = useStore(state => state.maximizeWindow);
   const focusWindow = useStore(state => state.focusWindow);
+  const maximizeWindow = useStore(state => state.maximizeWindow);
   const updateWindowPosition = useStore(state => state.updateWindowPosition);
   const updateWindowSize = useStore(state => state.updateWindowSize);
   const snapWindow = useStore(state => state.snapWindow);
@@ -113,17 +111,6 @@ export default function Window({ id, isLoading }: WindowProps) {
   const handleWindowClick = () => {
     deselectIcons();
     focusWindow(id);
-  };
-
-  // Handle keyboard accessibility for title bar
-  const handleTitleBarKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      focusWindow(id);
-    }
-    if (e.key === 'Escape') {
-      closeWindow(id);
-    }
   };
 
   // Calculate window size and position
@@ -220,17 +207,17 @@ export default function Window({ id, isLoading }: WindowProps) {
         <TitleBar
           id={id}
           title={title}
-          isMaximized={isMaximized}
           isDragging={isDragging}
           onMouseDown={handleMouseDown}
-          onKeyDown={handleTitleBarKeyDown}
-          onMinimize={() => minimizeWindow(id)}
-          onMaximize={() => maximizeWindow(id)}
-          onClose={() => closeWindow(id)}
         />
         {/* Window Content */}
         <div className={styles.content}>
           {(() => {
+            // Show loading message while loading
+            if (isWindowLoading) {
+              return <Loading />;
+            }
+
             // Try to get custom component from config first
             if (windowState.config.component) {
               return React.createElement(
@@ -249,11 +236,6 @@ export default function Window({ id, isLoading }: WindowProps) {
               );
             }
 
-            // Show loading message while loading
-            if (isWindowLoading) {
-              return <Loading />;
-            }
-
             // Show no content message if not loading
             return (
               <div className={styles.noContent}>
@@ -263,11 +245,8 @@ export default function Window({ id, isLoading }: WindowProps) {
           })()}
         </div>
         {/* Resize Handles - only show when not maximized */}
-        {!isMaximized && (
-          <ResizeHandles
-            onResizeStart={handleResizeStart}
-            resizable={resizable}
-          />
+        {resizable && !isMaximized && (
+          <ResizeHandles onResizeStart={handleResizeStart} />
         )}
       </div>
     </>

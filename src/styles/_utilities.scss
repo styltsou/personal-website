@@ -5,9 +5,3 @@
 
 @use './variables' as *;
 
-/* Focus Ring for Accessibility */
-.focus-ring:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-

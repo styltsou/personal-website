@@ -61,58 +61,10 @@
   background-color: color-mix(in srgb, #{$color} $opacity, transparent);
 }
 
-/**
- * Loading stripes pattern mixin
- * Creates an animated diagonal stripe pattern for loading indicators
- * 
- * @param $base-color - Base color for stripes (default: accent color)
- * @param $stripe-width - Width of each stripe in pixels (default: 10px)
- * @param $background-size - Size of the repeating pattern (default: 28px)
- * @param $angle - Angle of the stripes in degrees (default: -45deg)
- * @param $animation-duration - Duration of the animation (default: 1s)
- * @param $lightness-light-1 - First lightness adjustment for light theme (default: +20%)
- * @param $lightness-light-2 - Second lightness adjustment for light theme (default: +30%)
- * @param $lightness-dark-1 - First lightness adjustment for dark theme (default: -10%)
- * @param $lightness-dark-2 - Second lightness adjustment for dark theme (default: -20%)
- */
-@mixin loading-stripes(
-  $base-color: #f09c7c,
-  $stripe-width: 10px,
-  $background-size: 28px,
-  $angle: -45deg,
-  $animation-duration: 1s,
-  $lightness-light-1: 20%,
-  $lightness-light-2: 30%,
-  $lightness-dark-1: -10%,
-  $lightness-dark-2: -20%
-) {
-  $light-color-1: color.adjust($base-color, $lightness: $lightness-light-1);
-  $light-color-2: color.adjust($base-color, $lightness: $lightness-light-2);
-  
-  background: repeating-linear-gradient(
-    $angle,
-    $light-color-1 0px,
-    $light-color-1 $stripe-width,
-    $light-color-2 $stripe-width,
-    $light-color-2 calc($stripe-width * 2)
-  );
-  background-size: $background-size $background-size;
-  animation: loading-stripes $animation-duration linear infinite;
-  // Note: Animation moves by 28px by default. For different sizes, 
-  // override animation or use a custom keyframe
-  
-  // Dark theme variant
-  :global(.dark-theme) & {
-    $dark-color-1: color.adjust($base-color, $lightness: $lightness-dark-1);
-    $dark-color-2: color.adjust($base-color, $lightness: $lightness-dark-2);
-    
-    background: repeating-linear-gradient(
-      $angle,
-      $dark-color-1 0px,
-      $dark-color-1 $stripe-width,
-      $dark-color-2 $stripe-width,
-      $dark-color-2 calc($stripe-width * 2)
-    );
+@mixin focus-ring($outline-width: 2px, $outline-offset: 2px, $color: var(--accent)) {
+  &:focus-visible {
+    outline: $outline-width solid $color;
+    outline-offset: $outline-offset;
   }
 }
 

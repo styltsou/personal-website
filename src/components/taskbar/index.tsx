@@ -1,11 +1,11 @@
 /**
  * Taskbar Component
- * Top system taskbar with window buttons, clock, date, and theme toggle
+ * Top system taskbar with window buttons, clock, date, and settings
  */
 
 import { useState, useEffect, useMemo } from 'react';
 
-import ThemeToggle from './theme-toggle';
+import Settings from './settings';
 
 import { apps } from '@/app-config';
 import { useStore } from '@/store';
@@ -42,7 +42,6 @@ export default function Taskbar() {
   const getButtonClasses = (state: ReturnType<typeof getWindowButtonState>) => {
     return cn(
       styles.taskbarButton,
-      'focus-ring',
       state.isOpen && styles.taskbarButtonOpen,
       state.exists && state.isMinimized && styles.taskbarButtonMinimized,
       state.isActive && styles.taskbarButtonFocused,
@@ -188,7 +187,7 @@ export default function Taskbar() {
           <span className={styles.taskbarDate}>{formatDate(currentTime)}</span>
           <span className={styles.taskbarClock}>{formatTime(currentTime)}</span>
         </div>
-        <ThemeToggle />
+        <Settings />
       </div>
     </div>
   );

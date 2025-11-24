@@ -1,6 +1,5 @@
 /**
- * Virtual E-Piano Window Component (Demo Version)
- * Minimal demo version with link to full standalone app
+ * Virtual E-Piano Window Component
  */
 
 export { PianoIcon } from './icon';
@@ -12,9 +11,6 @@ import { useStore } from '@/store';
 import PianoKeyboard from './piano-keyboard';
 import { cn } from '@/utils/cn';
 import styles from './styles.module.scss';
-
-// TODO: Update this URL when you deploy the full version
-const FULL_VERSION_URL = 'https://virtual-piano.styltsou.dev'; // Placeholder - update with actual URL
 
 export default function PianoWindow() {
   const [pressedNotes, setPressedNotes] = useState<Set<string>>(new Set());
@@ -125,21 +121,6 @@ export default function PianoWindow() {
 
   return (
     <div className={cn('piano-window', styles.container)}>
-      {/* Demo Banner */}
-      <div className={styles.demoBanner}>
-        <div className={styles.demoBannerContent}>
-          <span className={styles.demoLabel}>DEMO VERSION</span>
-          <a
-            href={FULL_VERSION_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.fullVersionLink}
-          >
-            Open Full Version
-          </a>
-        </div>
-      </div>
-
       <div className={styles.content}>
         {/* Piano Keyboard */}
         <div className={styles.keyboardSection}>
@@ -174,19 +155,8 @@ export default function PianoWindow() {
       {/* Instructions */}
       <div className={styles.instructions}>
         <p className={styles.instructionText}>
-          <strong>Demo:</strong> Click keys or use keyboard:
+          Click keys or use keyboard:
           A-S-D-F-G-H-J-K-L-;-' (white), W-E-T-Y-U-I-O (black)
-        </p>
-        <p className={styles.instructionText}>
-          <a
-            href={FULL_VERSION_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.link}
-          >
-            Try the full version with MIDI support, multiple octaves, and more
-            features →
-          </a>
         </p>
       </div>
     </div>
