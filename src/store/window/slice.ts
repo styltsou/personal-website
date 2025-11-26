@@ -2,8 +2,7 @@
  * Window Slice Implementation
  */
 
-import { apps } from '@/app-config';
-import { getAppForFile } from '@/config/file-associations';
+import { apps, getAppForFile } from '@/app-config';
 import { BASE_Z_INDEX } from '@/constants';
 import {
   calculateCenteredPosition,

@@ -3,209 +3,233 @@ import '../styles/index.scss';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
 interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
+	title?: string;
+	description?: string;
+	image?: string;
 }
 
 const {
-  title = 'Portfolio Website',
-  description = 'A retro 90s-themed portfolio website',
-  image = '/favicon.svg',
+	title = 'Portfolio Website',
+	description = 'A retro 90s-themed portfolio website',
+	image = '/favicon.svg',
 } = Astro.props;
 
 const canonicalURL = new URL(
-  Astro.url.pathname,
-  Astro.site || Astro.url.origin
+	Astro.url.pathname,
+	Astro.site || Astro.url.origin
 );
 ---
 
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+		<meta name='generator' content={Astro.generator} />
 
-    <!-- Primary Meta Tags -->
-    <title>{title}</title>
-    <meta name="title" content={title} />
-    <meta name="description" content={description} />
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name='title' content={title} />
+		<meta name='description' content={description} />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL.toString()} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta
-      property="og:image"
-      content={new URL(image, canonicalURL).toString()}
-    />
+		<!-- Open Graph / Facebook -->
+		<meta property='og:type' content='website' />
+		<meta property='og:url' content={canonicalURL.toString()} />
+		<meta property='og:title' content={title} />
+		<meta property='og:description' content={description} />
+		<meta
+			property='og:image'
+			content={new URL(image, canonicalURL).toString()}
+		/>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL.toString()} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta
-      property="twitter:image"
-      content={new URL(image, canonicalURL).toString()}
-    />
+		<!-- Twitter -->
+		<meta property='twitter:card' content='summary_large_image' />
+		<meta property='twitter:url' content={canonicalURL.toString()} />
+		<meta property='twitter:title' content={title} />
+		<meta property='twitter:description' content={description} />
+		<meta
+			property='twitter:image'
+			content={new URL(image, canonicalURL).toString()}
+		/>
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href={canonicalURL.toString()} />
+		<!-- Canonical URL -->
+		<link rel='canonical' href={canonicalURL.toString()} />
 
-    <!-- Initialize settings before React renders to prevent flash -->
-    <script define:inline>
-      (function () {
-        const SETTINGS_STORAGE_KEY = 'retro-settings';
+		<!-- Initialize settings before React renders to prevent flash -->
+		<script define:inline>
+			(function () {
+				const SETTINGS_STORAGE_KEY = 'retro-settings';
 
-        // Accent color definitions with light and dark variants
-        const accentColors = {
-          peach: { light: '#ff9f7f', dark: '#ffbf9f' },
-          coral: { light: '#d85a5a', dark: '#ff8a8a' },
-          sky: { light: '#5a9fff', dark: '#8fc5ff' },
-          mint: { light: '#4aaf6a', dark: '#9fffbf' },
-          lavender: { light: '#9f7fff', dark: '#c4aaff' },
-          rose: { light: '#ff7f9f', dark: '#ffb3cf' },
-          butter: { light: '#ffbf5a', dark: '#ffdf9f' },
-          turquoise: { light: '#5fcfdf', dark: '#9fefef' },
-        };
+				// Accent color definitions with light and dark variants
+				const accentColors = {
+					peach: { light: '#ff9f7f', dark: '#ffbf9f' },
+					coral: { light: '#d85a5a', dark: '#ff8a8a' },
+					sky: { light: '#5a9fff', dark: '#8fc5ff' },
+					mint: { light: '#4aaf6a', dark: '#9fffbf' },
+					lavender: { light: '#9f7fff', dark: '#c4aaff' },
+					rose: { light: '#ff7f9f', dark: '#ffb3cf' },
+					butter: { light: '#ffbf5a', dark: '#ffdf9f' },
+					turquoise: { light: '#5fcfdf', dark: '#9fefef' },
+				};
 
-        // Default settings
-        const defaultSettings = {
-          theme: 'light',
-          accentColorId: 'peach',
-          backgroundPattern: 'grid',
-        };
+				// Default settings
+				const defaultSettings = {
+					theme: 'light',
+					accentColorId: 'peach',
+					backgroundPattern: 'grid',
+				};
 
-        // Load settings from localStorage
-        let settings = defaultSettings;
-        try {
-          const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            settings = { ...defaultSettings, ...parsed };
-          } else {
-            // No saved preference, use system preference
-            if (window.matchMedia) {
-              settings.theme = window.matchMedia(
-                '(prefers-color-scheme: dark)'
-              ).matches
-                ? 'dark'
-                : 'light';
-            }
-          }
-        } catch (error) {
-          console.warn('Failed to load settings:', error);
-        }
+				// Load settings from localStorage
+				let settings = defaultSettings;
+				try {
+					const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+					if (stored) {
+						const parsed = JSON.parse(stored);
+						settings = { ...defaultSettings, ...parsed };
+					} else {
+						// No saved preference, use system preference
+						if (window.matchMedia) {
+							settings.theme = window.matchMedia('(prefers-color-scheme: dark)')
+								.matches
+								? 'dark'
+								: 'light';
+						}
+					}
+				} catch (error) {
+					console.warn('Failed to load settings:', error);
+				}
 
-        // Apply theme class
-        if (settings.theme === 'dark') {
-          document.documentElement.classList.add('dark-theme');
-        } else {
-          document.documentElement.classList.remove('dark-theme');
-        }
+				// Apply theme class
+				if (settings.theme === 'dark') {
+					document.documentElement.classList.add('dark-theme');
+				} else {
+					document.documentElement.classList.remove('dark-theme');
+				}
 
-        // Calculate relative luminance of a color (for contrast calculation)
-        function getLuminance(hex) {
-          const cleanHex = hex.replace('#', '');
-          const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
-          const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
-          const b = parseInt(cleanHex.substr(4, 2), 16) / 255;
-          const toLinear = (c) => {
-            return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-          };
-          return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
-        }
+				// Remove all existing accent color classes
+				const accentColorClasses = [
+					'accent-peach',
+					'accent-coral',
+					'accent-sky',
+					'accent-mint',
+					'accent-lavender',
+					'accent-rose',
+					'accent-butter',
+					'accent-turquoise',
+				];
+				document.documentElement.classList.remove(...accentColorClasses);
 
-        // Get appropriate text color for accent background
-        function getAccentTextColor(accentColor) {
-          const luminance = getLuminance(accentColor);
-          return luminance > 0.5 ? '#2a2a2a' : '#ffffff';
-        }
+				// Apply accent color class
+				const accentColorId =
+					settings.accentColorId || defaultSettings.accentColorId;
+				const accentClass = `accent-${accentColorId}`;
+				document.documentElement.classList.add(accentClass);
 
-        // Apply accent color based on current theme
-        const accentColorId = settings.accentColorId || defaultSettings.accentColorId;
-        const accentColor = accentColors[accentColorId] 
-          ? (settings.theme === 'dark' ? accentColors[accentColorId].dark : accentColors[accentColorId].light)
-          : accentColors.peach.light;
-        document.documentElement.style.setProperty('--accent', accentColor);
-        
-        // Apply appropriate text color for accent background based on contrast
-        const accentTextColor = getAccentTextColor(accentColor);
-        document.documentElement.style.setProperty('--titlebar-text', accentTextColor);
-      })();
-    </script>
+				// Calculate relative luminance of a color (for contrast calculation)
+				function getLuminance(hex) {
+					const cleanHex = hex.replace('#', '');
+					const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
+					const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
+					const b = parseInt(cleanHex.substr(4, 2), 16) / 255;
+					const toLinear = c => {
+						return c <= 0.03928
+							? c / 12.92
+							: Math.pow((c + 0.055) / 1.055, 2.4);
+					};
+					return (
+						0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+					);
+				}
 
-    <!-- View Transitions API -->
-    <script>
-      import('astro:transitions/client');
-    </script>
+				// Get appropriate text color for accent background
+				function getAccentTextColor(accentColor) {
+					const luminance = getLuminance(accentColor);
+					return luminance > 0.5 ? '#2a2a2a' : '#ffffff';
+				}
 
-    <!-- Dynamic title change when window loses focus -->
-    <script define:inline>
-      (function () {
-        // Store the original title - capture it after page loads
-        let originalTitle = '';
-        let isTitleCaptured = false;
+				// Calculate and apply titlebar text color based on accent color
+				// This still needs to be done via JS since it depends on luminance calculation
+				const accentColor = accentColors[accentColorId]
+					? settings.theme === 'dark'
+						? accentColors[accentColorId].dark
+						: accentColors[accentColorId].light
+					: accentColors.peach.light;
+				const accentTextColor = getAccentTextColor(accentColor);
+				document.documentElement.style.setProperty(
+					'--titlebar-text',
+					accentTextColor
+				);
+			})();
+		</script>
 
-        // Capture the original title when available
-        function captureOriginalTitle() {
-          if (!isTitleCaptured && document.title) {
-            originalTitle = document.title;
-            isTitleCaptured = true;
-          }
-        }
+		<!-- View Transitions API -->
+		<script>
+			import('astro:transitions/client');
+		</script>
 
-        // Initialize: try to capture title immediately or wait for load
-        if (
-          document.readyState === 'complete' ||
-          document.readyState === 'interactive'
-        ) {
-          // Use setTimeout to ensure title is set by browser
-          setTimeout(captureOriginalTitle, 0);
-        } else {
-          window.addEventListener('load', captureOriginalTitle);
-          // Also try on DOMContentLoaded as fallback
-          document.addEventListener('DOMContentLoaded', captureOriginalTitle);
-        }
+		<!-- Dynamic title change when window loses focus -->
+		<script define:inline>
+			(function () {
+				// Store the original title - capture it after page loads
+				let originalTitle = '';
+				let isTitleCaptured = false;
 
-        // Function to restore original title
-        function restoreTitle() {
-          if (!isTitleCaptured) {
-            captureOriginalTitle();
-          }
-          if (originalTitle) {
-            document.title = originalTitle;
-          }
-        }
+				// Capture the original title when available
+				function captureOriginalTitle() {
+					if (!isTitleCaptured && document.title) {
+						originalTitle = document.title;
+						isTitleCaptured = true;
+					}
+				}
 
-        // Function to change title when window loses focus
-        function changeTitleOnBlur() {
-          if (!isTitleCaptured) {
-            captureOriginalTitle();
-          }
-          document.title = 'miss you already';
-        }
+				// Initialize: try to capture title immediately or wait for load
+				if (
+					document.readyState === 'complete' ||
+					document.readyState === 'interactive'
+				) {
+					// Use setTimeout to ensure title is set by browser
+					setTimeout(captureOriginalTitle, 0);
+				} else {
+					window.addEventListener('load', captureOriginalTitle);
+					// Also try on DOMContentLoaded as fallback
+					document.addEventListener('DOMContentLoaded', captureOriginalTitle);
+				}
 
-        // Listen for window blur/focus events
-        window.addEventListener('blur', changeTitleOnBlur);
-        window.addEventListener('focus', restoreTitle);
+				// Function to restore original title
+				function restoreTitle() {
+					if (!isTitleCaptured) {
+						captureOriginalTitle();
+					}
+					if (originalTitle) {
+						document.title = originalTitle;
+					}
+				}
 
-        // Also handle visibility change (for mobile/tab switching)
-        document.addEventListener('visibilitychange', function () {
-          if (document.hidden) {
-            changeTitleOnBlur();
-          } else {
-            restoreTitle();
-          }
-        });
-      })();
-    </script>
-  </head>
-  <body>
-    <slot />
-  </body>
+				// Function to change title when window loses focus
+				function changeTitleOnBlur() {
+					if (!isTitleCaptured) {
+						captureOriginalTitle();
+					}
+					document.title = 'miss you already';
+				}
+
+				// Listen for window blur/focus events
+				window.addEventListener('blur', changeTitleOnBlur);
+				window.addEventListener('focus', restoreTitle);
+
+				// Also handle visibility change (for mobile/tab switching)
+				document.addEventListener('visibilitychange', function () {
+					if (document.hidden) {
+						changeTitleOnBlur();
+					} else {
+						restoreTitle();
+					}
+				});
+			})();
+		</script>
+	</head>
+	<body>
+		<slot />
+	</body>
 </html>

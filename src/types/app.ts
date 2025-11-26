@@ -28,6 +28,7 @@ export interface AppConfig<TProps = Record<string, unknown>> {
   component?: ComponentType<TProps>; // Optional custom React component for this app
   props?: TProps; // Optional props to pass to the component
   keepMountedWhenMinimized?: boolean; // Whether to keep component mounted when minimized (default: false)
+  fileExtensions?: string[]; // File extensions this app can handle (e.g., ['.jpg', '.png'])
 
   // Desktop icon configuration (for both apps and files)
   desktopIcon?: {

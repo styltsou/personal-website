@@ -213,10 +213,7 @@ export default function Window({ id, isLoading }: WindowProps) {
         {/* Window Content */}
         <div className={styles.content}>
           {(() => {
-            // Show loading message while loading
-            if (isWindowLoading) {
-              return <Loading />;
-            }
+            if (isWindowLoading) return <Loading />;
 
             // Try to get custom component from config first
             if (windowState.config.component) {

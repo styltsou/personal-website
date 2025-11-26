@@ -7,7 +7,7 @@
   width: 100%;
   padding: 1.6rem; /* 16px - was 1rem (16px) */
   font-family: monospace;
-  font-size: 2rem; /* 20px - was 1.25rem (20px) */ // Larger text for better readability
+  font-size: 1.6rem; /* 16px - slightly larger font */
   line-height: 1.6;
   background-color: #ffffff; // White background for light theme
   color: #000000; // Black text for light theme
@@ -23,7 +23,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; /* 8px - was 0.5rem (8px) */
+  gap: 0.6rem; /* 6px - adjusted for smaller font */
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -34,40 +34,79 @@
   align-items: center;
   gap: 0;
   white-space: nowrap;
-}
-
-.promptUser {
-  color: inherit; // Use default text color (white/black based on theme)
-}
-
-.promptAt {
-  color: inherit; // Use default text color for @ symbol
-}
-
-.promptHostname {
-  color: inherit; // Use default text color (white/black based on theme)
-}
-
-.promptSeparator {
-  color: inherit; // Use default text color for separator
+  color: var(--accent, #f09c7c); // Accent color for prompt
 }
 
 .promptSymbol {
-  color: #a855f7; // Vibrant violet for prompt symbol
+  color: var(--accent, #f09c7c); // Accent color for prompt symbol
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.5em; // Make chevron even bigger
+  margin-left: 0.1em; // Closer to prompt text
+  vertical-align: middle;
 }
 
 .promptPath {
-  color: inherit; // Use default text color (white/black based on theme)
+  color: var(--accent, #f09c7c); // Accent color for prompt path
 }
 
 .output {
-  color: #7da3d1; // Blue for output
+  color: inherit; // Neutral color for output
   white-space: pre-wrap; // Preserve whitespace and wrap
   word-break: break-word;
+
+  // Info messages use neutral color
+  &[data-type='info'] {
+    color: inherit; // Neutral color (inherits from terminal text color)
+  }
+
+  // Directory listings use neutral color (items will have their own colors)
+  &[data-type='directory'] {
+    color: inherit; // Neutral color (inherits from terminal text color)
+  }
 }
 
 :global(.dark-theme) .output {
-  color: #7da3d1; // Keep blue in dark theme
+  color: inherit; // Neutral color for output in dark theme
+
+  &[data-type='info'] {
+    color: inherit; // Neutral color (inherits from terminal text color)
+  }
+
+  // Directory listings use neutral color (items will have their own colors)
+  &[data-type='directory'] {
+    color: inherit; // Neutral color (inherits from terminal text color)
+  }
+}
+
+// Directory listing items
+.directoryItem {
+  color: var(--accent, #f09c7c); // Accent color for directories
+}
+
+.appItem {
+  color: var(--accent, #f09c7c); // Accent color for apps
+}
+
+.fileItem {
+  color: inherit; // Neutral color for files (inherits from parent)
+}
+
+// Ensure directory and app items in output have accent color (more specific selector)
+.output .directoryItem,
+.output[data-type='directory'] .directoryItem,
+.output .appItem,
+.output[data-type='directory'] .appItem {
+  color: var(--accent, #f09c7c);
+}
+
+:global(.dark-theme) .directoryItem,
+:global(.dark-theme) .output .directoryItem,
+:global(.dark-theme) .output[data-type='directory'] .directoryItem,
+:global(.dark-theme) .appItem,
+:global(.dark-theme) .output .appItem,
+:global(.dark-theme) .output[data-type='directory'] .appItem {
+  color: var(--accent, #f09c7c);
 }
 
 .error {
@@ -81,19 +120,68 @@
 }
 
 .command {
-  color: #666666; // Dark gray for light theme
   white-space: pre-wrap;
 }
 
-:global(.dark-theme) .command {
-  color: #888888; // Light gray for dark theme
+.commandName {
+  // Command name color will be set via data-valid attribute
+}
+
+.commandName[data-valid='true'] {
+  color: var(--terminal-valid-color, #22c55e); // Green for valid commands
+}
+
+.commandName[data-valid='false'] {
+  color: var(--terminal-invalid-color, #ff4444); // Red for invalid commands
+}
+
+.commandArgs {
+  color: inherit; // Neutral color for command arguments
+}
+
+:global(.dark-theme) .commandName[data-valid='true'] {
+  color: var(--terminal-valid-color, #4ade80); // Lighter green for dark theme
+}
+
+:global(.dark-theme) .commandName[data-valid='false'] {
+  color: var(--terminal-invalid-color, #ff6666); // Lighter red for dark theme
+}
+
+:global(.dark-theme) .commandArgs {
+  color: inherit; // Neutral color for command arguments
 }
 
 .inputForm {
   display: flex;
   align-items: center;
-  gap: 0.4rem; /* 4px - was 0.25rem (4px) */
+  gap: 0.3rem; /* 3px - adjusted for smaller font */
   flex-shrink: 0;
+}
+
+.inputWrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.inputOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  white-space: pre;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 .input {
@@ -103,25 +191,66 @@
   outline: none;
   font-family: inherit;
   font-size: inherit;
-  color: inherit;
+  color: transparent; // Make text transparent so overlay shows through
   padding: 0;
   margin: 0;
-  // Show native caret as block cursor
-  caret-color: #a855f7; // Violet caret to match prompt symbol
+  // Hide the actual browser cursor
+  caret-color: transparent;
   min-width: 0;
+  position: relative;
+  z-index: 1;
+
+  // Selection styling
+  &::selection {
+    background-color: var(--accent, #f09c7c);
+    color: transparent;
+  }
 }
 
 :global(.dark-theme) .input {
-  caret-color: #a855f7; // Violet caret in dark theme too
+  caret-color: transparent; // Hide cursor in dark theme too
+
+  &::selection {
+    background-color: var(--accent, #f09c7c);
+    color: transparent;
+  }
 }
 
+.blockCursor {
+  position: absolute;
+  display: inline-block;
+  height: 1.8rem; /* Slightly taller than font size */
+  width: 0.6em; // Width of one character (monospace)
+  animation: cursorBlink 1s ease-in-out infinite;
+  // Hollow cursor - border instead of background
+  background-color: transparent;
+  border: 2px solid var(--accent, #f09c7c); // Accent color border for hollow cursor
+  vertical-align: middle;
+  border-radius: 0;
+  pointer-events: none;
+  margin-top: 0.1em; // Slight vertical adjustment
+  box-sizing: border-box; // Ensure border is included in width/height
+}
+
+@keyframes cursorBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+// Legacy cursor class (kept for backwards compatibility)
 .cursor {
   display: inline-block;
-  height: 2rem; /* 20px - was 1.25rem (20px) */ // Match line height
+  height: 1.6rem; /* 16px - match font size */
   width: 0.6em; // Width of one character (monospace)
   margin-left: 0.05em;
   animation: pulse 1s ease-in-out infinite;
-  background-color: #a855f7; // Violet cursor
+  background-color: var(--accent, #f09c7c); // Accent color cursor
   vertical-align: middle;
   // Make cursor appear like a block cursor
   border-radius: 0;
@@ -138,4 +267,3 @@
     opacity: 0.3;
   }
 }
-

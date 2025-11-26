@@ -36,15 +36,51 @@
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
-  /* Can be changed dynamically at runtime for accent color selection */
-  /* Previous blue accent: #7da3d1 */
-  --accent: #f09c7c;
+  /* Default to peach, but can be overridden by accent color classes */
+  --accent: #ff9f7f; /* Default: peach light */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Terminal colors */
+  --terminal-valid-color: #22c55e; /* Green for valid commands */
+  --terminal-invalid-color: #ff4444; /* Red for invalid commands */
 
   /* Shadows - Softer */
   --shadow: rgba(0, 0, 0, 0.2);
   --shadow-soft: rgba(0, 0, 0, 0.1);
+}
+
+/* Accent Color Classes - Light Theme */
+:root.accent-peach {
+  --accent: #ff9f7f;
+}
+
+:root.accent-coral {
+  --accent: #d85a5a;
+}
+
+:root.accent-sky {
+  --accent: #5a9fff;
+}
+
+:root.accent-mint {
+  --accent: #4aaf6a;
+}
+
+:root.accent-lavender {
+  --accent: #9f7fff;
+}
+
+:root.accent-rose {
+  --accent: #ff7f9f;
+}
+
+:root.accent-butter {
+  --accent: #ffbf5a;
+}
+
+:root.accent-turquoise {
+  --accent: #5fcfdf;
 }
 
 /* Dark Theme */
@@ -74,12 +110,49 @@
   --text-on-light: #2a2a2a; /* Dark text for light colored backgrounds */
 
   /* Main accent color - used site-wide for titlebars, borders, highlights, etc. */
-  /* Can be changed dynamically at runtime for accent color selection */
-  --accent: #f09c7c;
+  /* Default to peach, but can be overridden by accent color classes */
+  --accent: #ffbf9f; /* Default: peach dark */
   --titlebar-text: #ffffff;
   --titlebar-shadow: rgba(0, 0, 0, 0.5);
+
+  /* Terminal colors */
+  --terminal-valid-color: #4ade80; /* Lighter green for dark theme */
+  --terminal-invalid-color: #ff6666; /* Lighter red for dark theme */
 
   /* Shadows - Darker */
   --shadow: rgba(0, 0, 0, 0.7);
   --shadow-soft: rgba(0, 0, 0, 0.5);
+}
+
+/* Accent Color Classes - Dark Theme */
+:root.dark-theme.accent-peach {
+  --accent: #ffbf9f;
+}
+
+:root.dark-theme.accent-coral {
+  --accent: #ff8a8a;
+}
+
+:root.dark-theme.accent-sky {
+  --accent: #8fc5ff;
+}
+
+:root.dark-theme.accent-mint {
+  --accent: #9fffbf;
+}
+
+:root.dark-theme.accent-lavender {
+  --accent: #c4aaff;
+}
+
+:root.dark-theme.accent-rose {
+  --accent: #ffb3cf;
+}
+
+:root.dark-theme.accent-butter {
+  --accent: #ffdf9f;
+}
+
+:root.dark-theme.accent-turquoise {
+  --accent: #9fefef;
 }

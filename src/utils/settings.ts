@@ -80,7 +80,8 @@ const DEFAULT_SETTINGS: Settings = {
  * Get accent color value for current theme
  */
 export function getAccentColor(accentColorId: string, theme: Theme): string {
-  const color = ACCENT_COLORS.find(c => c.id === accentColorId) || ACCENT_COLORS[0];
+  const color =
+    ACCENT_COLORS.find(c => c.id === accentColorId) || ACCENT_COLORS[0];
   return theme === 'dark' ? color.dark : color.light;
 }
 
@@ -91,7 +92,7 @@ export function getAccentColor(accentColorId: string, theme: Theme): string {
 function getLuminance(hex: string): number {
   // Remove # if present
   const cleanHex = hex.replace('#', '');
-  
+
   // Parse RGB
   const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
   const g = parseInt(cleanHex.substr(2, 2), 16) / 255;
@@ -137,7 +138,9 @@ export function getSettings(): Settings {
 
     // No saved preference, check system preference
     if (window.matchMedia) {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const prefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
       const systemSettings: Settings = {
         ...DEFAULT_SETTINGS,
         theme: prefersDark ? 'dark' : 'light',
@@ -179,11 +182,17 @@ export function applySettings(settings: Settings): void {
     root.classList.remove('dark-theme');
   }
 
-  // Apply accent color based on current theme
-  const accentColor = getAccentColor(settings.accentColorId, settings.theme);
-  root.style.setProperty('--accent', accentColor);
+  // Remove all existing accent color classes
+  const accentColorClasses = ACCENT_COLORS.map(color => `accent-${color.id}`);
+  root.classList.remove(...accentColorClasses);
 
-  // Apply appropriate text color for accent background based on contrast
+  // Apply accent color class
+  const accentClass = `accent-${settings.accentColorId}`;
+  root.classList.add(accentClass);
+
+  // Calculate and apply titlebar text color based on accent color
+  // This still needs to be done via JS since it depends on luminance calculation
+  const accentColor = getAccentColor(settings.accentColorId, settings.theme);
   const accentTextColor = getAccentTextColor(accentColor);
   root.style.setProperty('--titlebar-text', accentTextColor);
 
@@ -201,4 +210,3 @@ export function initializeSettings(): void {
   const settings = getSettings();
   applySettings(settings);
 }
-

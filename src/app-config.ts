@@ -64,6 +64,7 @@ export const apps: AppConfig[] = [
     id: 'terminal',
     title: 'Terminal',
     component: TerminalWindow,
+    initialSize: { width: 700, height: 500 }, // Smaller initial window size
     desktopIcon: {
       icon: TerminalIcon,
     },
@@ -107,8 +108,7 @@ export const apps: AppConfig[] = [
     title: 'Photos',
     component: PhotosWindow,
     keepMountedWhenMinimized: true, // Keep mounted to prevent image reload
-    // Photos app can be opened as a gallery with multiple images
-    // Or files can be opened in it via openFile()
+    fileExtensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp'],
     desktopIcon: {
       label: 'Photos',
       icon: PhotosIcon,
@@ -120,6 +120,7 @@ export const apps: AppConfig[] = [
     title: 'PDF Viewer',
     component: PdfViewerWindow,
     keepMountedWhenMinimized: true, // Keep mounted to prevent PDF reload
+    fileExtensions: ['.pdf'],
     // PDF viewer only opens via file associations, no desktop icon
   },
 
@@ -156,3 +157,37 @@ export const apps: AppConfig[] = [
   //   },
   // },
 ];
+
+/**
+ * Build file associations map from app configs
+ * Maps file extensions to app IDs
+ */
+export function getFileAssociations(): Record<string, string> {
+  const associations: Record<string, string> = {};
+
+  apps.forEach(app => {
+    if (app.type === 'app' && app.fileExtensions) {
+      app.fileExtensions.forEach(ext => {
+        associations[ext.toLowerCase()] = app.id;
+      });
+    }
+  });
+
+  return associations;
+}
+
+/**
+ * Get the app ID associated with a file extension
+ */
+export function getAppForFile(filePath: string): string | null {
+  const extension = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
+  const associations = getFileAssociations();
+  return associations[extension] || null;
+}
+
+/**
+ * Get file extension from file path
+ */
+export function getFileExtension(filePath: string): string {
+  return filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
+}
